@@ -1,5 +1,5 @@
 '''
-    输出帮助文档，命令最长25
+    输出帮助文档，命令长度最长25,保持整齐
 '''
 
 def read_alias():
@@ -37,7 +37,8 @@ def out_help():
     result = divide_str()
     for line in result:
         if line.startswith('#'):
-            print('-'*55+' 【'+line[2:]+'】')
+            num = 40 - len(line)
+            print('\n'+'.'*14+'[ '+line[2:]+' ]'+'.'*num)
         else:
             temp = line.split('$')
             space = command_len - len(temp[0])
