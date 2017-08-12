@@ -3,7 +3,7 @@ import subprocess
 
 # 2017-06-11 18:48:38
 paths =[
-    '/home/kcp/Documents/Notes/Code_Notes#技术笔记',
+    '/home/kcp/Documents/Notes/Notes#技术笔记',
     '/home/kcp/Documents/Notes/GhostPushLight#鬼吹灯项目',
     '/home/kcp/Documents/Notes/diary#个人日记',
     '/home/kcp/Documents/Notes/Kuangcp.github.io#个人博客',

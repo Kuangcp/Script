@@ -38,7 +38,7 @@ def out_help():
     for line in result:
         if line.startswith('#'):
             num = 40 - len(line)
-            print('\n'+'.'*14+'[ '+line[2:]+' ]'+'.'*num)
+            print('\n'+'.'*16+'[ '+line[2:]+' ]'+'.'*num)
         else:
             temp = line.split('$')
             space = command_len - len(temp[0])
