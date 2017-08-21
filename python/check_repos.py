@@ -1,5 +1,6 @@
 import sys
 import subprocess
+import os
 
 
 # 执行命令,如果仓库没有变动就不输出
@@ -39,10 +40,28 @@ def main():
     path = '/home/kcp/Application/Script/python/config/repos.md'
     for param in sys.argv:
         if param == '-h':
-            print("帮助")
+            print('''
+    -h      帮助说明
+    -a      添加Git Repos目录
+    -i      图片仓库：在当前目录方便得到图片URL
+            ''')
+            return 0
         if param == '-a':
             print("添加仓库")
             append_line(path)
+            return 0
+        if param == '-i':
+            # 将当前图片仓库的目录转化成仓库的URL
+            image_path = os.getcwd()
+            temp = image_path.split('ImageRepo')
+            if len(temp) > 1:
+                #print(temp[1])
+                image_path = temp[1]+'\n'
+            else:
+                print("请在图片仓库运行该命令")
+                return 0 
+            URL = '\nhttps://raw.githubusercontent.com/Kuangcp/ImageRepos/master'
+            print(URL+image_path)
             return 0
     
     with open(path, encoding='UTF-8') as config:
