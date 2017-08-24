@@ -1,44 +1,40 @@
 '''
     输出帮助文档，命令长度最长25,保持整齐
 '''
-
+# 读取文件
 def read_alias():
     contents = []
-    with open('/home/kcp/.bash_aliases') as alias:
-        lines = alias.readlines()
-        for line in lines:
-            line = line.strip()
-            #print(line)
-            if line == '' or line == ' ':
-                continue
-            else:
-                contents.append(line)
+    alias = open('/home/kcp/.bash_aliases')
+    lines = alias.readlines()
+    for line in lines:
+        line = line.strip()
+        contents.append(line)
+    alias.close()
     return contents
-
+# 切分每行的串
 def divide_str():
     contents = read_alias()
-    #print(contents)
     result = []
     for line in contents:
+        #print(">>>"+line)
         if line.startswith('\n'):
             continue
-        elif line.startswith('#'):
+        elif line.startswith('#') and not line.startswith('##'):
             result.append(line)
-        else :
-            temp = line.split('=')
-            #print(temp)
-            name = temp[0].split(' ')[1]
+        elif line.startswith('alias') :
+            temp = line.split('=\'')
+            name = temp[0].split('alias')[1]
             comment = temp[1].split('#')[1]
             result.append(name+'$'+comment.strip())
     return result
-
+# 格式化输出
 def out_help():
     command_len = 23
     result = divide_str()
     for line in result:
         if line.startswith('#'):
             num = 40 - len(line)
-            print('\n'+'.'*16+'[ '+line[2:]+' ]'+'.'*num)
+            print(''+'.'*16+'[ '+line[2:]+' ]'+'.'*num)
         else:
             temp = line.split('$')
             space = command_len - len(temp[0])
