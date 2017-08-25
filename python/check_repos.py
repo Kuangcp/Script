@@ -43,12 +43,16 @@ def main():
             print('''
     -h      帮助说明
     -a      添加Git Repos目录
+    -f      打开配置文件,方便修改
     -i      图片仓库：在当前目录方便得到图片URL
             ''')
             return 0
         if param == '-a':
             print("添加仓库")
             append_line(path)
+            return 0
+        if param == '-f':
+            subprocess.call("gedit ~/Application/Script/python/config/repos.md",shell=True)
             return 0
         if param == '-i':
             # 将当前图片仓库的目录转化成仓库的URL
