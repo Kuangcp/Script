@@ -10,7 +10,8 @@ def command(cmd, content_line, count):
     for line in p.stdout.readlines():
         line = line.decode()
         if(line != "无文件要提交，干净的工作区\n"):
-            result.append(line.rstrip())
+            if line.count("使用") < 1 and line.count("变更") < 1:
+                result.append(line.rstrip())
         else:
             return 0 # 如果git仓库没有变动就直接退出，不输出了   
     # 输出所有结果 以及仓库信息
@@ -19,7 +20,10 @@ def command(cmd, content_line, count):
         print("",re)
 
 def hang(count,name):
-    print("-"*50,count,"\n"+'-'*6,name)
+    print('\033[1;35;40m')
+    # print("-"*50,count,"\n"+'-'*10,name)
+    print('-'*4,name.rstrip(),count)
+    print('\033[1;31;0m')
 
 def print_info(line,count):
     path = line.split("#")[0]
@@ -77,5 +81,7 @@ def main():
         count = count+1
         if path.startswith('/'):
             print_info(path,count)
-    
+    #print('\033[1;33;40m')
+    #print('-'*70)
+    #print('\033[1;31;0m')
 main()
