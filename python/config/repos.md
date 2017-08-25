@@ -11,6 +11,6 @@
 /home/kcp/IdeaProjects/BaseLearn/JavaToolKit #Java工具包
 /home/kcp/IdeaProjects/TestRun/MythRedis # MythRedisClient
 
-/home/kcp/Pictures/ImageRepo # 图片库
+/home/kcp/Pictures/ImageRepos # 图片库
 /home/kcp/Documents/Notes/Apps # 应用库
 # /home/kcp/IdeaProjects/test/RedisLearning #Redis学习记录之Java

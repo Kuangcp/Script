@@ -19,11 +19,22 @@ def command(cmd, content_line, count):
     for re in result:
         print("",re)
 
+# 输出标题
 def hang(count,name):
-    print('\033[1;35;40m')
-    # print("-"*50,count,"\n"+'-'*10,name)
-    print('-'*4,name.rstrip(),count)
-    print('\033[1;31;0m')
+    black = '30'
+    yellow = '33'
+    blue = '34'
+    purple = '35'
+    cyan = '36'
+
+    pathcolor = '\033[0;'+purple+'m'
+    titlecolor = '\033[1;'+purple+'m'
+    reback = '\033[0m'
+    space = 50
+    result = name.split("#")
+    path = result[0].rstrip()
+    title = result[1].rstrip()
+    print(pathcolor, path, ' '*(space-len(path)), titlecolor,count, title, reback)
 
 def print_info(line,count):
     path = line.split("#")[0]

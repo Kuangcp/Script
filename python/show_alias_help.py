@@ -29,16 +29,16 @@ def divide_str():
     return result
 # 格式化输出
 def out_help():
-    command_len = 23
+    command_len = 26
     result = divide_str()
     for line in result:
         if line.startswith('#'):
             num = 40 - len(line)
-            print(''+'.'*16+'[ '+line[2:]+' ]'+'.'*num)
+            print('\033[1;35m'+' '*16+'[ '+line[2:]+' ]'+' '*num+'\033[0m')
         else:
             temp = line.split('$')
             space = command_len - len(temp[0])
-            print(temp[0], ' '*space,temp[1])
+            print(' \033[0;32m'+temp[0], ' '*space,'\033[0;36m'+temp[1]+'\033[0m')
 
 def main():
     out_help()
