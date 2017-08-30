@@ -110,14 +110,19 @@ def unzip_file(sdk, version=None):
     if not os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current"):
         print("建立软链接")
         shell("ln -s ~/.mythsdk/sdk/"+sdk+"/"+version+" ~/.mythsdk/sdk/"+sdk+"/current")
-        shell("touch ~/.mythsdk/sdk/"+sdk+"/"+version+"/bin/current")
+        shell("touch ~/.mythsdk/sdk/"+sdk+"/"+version+"/bin/current") # 建立当前使用的标记
         config(sdk)
     
 
 def config(sdk):
     ''' 配置环境变量 '''
-    shell("echo '\n"+sdk.upper()+"_HOME=~/.mythsdk/sdk/"+sdk+"/current' >> ~/.bash_aliases")
-    shell("echo 'export PATH=$PATH:$"+sdk.upper()+"_HOME/bin' >> ~/.bash_aliases")
+    if sdk == 'java':
+        shell("echo '\n "+sdk.upper()+"_HOME=~/.mythsdk/sdk/"+sdk+"/current' >> ~/.bash_aliases")
+        ENV = '''\nexport JRE_HOME=${JAVA_HOME}/jre\nexport CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib\nexport PATH=${JAVA_HOME}/bin:$PATH'''
+        shell("echo '"+ENV+"' >> ~/.bash_aliases")
+    else:
+        shell("echo '\n"+sdk.upper()+"_HOME=~/.mythsdk/sdk/"+sdk+"/current' >> ~/.bash_aliases")
+        shell("echo 'export PATH=$PATH:$"+sdk.upper()+"_HOME/bin' >> ~/.bash_aliases")
     refresh()
 
 def refresh():
