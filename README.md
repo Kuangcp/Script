@@ -2,6 +2,7 @@
 
 `目录树`
 
+```
 ├── bat
 │   ├── chocoList.bat
 │   ├── chocoList.txt
@@ -32,3 +33,5 @@
 │   ├── readQR.py `阅读二维码`
 │   ├── rename_image.py `对一个文件夹的文件批量重命名管理`
 │   └── show_alias_help.py `展示alias别名文件`
+
+```

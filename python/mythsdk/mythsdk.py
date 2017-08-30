@@ -48,7 +48,7 @@ def loadconfig():
     jsonfile = init()+'/.mythsdk/config.json'
     if not os.path.exists(jsonfile):
         print("下载配置文件")
-        shell("curl -o "+jsonfile+" https://raw.githubusercontent.com/Kuangcp/Apps/master/config.json")
+        shell("curl -o "+jsonfile+" https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json")
 
     data = json.load(open(jsonfile))
     return data
@@ -78,17 +78,25 @@ def auto():
     current = os.getcwd()
     print(current)
 
-def download_fromgit(sdk, version=None):
+def download(url, sdk, version):
     if not os.path.isdir(init()+"/.mythsdk/zip/"+sdk):
         shell("mkdir ~/.mythsdk/zip/"+sdk)
-    url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"
-
     if not os.path.exists(init()+"/.mythsdk/zip/"+sdk+"/"+version+".zip"):
-        down = "curl  -o ~/.mythsdk/zip/"+sdk+"/"+version+".zip "+url+sdk+"/"+sdk+"-"+version+".zip"
-        print("开始下载" + down)
+        # down = "curl  -o ~/.mythsdk/zip/"+sdk+"/"+version+".zip "+url+sdk+"/"+sdk+"-"+version+".zip"
+        cmd = "curl  -o ~/.mythsdk/zip/"+sdk+"/"+version+".zip "+url
+        print("开始下载" + cmd)
         # subprocess.call(down, shell=True)
-        shell(down)
+        shell(cmd)
         print("下载完成" )
+
+def download_fromgit(sdk, version):
+    url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"+sdk+"/"+sdk+"-"+version+".zip"
+    download(url, sdk, version)
+
+def down_fromqiniu(sdk, version):
+    url = "http://oscenptok.bkt.clouddn.com/"+sdk+"-"+version+".zip"
+    download(url, sdk, version)
+    
 
 def unzip_file(sdk, version=None):
     ''' 解压到对应的目录'''
@@ -133,7 +141,8 @@ def install(sdk, version=None):
             return 0 
     if version == None:
         version = data["sdks"][sdk][-1]
-    download_fromgit(sdk, version)
+    down_fromqiniu(sdk, version)
+    # download_fromgit(sdk, version)
     unzip_file(sdk, version)
 
 def handle():
