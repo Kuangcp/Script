@@ -136,13 +136,13 @@ def install(sdk, version=None):
     sdks = data['sdks']
     if not sdk in sdks:
         print("当前仓库没有该sdk! \n收纳的sdk:")
-        lists()
+        list_all()
         return 0
     if version != None:
         # print(version, data[sdk])
         if version not in data["sdks"][sdk]:
             print("没有该版本! \n收纳的sdk:")
-            lists()
+            list_all()
             return 0 
     if version == None:
         version = data["sdks"][sdk][-1]
@@ -161,8 +161,10 @@ def change(sdk, version):
         shell("rm ~/.mythsdk/sdk/"+sdk+"/current/bin/current")
         shell("rm -rf ~/.mythsdk/sdk/"+sdk+"/current")
         
-    shell("ln -s ~/.mythsdk/sdk/"+sdk+"/"+version+" ~/.mythsdk/sdk/"+sdk+"/current")
-    shell("touch ~/.mythsdk/sdk/"+sdk+"/current/bin/current")
+        shell("ln -s ~/.mythsdk/sdk/"+sdk+"/"+version+" ~/.mythsdk/sdk/"+sdk+"/current")
+        shell("touch ~/.mythsdk/sdk/"+sdk+"/current/bin/current")
+    else:
+        print("\n该SDK "+sdk+" 没有安装任何版本，切换失败 \n    安装请使用命令 python mythsdk.py i "+sdk+" <version>\n")
     
 def help():
     print('''python \033[1;33m myth.py <params>：
