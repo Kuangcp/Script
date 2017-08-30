@@ -45,7 +45,12 @@ def shell(cmd):
     execute_command(cmd, shell=True)
 
 def loadconfig():
-    data = json.load(open('config.json'))
+    jsonfile = init()+'/.mythsdk/config.json'
+    if not os.path.exists(jsonfile):
+        print("下载配置文件")
+        shell("curl -o "+jsonfile+" https://raw.githubusercontent.com/Kuangcp/Apps/master/config.json")
+
+    data = json.load(open(jsonfile))
     return data
                 
 def list_all(sdk=None):
@@ -109,7 +114,7 @@ def config(sdk):
 
 def refresh():
     ''' 刷新配置 命令运行无效？？？？'''
-    print("请运行 source ~/.bashrc 即可立即生效 或者重启终端")
+    print("\033[1;33m请运行 source ~/.bashrc 即可立即生效 或者重启终端\033[0m")
     shell(". ~/.bashrc")
 
 def install(sdk, version=None):
