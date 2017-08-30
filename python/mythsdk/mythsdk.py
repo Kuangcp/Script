@@ -172,6 +172,13 @@ def help():
         使用已安装的指定sdk的版本
     \033[1;33mi|install sdk <version> : \033[0m
         安装指定版本，不指定则安装最新版''')
+def update_config():
+    ''' 升级配置文件 '''
+    jsonfile = init()+'/.mythsdk/config.json'
+    print("更新配置文件")
+    shell("rm "+jsonfile)
+    shell("curl -o "+jsonfile+" https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json")
+
 
 def two_param(action):
     # 放在同级目录下，自动配置
@@ -181,6 +188,8 @@ def two_param(action):
         list_all()
     if action == "help" or action == 'h':
         help()
+    if action == "update" or action =='up':
+        update_config()
 
 def thr_param(action, sdk):
     if action == 'install' or action == 'i':
