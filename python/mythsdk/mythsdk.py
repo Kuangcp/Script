@@ -67,13 +67,18 @@ def list_all(sdk=None):
                 continue
         print(""+one+":")
         version = data["sdks"][one]
+        count = 1
         for ver in version:
             if os.path.exists(root_path+"/"+one+"/"+ver+"/bin/current"):
                 print("\033[1;32m    "+ver+"\033[0m")
             elif os.path.exists(root_path+"/"+one+"/"+ver):
                 print("\033[1;35m    "+ver+"\033[0m")
             else:
-                print("    "+ver)
+                count += 1
+                ver = "    "+ver+"  "
+                print(ver, end="")
+                if count%7 == 0 :
+                    print("")
         
 def auto():
     ''' 使用规定的目录结构放置zip包 自动化配置sdk环境''' 
