@@ -11,7 +11,6 @@ import subprocess
 '''
 
 def execute_command(cmdstring, cwd=None, timeout=None, shell=False):
-
     if shell:
         cmdstring_list = cmdstring
     else:
@@ -67,10 +66,8 @@ def download(url, sdk, version):
     if not os.path.isdir(init()+"/.mythsdk/zip/"+sdk):
         shell("mkdir ~/.mythsdk/zip/"+sdk)
     if not os.path.exists(init()+"/.mythsdk/zip/"+sdk+"/"+version+".zip"):
-        # down = "curl  -o ~/.mythsdk/zip/"+sdk+"/"+version+".zip "+url+sdk+"/"+sdk+"-"+version+".zip"
         cmd = "curl  -o ~/.mythsdk/zip/"+sdk+"/"+version+".zip "+url
         print("Start download: " + cmd)
-        # subprocess.call(down, shell=True)
         shell(cmd)
         print("Download finished!" )
 
@@ -81,7 +78,6 @@ def download_fromgit(sdk, version):
 def down_fromqiniu(sdk, version):
     url = "http://oscenptok.bkt.clouddn.com/"+sdk+"-"+version+".zip"
     download(url, sdk, version)
-    
 
 def unzip_file(sdk, version=None):
     ''' unzip file to target '''
@@ -108,7 +104,7 @@ def config(sdk):
     refresh()
 
 def refresh():
-    print("\033[1;33mRun  source ~/.bashrc can used just now or restart terminal \033[0m")
+    print("\033[1;33mRun  \033[1;35msource ~/.bashrc \033[1;33mcan used just now or restart terminal \033[0m")
     shell(". ~/.bashrc")
 
 def install(sdk, version=None):
@@ -119,7 +115,6 @@ def install(sdk, version=None):
         list_all()
         return 0
     if version != None:
-        # print(version, data[sdk])
         if version not in data["sdks"][sdk]:
             print("haven't this version ! \navaliable sdk:")
             list_all()
@@ -135,7 +130,10 @@ def handle():
 
 def change(sdk, version):
     datas = loadconfig()
-    if os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current") and version in datas["sdks"][sdk]:
+    if version in datas["sdks"][sdk]:
+        print("Repository haven't this sdk version!")
+        return 0
+    if os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current") :
         shell("rm ~/.mythsdk/sdk/"+sdk+"/current/bin/current")
         shell("rm -rf ~/.mythsdk/sdk/"+sdk+"/current")
         shell("ln -s ~/.mythsdk/sdk/"+sdk+"/"+version+" ~/.mythsdk/sdk/"+sdk+"/current")
@@ -156,7 +154,6 @@ def update_config():
     print("Update config file get more sdk")
     shell("rm "+jsonfile)
     shell("curl -o "+jsonfile+" https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json")
-
 
 def two_param(action):
     # if action == 'auto' or action == 'a':
@@ -201,7 +198,6 @@ def init():
     user = os.getcwd()
     user = user.split('/')
     user = '/'+user[1]+'/'+user[2]
-    # print(user+"/.mythsdk")
     if not os.path.isdir(user+"/.mythsdk"):
         print("init root directory ")
         subprocess.call("mkdir ~/.mythsdk", shell=True)
