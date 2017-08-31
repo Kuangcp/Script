@@ -8,7 +8,7 @@ import subprocess
 # json_url = " https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
 json_url = " http://git.oschina.net/kcp1104/script/raw/master/python/mythsdk/config.json"
 cloud_url = None
-## github sdk 没有很多
+## 这个github 上 sdk 只有几个，大多数没有
 github_url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"
 
 '''
@@ -67,14 +67,12 @@ def download(url, sdk, version):
     if not os.path.isdir(init()+"/.mythsdk/zip/"+sdk):
         shell("mkdir ~/.mythsdk/zip/"+sdk)
     if not os.path.exists(init()+"/.mythsdk/zip/"+sdk+"/"+version+".zip"):
-        # down = "curl  -o ~/.mythsdk/zip/"+sdk+"/"+version+".zip "+url+sdk+"/"+sdk+"-"+version+".zip"
         cmd = "curl  -o ~/.mythsdk/zip/"+sdk+"/"+version+".zip "+url
-        print("开始下载" + cmd)
-        # subprocess.call(down, shell=True)
         shell(cmd)
         print("下载完成" )
     else:
         print(sdk+" "+version+" 已经安装 !")
+        sys.exit(0)
 
 def download_fromgit(sdk, version):
     url = github_url+sdk+"/"+sdk+"-"+version+".zip"
@@ -96,7 +94,6 @@ def unzip_file(sdk, version=None):
     ''' 解压到对应的目录'''
     if not os.path.isdir(init()+"/.mythsdk/sdk/"+sdk):
         shell("mkdir ~/.mythsdk/sdk/"+sdk)
-        # execute_command("mkdir ~/.mythsdk/sdk/"+sdk+"/"+version, shell=True)
     if not os.path.isdir(init()+"/.mythsdk/sdk/"+sdk+"/"+version):
         unzip = "unzip -q ~/.mythsdk/zip/"+sdk+"/"+version+".zip -d ~/.mythsdk/sdk/"+sdk
         shell(unzip)
@@ -137,7 +134,6 @@ def install(sdk, version=None):
         list_all()
         return 0
     if version != None:
-        # print(version, data[sdk])
         if version not in data["sdks"][sdk]:
             print("没有该版本! \n收纳的sdk:")
             list_all()
@@ -164,15 +160,6 @@ def check(sdk, version):
         print("仓库没有安装该 sdk"+sdk+"的版本")
         return 0
     return 1
-# def trys(sdk, version):
-#     ''' 只在当前终端有效的临时更改使用的版本'''
-#     if check(sdk, version) == 0 :
-#         return 0
-#     # shell("export PATH=$PATH:~/.mythsdk/sdk/"+sdk+"/"+version+"/bin")
-#     # shell("unset ")
-#     ba = "export "+sdk.upper()+"_HOME=~/.mythsdk/sdk/"+sdk+"/"+version+"/bin"
-#     shell(ba)
-#     print(ba+"当前终端使用"+sdk+" "+version)
 
 def change(sdk, version):
     '''更改sdk版本 只要更改软链接就可以了'''
@@ -194,6 +181,7 @@ def help():
         使用已安装的指定sdk的版本
     \033[1;33mi|install sdk <version> : \033[0m
         安装指定版本，不指定则安装最新版''')
+
 def update_config():
     ''' 升级配置文件 '''
     jsonfile = init()+'/.mythsdk/config.json'
@@ -212,7 +200,6 @@ def two_param(action):
         help()
     if action == "update" or action =='up':
         update_config()
-    
 
 def thr_param(action, sdk):
     if action == 'install' or action == 'i':
@@ -227,8 +214,6 @@ def four_param(action, sdk, version):
         install(sdk, version)
     if action == 'use' or action == 'u':
         change(sdk, version)
-    # if action == 'try' or action == 't':
-    #     trys(sdk, version)
 
 def readparam():
     ''' 读取参数 调用对应的方法 '''
@@ -266,4 +251,3 @@ def main():
     readparam()
     
 main()
-
