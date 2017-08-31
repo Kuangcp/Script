@@ -9,6 +9,7 @@ import subprocess
 '''
     this script can management sdk 
         used when system can't support
+    this version is old
 '''
 github_url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"
 qn_url = ""

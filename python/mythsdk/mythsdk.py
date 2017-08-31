@@ -1,10 +1,9 @@
 import os
 import sys
-import time
 import json
-import shlex
-import datetime
+import getpass
 import subprocess
+
 
 # json_url = " https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
 json_url = " http://git.oschina.net/kcp1104/script/raw/master/python/mythsdk/config.json"
@@ -21,40 +20,14 @@ github_url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"
         4.自动下载指定版本的sdk 
         
 '''
-def execute_command(cmdstring, cwd=None, timeout=None, shell=False):
-    """执行一个SHELL命令
-            封装了subprocess的Popen方法, 支持超时判断，支持读取stdout和stderr
-           参数:
-        cwd: 运行命令时更改路径，如果被设定，子进程会直接先更改当前路径到cwd
-        timeout: 超时时间，秒，支持小数，精度0.1秒
-        shell: 是否通过shell运行
-    Returns: return_code
-    Raises:  Exception: 执行超时"""
-    if shell:
-        cmdstring_list = cmdstring
-    else:
-        cmdstring_list = shlex.split(cmdstring)
-    if timeout:
-        end_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
-    #没有指定标准输出和错误输出的管道，因此会打印到屏幕上；
-    sub = subprocess.Popen(cmdstring_list, cwd=cwd, stdin=subprocess.PIPE,shell=shell,bufsize=4096)
-    #subprocess.poll()方法：检查子进程是否结束了，如果结束了，设定并返回码，放在subprocess.returncode变量中 
-    while sub.poll() is None:
-        time.sleep(0.1)
-        if timeout:
-            if end_time <= datetime.datetime.now():
-                raise Exception("Timeout：%s"%cmdstring)
-    return str(sub.returncode)
-
 def shell(cmd):
-    execute_command(cmd, shell=True)
+    subprocess.call(cmd, shell=True)
 
 def loadconfig():
     jsonfile = init()+'/.mythsdk/config.json'
     if not os.path.exists(jsonfile):
         print("下载配置文件")
         shell("curl -o "+jsonfile+json_url)
-
     data = json.load(open(jsonfile))
     return data
                 
@@ -125,9 +98,8 @@ def unzip_file(sdk, version=None):
         shell("mkdir ~/.mythsdk/sdk/"+sdk)
         # execute_command("mkdir ~/.mythsdk/sdk/"+sdk+"/"+version, shell=True)
     if not os.path.isdir(init()+"/.mythsdk/sdk/"+sdk+"/"+version):
-        unzip = "unzip ~/.mythsdk/zip/"+sdk+"/"+version+".zip -d ~/.mythsdk/sdk/"+sdk
-        # shell(unzip)
-        subprocess.call(unzip, shell=True)
+        unzip = "unzip -q ~/.mythsdk/zip/"+sdk+"/"+version+".zip -d ~/.mythsdk/sdk/"+sdk
+        shell(unzip)
         print("解压完成")
     # 如果软链接不存在就新建，并设置环境变量，如果有就说明已经安装过一个版本，就只要解压就行了
     if not os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current"):
@@ -135,7 +107,10 @@ def unzip_file(sdk, version=None):
         shell("ln -s ~/.mythsdk/sdk/"+sdk+"/"+version+" ~/.mythsdk/sdk/"+sdk+"/current")
         shell("touch ~/.mythsdk/sdk/"+sdk+"/"+version+"/bin/current") # 建立当前使用的标记
         config(sdk)
-    
+    else:
+        choose = input("需要将"+sdk+" "+version+"设为默认吗? y/n ")
+        if choose == 'y':
+            change(sdk, version)
 
 def config(sdk):
     ''' 配置环境变量 '''
@@ -178,8 +153,7 @@ def handle():
     path = input("bin目录的绝对路径")
     print(path)
 
-def change(sdk, version):
-    '''更改sdk版本 只要更改软链接就可以了'''
+def check(sdk, version):
     datas = loadconfig()
     if not sdk in datas["sdks"]:
         print("仓库没有安装该sdk"+sdk)
@@ -189,10 +163,24 @@ def change(sdk, version):
     if not version in ed_version:
         print("仓库没有安装该 sdk"+sdk+"的版本")
         return 0
+    return 1
+# def trys(sdk, version):
+#     ''' 只在当前终端有效的临时更改使用的版本'''
+#     if check(sdk, version) == 0 :
+#         return 0
+#     # shell("export PATH=$PATH:~/.mythsdk/sdk/"+sdk+"/"+version+"/bin")
+#     # shell("unset ")
+#     ba = "export "+sdk.upper()+"_HOME=~/.mythsdk/sdk/"+sdk+"/"+version+"/bin"
+#     shell(ba)
+#     print(ba+"当前终端使用"+sdk+" "+version)
+
+def change(sdk, version):
+    '''更改sdk版本 只要更改软链接就可以了'''
+    if check(sdk, version) == 0 :
+        return 0
     if os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current"):
         shell("rm ~/.mythsdk/sdk/"+sdk+"/current/bin/current")
         shell("rm -rf ~/.mythsdk/sdk/"+sdk+"/current")
-        
         shell("ln -s ~/.mythsdk/sdk/"+sdk+"/"+version+" ~/.mythsdk/sdk/"+sdk+"/current")
         shell("touch ~/.mythsdk/sdk/"+sdk+"/current/bin/current")
     else:
@@ -239,6 +227,8 @@ def four_param(action, sdk, version):
         install(sdk, version)
     if action == 'use' or action == 'u':
         change(sdk, version)
+    # if action == 'try' or action == 't':
+    #     trys(sdk, version)
 
 def readparam():
     ''' 读取参数 调用对应的方法 '''
@@ -260,10 +250,11 @@ def readparam():
         
 def init():
     ''' 初始化目录结构 并返回用户目录的绝对路径 '''
-    user = os.getcwd()
-    user = user.split('/')
-    user = '/'+user[1]+'/'+user[2]
-    # print(user+"/.mythsdk")
+    user = getpass.getuser()
+    if user == 'root':
+        user = '/'+user
+    else:
+        user = '/home/'+user
     if not os.path.isdir(user+"/.mythsdk"):
         print("初始化目录")
         subprocess.call("mkdir ~/.mythsdk", shell=True)

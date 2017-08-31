@@ -1,6 +1,6 @@
 # MythSDK
 > 类似sdkman一样的工具，但是这个脚本是基于 .bash_aliases 修改来配置环境变量的
-> 因为使用sdkman导致终端开启慢，才写的这个脚本,所有sdk放在了七牛上 
+> 因为使用sdkman导致终端开启慢，才写的这个脚本,所有sdk放在了七牛上 所以要自行配置
 > 2017-08-31 10:36:38
 
 ## How to Use
@@ -11,6 +11,8 @@
 - `./init.sh` may be should run `chmod 744 init.sh`
 
 ### use
+
+- `mk q url` config qiniu buckt url
 
 - `mk up` update sdk list config file
 - `mk l` list all sdk
