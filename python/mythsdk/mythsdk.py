@@ -157,7 +157,8 @@ def handle():
 
 def change(sdk, version):
     '''更改sdk版本 只要更改软链接就可以了'''
-    if os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current"):
+    datas = loadconfig()
+    if os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current") and version in datas["sdks"][sdk]:
         shell("rm ~/.mythsdk/sdk/"+sdk+"/current/bin/current")
         shell("rm -rf ~/.mythsdk/sdk/"+sdk+"/current")
         

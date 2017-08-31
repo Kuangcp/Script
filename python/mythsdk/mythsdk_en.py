@@ -134,10 +134,10 @@ def handle():
     print(path)
 
 def change(sdk, version):
-    if os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current"):
+    datas = loadconfig()
+    if os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current") and version in datas["sdks"][sdk]:
         shell("rm ~/.mythsdk/sdk/"+sdk+"/current/bin/current")
         shell("rm -rf ~/.mythsdk/sdk/"+sdk+"/current")
-        
         shell("ln -s ~/.mythsdk/sdk/"+sdk+"/"+version+" ~/.mythsdk/sdk/"+sdk+"/current")
         shell("touch ~/.mythsdk/sdk/"+sdk+"/current/bin/current")
     else:
