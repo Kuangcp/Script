@@ -58,7 +58,9 @@ def loadconfig():
 def list_all(sdk=None):
     ''' 列出所有sdk '''
     if sdk == None:
+        print("="*40)
         print("\033[1;33mAll can install SDK list:\n    \033[1;32mused is green     \033[1;35minstalled is purple     \033[0maviable is white")
+        print("="*40)
     data = loadconfig()
     sdks = data["sdks"]
     root_path = init()+"/.mythsdk/sdk"
@@ -67,19 +69,19 @@ def list_all(sdk=None):
                 continue
         print(""+one+":")
         version = data["sdks"][one]
-        count = 1
+        count = 0
         for ver in version:
+            count += 1
             if os.path.exists(root_path+"/"+one+"/"+ver+"/bin/current"):
-                print("\033[1;32m    "+ver+"\033[0m")
+                print("\033[1;32m    "+ver+"\033[0m", end="")
             elif os.path.exists(root_path+"/"+one+"/"+ver):
-                print("\033[1;35m    "+ver+"\033[0m")
+                print("\033[1;35m    "+ver+"\033[0m", end="")
             else:
-                count += 1
                 ver = "    "+ver+"  "
                 print(ver, end="")
-                if count%7 == 0 :
+                if count%8 == 7 :
                     print("")
-        print("")
+        print("\n")
 def auto():
     ''' 使用规定的目录结构放置zip包 自动化配置sdk环境''' 
     current = os.getcwd()
