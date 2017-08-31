@@ -160,8 +160,8 @@ def handle():
 def change(sdk, version):
     '''更改sdk版本 只要更改软链接就可以了'''
     datas = loadconfig()
-    if version in datas["sdks"][sdk]:
-        print("仓库没有该sdk的版本")
+    if not version in datas["sdks"][sdk]:
+        print("仓库没有该sdk"+sdk+"的版本")
         return 0
     if os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current"):
         shell("rm ~/.mythsdk/sdk/"+sdk+"/current/bin/current")
