@@ -10,6 +10,8 @@ import subprocess
     this script can management sdk 
         used when system can't support
 '''
+github_url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"
+qn_url = ""
 
 def execute_command(cmdstring, cwd=None, timeout=None, shell=False):
     if shell:
@@ -62,7 +64,7 @@ def auto():
     ''' auto installed by target dict ''' 
     current = os.getcwd()
     print(current)
-
+ 
 def download(url, sdk, version):
     if not os.path.isdir(init()+"/.mythsdk/zip/"+sdk):
         shell("mkdir ~/.mythsdk/zip/"+sdk)
@@ -73,11 +75,11 @@ def download(url, sdk, version):
         print("Download finished!" )
 
 def download_fromgit(sdk, version):
-    url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"+sdk+"/"+sdk+"-"+version+".zip"
+    url = github_url+sdk+"/"+sdk+"-"+version+".zip"
     download(url, sdk, version)
 
 def down_fromqiniu(sdk, version):
-    url = "http://oscenptok.bkt.clouddn.com/"+sdk+"-"+version+".zip"
+    url = qn_url+sdk+"-"+version+".zip"
     download(url, sdk, version)
 
 def unzip_file(sdk, version=None):
@@ -122,7 +124,8 @@ def install(sdk, version=None):
             return 0 
     if version == None:
         version = data["sdks"][sdk][-1]
-    down_fromqiniu(sdk, version)
+    # down_fromqiniu(sdk, version)
+    download_fromgit(sdk, version)
     unzip_file(sdk, version)
 
 def handle():

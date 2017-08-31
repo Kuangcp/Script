@@ -8,6 +8,9 @@ import subprocess
 
 # json_url = " https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
 json_url = " http://git.oschina.net/kcp1104/script/raw/master/python/mythsdk/config.json"
+cloud_url = None
+## github sdk 没有很多
+github_url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"
 
 '''
 2017-08-30 16:19:16
@@ -97,13 +100,21 @@ def download(url, sdk, version):
         # subprocess.call(down, shell=True)
         shell(cmd)
         print("下载完成" )
+    else:
+        print(sdk+version+" 已经安装 !")
 
 def download_fromgit(sdk, version):
-    url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"+sdk+"/"+sdk+"-"+version+".zip"
+    url = github_url+sdk+"/"+sdk+"-"+version+".zip"
     download(url, sdk, version)
 
 def down_fromqiniu(sdk, version):
-    url = "http://oscenptok.bkt.clouddn.com/"+sdk+"-"+version+".zip"
+    config_md = init()+"/.mythsdk/config.md"
+    if os.path.exists(config_md):
+        cloud_url = open(config_md).readline().rstrip()
+    if cloud_url is None:
+        print("请配置七牛的URL: q URL")
+        return 0
+    url = cloud_url+sdk+"-"+version+".zip"
     download(url, sdk, version)
     
 
@@ -212,12 +223,15 @@ def two_param(action):
         help()
     if action == "update" or action =='up':
         update_config()
+    
 
 def thr_param(action, sdk):
     if action == 'install' or action == 'i':
         install(sdk)
     if action == 'list' or action == 'l':
         list_all(sdk)
+    if action == 'q':
+        shell("echo '"+sdk+"'> "+init()+"/.mythsdk/config.md")
 
 def four_param(action, sdk, version):
     if action == 'install' or action == 'i':
