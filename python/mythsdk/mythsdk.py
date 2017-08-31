@@ -6,6 +6,8 @@ import shlex
 import datetime
 import subprocess
 
+# json_url = " https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
+json_url = "http://git.oschina.net/kcp1104/script/raw/master/python/mythsdk/config.json"
 
 '''
 2017-08-30 16:19:16
@@ -48,7 +50,7 @@ def loadconfig():
     jsonfile = init()+'/.mythsdk/config.json'
     if not os.path.exists(jsonfile):
         print("下载配置文件")
-        shell("curl -o "+jsonfile+" https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json")
+        shell("curl -o "+jsonfile+json_url)
 
     data = json.load(open(jsonfile))
     return data
@@ -183,7 +185,7 @@ def update_config():
     jsonfile = init()+'/.mythsdk/config.json'
     print("更新配置文件")
     shell("rm "+jsonfile)
-    shell("curl -o "+jsonfile+" https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json")
+    shell("curl -o "+jsonfile+json_url)
 
 
 def two_param(action):
