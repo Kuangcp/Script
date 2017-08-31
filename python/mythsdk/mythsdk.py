@@ -7,7 +7,7 @@ import datetime
 import subprocess
 
 # json_url = " https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
-json_url = "http://git.oschina.net/kcp1104/script/raw/master/python/mythsdk/config.json"
+json_url = " http://git.oschina.net/kcp1104/script/raw/master/python/mythsdk/config.json"
 
 '''
 2017-08-30 16:19:16
