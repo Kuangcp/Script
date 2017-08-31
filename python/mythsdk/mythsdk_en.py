@@ -8,6 +8,7 @@ import subprocess
 
 '''
     this script can management sdk 
+        used when system can't support
 '''
 
 def execute_command(cmdstring, cwd=None, timeout=None, shell=False):
