@@ -79,7 +79,7 @@ def list_all(sdk=None):
                 print(ver, end="")
                 if count%7 == 0 :
                     print("")
-        
+        print("")
 def auto():
     ''' 使用规定的目录结构放置zip包 自动化配置sdk环境''' 
     current = os.getcwd()
