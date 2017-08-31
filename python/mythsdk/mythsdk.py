@@ -107,7 +107,9 @@ def unzip_file(sdk, version=None):
         # execute_command("mkdir ~/.mythsdk/sdk/"+sdk+"/"+version, shell=True)
     if not os.path.isdir(init()+"/.mythsdk/sdk/"+sdk+"/"+version):
         unzip = "unzip ~/.mythsdk/zip/"+sdk+"/"+version+".zip -d ~/.mythsdk/sdk/"+sdk
-        shell(unzip)
+        # shell(unzip)
+        subprocess.call(unzip, shell=True)
+        print("解压完成")
     # 如果软链接不存在就新建，并设置环境变量，如果有就说明已经安装过一个版本，就只要解压就行了
     if not os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current"):
         print("建立软链接")
@@ -160,8 +162,13 @@ def handle():
 def change(sdk, version):
     '''更改sdk版本 只要更改软链接就可以了'''
     datas = loadconfig()
-    if not version in datas["sdks"][sdk]:
-        print("仓库没有该sdk"+sdk+"的版本")
+    if not sdk in datas["sdks"]:
+        print("仓库没有安装该sdk"+sdk)
+        return 0 
+    ed_version = os.listdir(init()+"/.mythsdk/sdk/"+sdk)
+
+    if not version in ed_version:
+        print("仓库没有安装该 sdk"+sdk+"的版本")
         return 0
     if os.path.exists(init()+"/.mythsdk/sdk/"+sdk+"/current"):
         shell("rm ~/.mythsdk/sdk/"+sdk+"/current/bin/current")
