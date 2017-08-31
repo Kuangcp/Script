@@ -109,10 +109,11 @@ def download_fromgit(sdk, version):
 
 def down_fromqiniu(sdk, version):
     config_md = init()+"/.mythsdk/config.md"
+    global cloud_url
     if os.path.exists(config_md):
         cloud_url = open(config_md).readline().rstrip()
     if cloud_url == None:
-        print("请配置七牛的URL: q URL")
+        print("请配置七牛的URL 命令格式： q URL")
         return 0
     url = cloud_url+sdk+"-"+version+".zip"
     download(url, sdk, version)
