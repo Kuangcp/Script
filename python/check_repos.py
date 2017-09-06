@@ -59,7 +59,7 @@ def main():
     -h      帮助说明
     -a      添加Git Repos目录
     -f      打开配置文件,方便修改
-    -i      图片仓库：在当前目录方便得到图片URL
+    -i <name> 图片仓库：在当前目录方便得到图片URL
             ''')
             return 0
         if param == '-a':
@@ -75,12 +75,14 @@ def main():
             temp = image_path.split('ImageRepo')
             if len(temp) > 1:
                 #print(temp[1])
-                image_path = temp[1]+'\n'
+                image_path = temp[1]
             else:
                 print("请在图片仓库运行该命令")
                 return 0 
             URL = '\nhttps://raw.githubusercontent.com/Kuangcp/ImageRepos/master'
-            print(URL+image_path)
+            if len(sys.argv) == 3:
+                image_path = image_path+"/"+sys.argv[2] 
+            print(URL+image_path+"\n")
             return 0
     
     with open(path, encoding='UTF-8') as config:
