@@ -12,7 +12,7 @@ param = params[1]
 if param == '-h':
     print('''    -h        帮助
     add name  根据当前目录创建一个name.desktop文件，自行修改启动以及图标目录
-    cp name   复制到启动菜单栏里 ''')
+    cp name.desktop   复制到启动菜单栏里 ''')
 
 if param.startswith('add'):
     filename=params[2]
@@ -27,7 +27,7 @@ if param.startswith('add'):
 if param.startswith('cp'):
     filename = params[2]
     path = os.getcwd()
-    subprocess.call('sudo cp '+path+'/'+filename+'.desktop /usr/share/applications/'+filename+'.desktop', shell=True)
+    subprocess.call('sudo cp '+path+'/'+filename+' /usr/share/applications/'+filename, shell=True)
 
 #     files.write(
 # '''[Desktop Entry]
