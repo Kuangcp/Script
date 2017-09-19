@@ -10,6 +10,7 @@
 /home/kcp/IdeaProjects/BaseLearn/JavaToolKit #Java工具包
 /home/kcp/IdeaProjects/TestRun/MythRedis # MythRedisClient
 /home/kcp/IdeaProjects/SpringBoot/SpringBase # Spring学习
+/home/kcp/IdeaProjects/SpringBoot/graduationreply #毕业设计
 
 /home/kcp/Pictures/ImageRepos # 图片库
 /home/kcp/Documents/Notes/Apps # 应用库
