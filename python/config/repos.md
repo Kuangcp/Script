@@ -15,3 +15,4 @@
 /home/kcp/Pictures/ImageRepos # 图片库
 /home/kcp/Documents/Notes/Apps # 应用库
 # /home/kcp/IdeaProjects/test/RedisLearning #Redis学习记录之Java
+/home/kcp/IdeaProjects/weixin # 优惠购
