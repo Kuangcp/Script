@@ -174,13 +174,20 @@ def change(sdk, version):
         print("\n该SDK "+sdk+" 没有安装任何版本，切换失败 \n    安装请使用命令 python mythsdk.py i "+sdk+" <version>\n")
     
 def help():
-    print('''python \033[1;33m myth.py <params>：
-    l|list <sdk>： \033[0m
+    print('''python \033[1;33m myth.py <params> \033[0m：
+    \033[1;33m l|list <sdk>： \033[0m
         输出所有可安装的sdk,指定则输出指定sdk信息
-    \033[1;33mu|use sdk version :\033[0m
+    \033[1;33m h|help :\033[0m
+        帮助信息
+    \033[1;33m q domain :\033[0m
+        配置存放了sdk的七牛云地址
+    \033[1;33m up|update :\033[0m
+        更新配置文件，即sdk库
+    \033[1;33m u|use sdk version :\033[0m
         使用已安装的指定sdk的版本
-    \033[1;33mi|install sdk <version> : \033[0m
-        安装指定版本，不指定则安装最新版''')
+    \033[1;33m i|install sdk <version> : \033[0m
+        安装指定版本，不指定则安装最新版
+    ''')
 
 def update_config():
     ''' 升级配置文件 '''

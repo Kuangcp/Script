@@ -68,7 +68,7 @@ def append_line(path, current=False):
     comments = input("请输入项目注释 : ")
     print(repos_path,' # ', comments)
     with open(path, 'a') as config:
-        config.write(repos_path+" # "+comments)
+        config.write("\n"+repos_path+" # "+comments)
 
 def show_help():
     print('''
@@ -104,6 +104,7 @@ def read_file(path, do):
         if path.startswith('/'):
             do(path, count)
         
+# 我希望的是按位置来确定参数。
 def read_param(path):
     ''' 返回 0中断 1继续'''
     for param in sys.argv:
