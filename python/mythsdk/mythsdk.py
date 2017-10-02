@@ -4,9 +4,10 @@ import json
 import getpass
 import subprocess
 
-
 # json_url = " https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
+# 默认的配置文件的地址
 json_url = " http://git.oschina.net/kcp1104/script/raw/master/python/mythsdk/config.json"
+# 存放了sdk的七牛云的域名
 cloud_url = None
 ## 这个github 上 sdk 只有几个，大多数没有
 github_url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"
@@ -18,12 +19,15 @@ github_url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"
         2.更改当前的sdk版本 
         3.列出所以可以下载的sdk 
         4.自动下载指定版本的sdk 
-        
+2017-10-02 21:07:02
+    新添加了几个sdk，优化了代码规范
 '''
+
 def shell(cmd):
     subprocess.call(cmd, shell=True)
 
 def loadconfig():
+    ''' 加载配置文件，如果没有就去默认的URL下载'''
     jsonfile = init()+'/.mythsdk/config.json'
     if not os.path.exists(jsonfile):
         print("下载配置文件")
@@ -32,7 +36,7 @@ def loadconfig():
     return data
                 
 def list_all(sdk=None):
-    ''' 列出所有sdk '''
+    ''' 列出所有sdk以及版本号 '''
     if sdk == None:
         print("="*40)
         print("\033[1;33mAll can install SDK list:\n    \033[1;32mused is green     \033[1;35minstalled is purple     \033[0maviable is white")
@@ -58,12 +62,14 @@ def list_all(sdk=None):
                 if count%8 == 7 :
                     print("")
         print("\n")
+# TODO 还没开始写
 def auto():
     ''' 使用规定的目录结构放置zip包 自动化配置sdk环境''' 
     current = os.getcwd()
     print(current)
 
 def download(url, sdk, version):
+    ''' 只是负责将URL对应的文件下载到默认目录'''
     if not os.path.isdir(init()+"/.mythsdk/zip/"+sdk):
         shell("mkdir ~/.mythsdk/zip/"+sdk)
     if not os.path.exists(init()+"/.mythsdk/zip/"+sdk+"/"+version+".zip"):
@@ -75,10 +81,12 @@ def download(url, sdk, version):
         sys.exit(0)
 
 def download_fromgit(sdk, version):
+    ''' 使用github 作为存储 '''
     url = github_url+sdk+"/"+sdk+"-"+version+".zip"
     download(url, sdk, version)
 
 def down_fromqiniu(sdk, version):
+    ''' 使用七牛云作为存储 '''
     config_md = init()+"/.mythsdk/config.md"
     global cloud_url
     if os.path.exists(config_md):
@@ -91,7 +99,7 @@ def down_fromqiniu(sdk, version):
     
 
 def unzip_file(sdk, version=None):
-    ''' 解压到对应的目录'''
+    ''' 将下载的zip包解压到默认目录'''
     if not os.path.isdir(init()+"/.mythsdk/sdk/"+sdk):
         shell("mkdir ~/.mythsdk/sdk/"+sdk)
     if not os.path.isdir(init()+"/.mythsdk/sdk/"+sdk+"/"+version):
@@ -144,12 +152,14 @@ def install(sdk, version=None):
     # download_fromgit(sdk, version)
     unzip_file(sdk, version)
 
+# TODO 并未开始写
 def handle():
     ''' 手动添加bin目录来配置sdk '''
     path = input("bin目录的绝对路径")
     print(path)
 
 def check(sdk, version):
+    ''' 检查命令中的 sdk 版本 '''
     datas = loadconfig()
     if not sdk in datas["sdks"]:
         print("仓库没有安装该sdk"+sdk)
@@ -197,10 +207,8 @@ def update_config():
     shell("curl -o "+jsonfile+json_url)
 
 
-def two_param(action):
-    # 放在同级目录下，自动配置
-    # if action == 'auto' or action == 'a':
-    #     auto()
+def one_param(action):
+    ''' 一个参数 只有操作的动作'''
     if action == 'list' or action == 'l':
         list_all()
     if action == "help" or action == 'h':
@@ -208,7 +216,8 @@ def two_param(action):
     if action == "update" or action =='up':
         update_config()
 
-def thr_param(action, sdk):
+def two_param(action, sdk):
+    ''' 两个参数 操作 sdk'''
     if action == 'install' or action == 'i':
         install(sdk)
     if action == 'list' or action == 'l':
@@ -216,7 +225,8 @@ def thr_param(action, sdk):
     if action == 'q':
         shell("echo '"+sdk+"'> "+init()+"/.mythsdk/config.md")
 
-def four_param(action, sdk, version):
+def tri_param(action, sdk, version):
+    ''' 三个参数 操作 sdk 版本'''
     if action == 'install' or action == 'i':
         install(sdk, version)
     if action == 'use' or action == 'u':
@@ -231,14 +241,14 @@ def readparam():
         return 0
     action = sys.argv[1]
     if length == 2: # 一个参数
-        two_param(action)
+        one_param(action)
     elif length == 3: # 两个参数
         sdk = sys.argv[2]
-        thr_param(action, sdk)
+        two_param(action, sdk)
     elif length == 4: # 三个参数
         sdk = sys.argv[2]
         version = sys.argv[3]
-        four_param(action, sdk, version)
+        tri_param(action, sdk, version)
         
 def init():
     ''' 初始化目录结构 并返回用户目录的绝对路径 '''
