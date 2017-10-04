@@ -37,31 +37,43 @@ def loadconfig():
                 
 def list_all(sdk=None):
     ''' 列出所有sdk以及版本号 '''
-    if sdk == None:
-        print("="*40)
-        print("\033[1;33mAll can install SDK list:\n    \033[1;32mused is green     \033[1;35minstalled is purple     \033[0maviable is white")
-        print("="*40)
+    # if sdk == None:
+    print("="*70)
+    print("\033[1;33mAll can install SDK list:\n       \033[1;32mused is green     \033[1;35minstalled is purple     \033[0maviable is white")
+    print("="*70)
     data = loadconfig()
     sdks = data["sdks"]
+    result_list = []
     root_path = init()+"/.mythsdk/sdk"
     for one in sdks:
+        result = ''
         if sdk!=None and sdk!=one:
                 continue
-        print(""+one+":")
+        # print(""+one+":")
+        result = result + "\033[1;33m>>\033[1;36m"+one+"\033[0m\n"
         version = data["sdks"][one]
         count = 0
         for ver in version:
             count += 1
             if os.path.exists(root_path+"/"+one+"/"+ver+"/bin/current"):
-                print("\033[1;32m    "+ver+"\033[0m", end="")
+                # print("\033[1;32m    "+ver+"\033[0m", end="")
+                result = result+"\033[1;32m    "+ver+"\033[0m  "
             elif os.path.exists(root_path+"/"+one+"/"+ver):
-                print("\033[1;35m    "+ver+"\033[0m", end="")
+                # print("\033[1;35m    "+ver+"\033[0m", end="")
+                result = result +"\033[1;35m    "+ver+"\033[0m  "
             else:
                 ver = "    "+ver+"  "
-                print(ver, end="")
+                # print(ver, end="")
+                result = result + ver
                 if count%8 == 7 :
-                    print("")
-        print("\n")
+                    # print("")
+                    result = result +"\n"
+        # print("\n")
+        result = result + "\n"
+        result_list.append(result)
+    result_list.sort()
+    for result in result_list:
+        print(result)
 # TODO 还没开始写
 def auto():
     ''' 使用规定的目录结构放置zip包 自动化配置sdk环境''' 
@@ -184,18 +196,18 @@ def change(sdk, version):
         print("\n该SDK "+sdk+" 没有安装任何版本，切换失败 \n    安装请使用命令 python mythsdk.py i "+sdk+" <version>\n")
     
 def help():
-    print('''python \033[1;33m myth.py <params> \033[0m：
-    \033[1;33m l|list <sdk>： \033[0m
+    print('''python \033[1;32m myth.py <params> \033[0m：
+    \033[1;32m l|list <sdk>： \033[0m
         输出所有可安装的sdk,指定则输出指定sdk信息
-    \033[1;33m h|help :\033[0m
+    \033[1;32m h|help :\033[0m
         帮助信息
-    \033[1;33m q domain :\033[0m
+    \033[1;32m q domain :\033[0m
         配置存放了sdk的七牛云地址
-    \033[1;33m up|update :\033[0m
+    \033[1;32m up|update :\033[0m
         更新配置文件，即sdk库
-    \033[1;33m u|use sdk version :\033[0m
+    \033[1;32m u|use sdk version :\033[0m
         使用已安装的指定sdk的版本
-    \033[1;33m i|install sdk <version> : \033[0m
+    \033[1;32m i|install sdk <version> : \033[0m
         安装指定版本，不指定则安装最新版
     ''')
 
