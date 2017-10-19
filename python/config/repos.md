@@ -1,5 +1,5 @@
 /home/kcp/Documents/Notes/Notes #技术笔记
-/home/kcp/Documents/Notes/GhostPushLight #鬼吹灯
+# /home/kcp/Documents/Notes/GhostPushLight #鬼吹灯
 /home/kcp/Documents/Notes/diary #个人日记
 /home/kcp/Documents/Notes/Kuangcp.github.io #个人博客
 
@@ -13,7 +13,7 @@
 /home/kcp/IdeaProjects/SpringBoot/graduationreply #毕业设计
 
 /home/kcp/Pictures/ImageRepos # 图片库
-/home/kcp/Documents/Notes/Apps # 应用库
+/home/kcp/Documents/Notes/Configs # 配置文件库
 # /home/kcp/IdeaProjects/test/RedisLearning #Redis学习记录之Java
 /home/kcp/IdeaProjects/weixin # 优惠购
 /home/kcp/IdeaProjects/BaseLearn/myth-poi # 封装的简易工具
