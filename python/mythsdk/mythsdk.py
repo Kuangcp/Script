@@ -202,7 +202,7 @@ def help():
     \033[1;32m h|help :\033[0m
         帮助信息
     \033[1;32m q domain :\033[0m
-        配置存放了sdk的七牛云地址
+        配置存放了sdk的七牛云地址 http://xxx/
     \033[1;32m up|update :\033[0m
         更新配置文件，即sdk库
     \033[1;32m u|use sdk version :\033[0m

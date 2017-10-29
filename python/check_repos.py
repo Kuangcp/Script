@@ -73,12 +73,14 @@ def append_line(path, current=False):
 def show_help():
     print('''
     -h      帮助说明
+    -l 		列出所有的仓库
     -a      添加Repos目录以及注释
     -ac     添加当前目录作为Repos，输入注释即可
     -f      打开配置文件,方便修改
     -p      推送所有的仓库到远程
     -i <image> 图片仓库：在当前目录方便得到图片URL
     ''')
+
 def out_image():
     '''将当前图片仓库的目录转化成仓库的URL '''
     image_path = os.getcwd()
@@ -111,6 +113,14 @@ def read_param(path):
         if param == '-h':
             show_help()
             return 0
+        if param == '-l':
+        	paths = []
+        	with open(path, encoding='UTF-8') as config:
+        		paths = config.readlines()
+        		for line in paths:
+	        		if line.startswith('/'):
+	        			print(line, end='')
+        	return 0
         if param == '-a':
             print("添加仓库:")
             append_line(path)
