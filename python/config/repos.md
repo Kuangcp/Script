@@ -17,3 +17,5 @@
 # /home/kcp/IdeaProjects/test/RedisLearning #Redis学习记录之Java
 /home/kcp/IdeaProjects/weixin # 优惠购
 /home/kcp/IdeaProjects/BaseLearn/myth-poi # 封装的简易工具
+
+/home/kcp/IdeaProjects/oa # OA项目
