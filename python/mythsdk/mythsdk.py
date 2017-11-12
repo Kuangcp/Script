@@ -22,7 +22,8 @@ github_url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"
 2017-10-02 21:07:02
     新添加了几个sdk，优化了代码规范
 2017-11-12 12:50:27
-    增加域名解析，编辑主页
+    增加域名解析，编辑主页 
+    kk index 然后打开七牛手动刷新缓存？？？？
 '''
 
 def shell(cmd):
@@ -38,13 +39,38 @@ def loadconfig():
     return data
 
 def create_index():
+    ''' 生成文件 '''
+    result = []
+    result.append('''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+    <title>Kuangcp-MythSDK</title>
+    <style>
+    .sdk{
+        width:200px;
+        float:left;
+    }
+    </style>
+    </head><body><h2>Java常用SDK</h2>''')
     data = loadconfig()
     sdks = data["sdks"]
-    for sdk in sdks:
-        print("<h3>", sdk, "</h3>")
+    temp_list = []
+    for one in sdks:
+        temp_list.append(one)
+    temp_list.sort()
+    for sdk in temp_list:
+        # print("<h3>", sdk, "</h3>")
+        result.append("<div class='sdk'>")
+        result.append("<h3>"+sdk+"</h3>")
         for version in sdks[sdk]:
-            print("<a href='/"+sdk+"-"+version+".zip'>"+sdk+"-"+version+"</a><br/>")
+            # print("<a href='/"+sdk+"-"+version+".zip'>"+sdk+"-"+version+"</a><br/>")
+            result.append("<a href='/"+sdk+"-"+version+".zip'>"+sdk+"-"+version+"</a><br/>")
+        result.append("</div>")
+    result.append('</body></html>')
+    with open('/home/kcp/Application/Script/python/mythsdk/index/index.html','w+') as index_file:
+        for line in result:
+            index_file.write(line+"\n")
+    shell("/home/kcp/Application/Net/qiniu/qshell-linux-x64 qupload 2 mythsdk.conf")
 
+            
 def list_all(sdk=None):
     ''' 列出所有sdk以及版本号 '''
     # if sdk == None:
