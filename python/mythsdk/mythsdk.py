@@ -21,6 +21,8 @@ github_url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"
         4.自动下载指定版本的sdk 
 2017-10-02 21:07:02
     新添加了几个sdk，优化了代码规范
+2017-11-12 12:50:27
+    增加域名解析，编辑主页
 '''
 
 def shell(cmd):
@@ -34,7 +36,15 @@ def loadconfig():
         shell("curl -o "+jsonfile+json_url)
     data = json.load(open(jsonfile))
     return data
-                
+
+def create_index():
+    data = loadconfig()
+    sdks = data["sdks"]
+    for sdk in sdks:
+        print("<h3>", sdk, "</h3>")
+        for version in sdks[sdk]:
+            print("<a href='/"+sdk+"-"+version+".zip'>"+sdk+"-"+version+"</a><br/>")
+
 def list_all(sdk=None):
     ''' 列出所有sdk以及版本号 '''
     # if sdk == None:
@@ -227,6 +237,8 @@ def one_param(action):
         help()
     if action == "update" or action =='up':
         update_config()
+    if action == "index":
+        create_index()
 
 def two_param(action, sdk):
     ''' 两个参数 操作 sdk'''
