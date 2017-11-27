@@ -1,6 +1,6 @@
 chcp 936
 @echo off
-rem rem  ÆğÊ¼ ²½³¤ ½áÊø  md ´´½¨ÎÄ¼ş¼Ğ
+rem rem  èµ·å§‹ æ­¥é•¿ ç»“æŸ  md åˆ›å»ºæ–‡ä»¶å¤¹
 for /l %%a in (1,1,3) do md %%a
 
 pause

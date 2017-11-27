@@ -1,27 +1,27 @@
 @echo off
-REM REM Éè¶¨dos´°¿ÚµÄ±àÂë
+REM REM è®¾å®šdosçª—å£çš„ç¼–ç 
 chcp 936
 cls
 :redo
 set /a con=1 
-rem rem Çå³ýÖ®Ç°µÄ»º´æÖµ
+rem rem æ¸…é™¤ä¹‹å‰çš„ç¼“å­˜å€¼
 
-echo +++++++++++++++++  ¹¦ÄÜÁÐ±í  ++++++++++++++++++++++++
+echo +++++++++++++++++  åŠŸèƒ½åˆ—è¡¨  ++++++++++++++++++++++++
 echo +
-echo +    11  :   ´ò¿ª·þÎñÖÐÐÄ
-echo +    12  :   ¿ªÆô Oracle ·þÎñ
-echo +    13  :   ¿ªÆô Tomcat 7.07
-echo +    14  :   ¿ªÆô VMWare ·þÎñ
+echo +    11  :   æ‰“å¼€æœåŠ¡ä¸­å¿ƒ
+echo +    12  :   å¼€å¯ Oracle æœåŠ¡
+echo +    13  :   å¼€å¯ Tomcat 7.07
+echo +    14  :   å¼€å¯ VMWare æœåŠ¡
 echo +
-echo +    21  :   ¹Ø±Õ VMWare ·þÎñ
-echo +    22  :   ¹Ø±Õ Oracle ·þÎñ
-echo +    23  :   ¹Ø±Õ Tomcat 7.07
-echo +    0  :   ÍË³ö³ÌÐò
+echo +    21  :   å…³é—­ VMWare æœåŠ¡
+echo +    22  :   å…³é—­ Oracle æœåŠ¡
+echo +    23  :   å…³é—­ Tomcat 7.07
+echo +    0  :   é€€å‡ºç¨‹åº
 echo +
-echo +++++++++++++++++  ¹¦ÄÜÁÐ±í  ++++++++++++++++++++++++
+echo +++++++++++++++++  åŠŸèƒ½åˆ—è¡¨  ++++++++++++++++++++++++
 
 
-echo ÇëÊäÈë²Ù×÷¶ÔÓ¦µÄ´úÂë:
+echo è¯·è¾“å…¥æ“ä½œå¯¹åº”çš„ä»£ç :
 set /p action=Action :  
 if "%action%"=="12" goto NO
 if "%action%"=="22" goto CO
@@ -31,35 +31,35 @@ if "%action%"=="11" goto NS
 if "%action%"=="0" goto EX
 if "%action%"=="13" goto TR
 if "%action%"=="23" goto TS
-rem rem ²»Âú×ãÉÏÊöËùÓÐµÄ²ÎÊý²ÅÖ´ÐÐÏÂÃæµÄ´úÂë£º
+rem rem ä¸æ»¡è¶³ä¸Šè¿°æ‰€æœ‰çš„å‚æ•°æ‰æ‰§è¡Œä¸‹é¢çš„ä»£ç ï¼š
 cls 
-echo ## £¡
-echo ## £¡£¡
-echo ## £¡£¡£¡
-echo ## £¡£¡£¡£¡   ¡¶ÇëÊäÈëÓÐÐ§µÄÃüÁî¡·
-echo ## £¡£¡£¡
-echo ## £¡£¡
-echo ## £¡
+echo ## ï¼
+echo ## ï¼ï¼
+echo ## ï¼ï¼ï¼
+echo ## ï¼ï¼ï¼ï¼   ã€Šè¯·è¾“å…¥æœ‰æ•ˆçš„å‘½ä»¤ã€‹
+echo ## ï¼ï¼ï¼
+echo ## ï¼ï¼
+echo ## ï¼
 
 goto redo
 
-echo +++++++++++++++++ ¶à¸ö±êºÅÇø  +++++++++++++++++++++++
-REM REM ¿ªÆôOracle·þÎñ
+echo +++++++++++++++++ å¤šä¸ªæ ‡å·åŒº  +++++++++++++++++++++++
+REM REM å¼€å¯OracleæœåŠ¡
 :NO
-echo ++ Æô¶¯ Oracle ·þÎñ
+echo ++ å¯åŠ¨ Oracle æœåŠ¡
 net start "OracleServiceORCL"
 net start "OracleOraDb11g_home1TNSListener"
 goto end
 
-REM REM ¹Ø±ÕOracle·þÎñ
+REM REM å…³é—­OracleæœåŠ¡
 :CO
-echo ¹Ø±Õ Oracle ·þÎñ
+echo å…³é—­ Oracle æœåŠ¡
 net stop "OracleOraDb11g_home1TNSListener"
 net stop "OracleServiceORCL"
 goto end
 
 :NV
-echo ++¿ªÆô VMWare ·þÎñ
+echo ++å¼€å¯ VMWare æœåŠ¡
 net start "VMAuthdService"
 net start "VMnetDHCP"
 net start "VMware NAT Service"
@@ -67,7 +67,7 @@ net start "VMUSBArbService"
 goto end 
 
 :CV
-echo ++¹Ø±Õ VMWare ·þÎñ
+echo ++å…³é—­ VMWare æœåŠ¡
 net stop "VMAuthdService"
 net stop "VMnetDHCP"
 net stop "VMware NAT Service"
@@ -75,7 +75,7 @@ net stop "VMUSBArbService"
 goto end 
 
 :NS
-echo ++´ò¿ª·þÎñÖÐÐÄ
+echo ++æ‰“å¼€æœåŠ¡ä¸­å¿ƒ
 start "myth" "services.msc"
 goto end 
 
@@ -92,8 +92,8 @@ goto end
 
 :end
 set /a action="myth" 
-rem rem Çå³ýÖ®Ç°µÄ»º´æÖµ
-set /p con=ÊäÈë c ¼ÌÐø ·ñÔòÖ±½ÓÍË³ö £º 
+rem rem æ¸…é™¤ä¹‹å‰çš„ç¼“å­˜å€¼
+set /p con=è¾“å…¥ c ç»§ç»­ å¦åˆ™ç›´æŽ¥é€€å‡º ï¼š 
 cls
 if "%con%"=="c" goto redo
 exit

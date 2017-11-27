@@ -1,10 +1,10 @@
 chcp 936
 @echo off
-rem rem ½«ËùÓĞ¶Ë¿ÚµÄÏà¹ØĞÅÏ¢Ğ´Èë ÎÄ±¾ÎÄ¼şÖĞÈ¥
-rem rem ĞÂ½¨ÎÄ¼ş£¬»á¸²¸ÇÖ®Ç°µÄÎÄ¼ş
+rem rem å°†æ‰€æœ‰ç«¯å£çš„ç›¸å…³ä¿¡æ¯å†™å…¥ æ–‡æœ¬æ–‡ä»¶ä¸­å»
+rem rem æ–°å»ºæ–‡ä»¶ï¼Œä¼šè¦†ç›–ä¹‹å‰çš„æ–‡ä»¶
 echo=>test.txt
-rem rem ×·¼Óµ½ÎÄ¼şÖĞÈ¥
+rem rem è¿½åŠ åˆ°æ–‡ä»¶ä¸­å»
 netstat -a -n >> test.txt
-type test.txt | find "3306" && echo "ÒÑ¾­¿ªÆôÁËMysql"
+type test.txt | find "3306" && echo "å·²ç»å¼€å¯äº†Mysql"
  rem rem dir >> test.txt
 pause
