@@ -49,7 +49,8 @@ def create_index():
         float:left;
     }
     </style>
-    </head><body><h2>Java常用SDK</h2>''')
+    </head><body><h2>Java常用SDK</h2>
+    ''')
     data = loadconfig()
     sdks = data["sdks"]
     temp_list = []
@@ -60,6 +61,7 @@ def create_index():
         # print("<h3>", sdk, "</h3>")
         result.append("<div class='sdk'>")
         result.append("<h3>"+sdk+"</h3>")
+        result.append("<a href='/myth-tomcat-8.5.14.zip'>Myth自定义解压即用tomcat8.5</a>")
         for version in sdks[sdk]:
             # print("<a href='/"+sdk+"-"+version+".zip'>"+sdk+"-"+version+"</a><br/>")
             result.append("<a href='/"+sdk+"-"+version+".zip'>"+sdk+"-"+version+"</a><br/>")
@@ -264,6 +266,7 @@ def one_param(action):
     if action == "update" or action =='up':
         update_config()
     if action == "index":
+        # 创建主页HTML
         create_index()
 
 def two_param(action, sdk):
