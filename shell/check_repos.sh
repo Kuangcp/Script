@@ -30,19 +30,25 @@ readLine(){
     # 去除没有修改的仓库的头信息
     change=`expr match "$temp" ".*修改"`
     if [ "$change" != "0" ]; then 
-        if [ "$3"x = "0"x ];then
+        if [ "$3"x = "0"x -a "$4"x = "0"x ];then
             echo $2
-            echo "\033[0;32m当前分支："`git branch`"\033[0m"
+            title=1
+            # echo "cd $4 && git branch"
+            # branchs=`cd $4 && git branch`
+            # echo "\033[0;32m当前分支："$branchs"\033[0m"
         fi
-        title=1
+        
         echo ""$temp
     fi
-    return $title
+    return $title #返回是否输出过标题
 }
+# 
 readFile(){
     title=0
     cat $1 | while read line
     do 
+        #记录一次仓库循环中是否输出过标题
+        show_title=0
         # 排除非/开头的行
         start_char=`expr match "$line" "/*"`
         if [ "$start_char" = "0" ]; then 
@@ -53,8 +59,11 @@ readFile(){
         # 将真正输出的内容先放在数组里，判断后再全部输出
         echo "$result" | while read i 
         do  
-            title= readLine "$i" "\033[0;35m..............${line}\033[0m" "${title}"
-            # echo $title
+            title= readLine "$i" "\033[0;35m..............${line}\033[0m" "${title}" "${show_title}"
+            if [ "$title"x = "1"x ]; then
+                # cd $var && git branch
+                show_title=1
+            fi
         done
     done
 }
