@@ -1,11 +1,7 @@
-for i in {0..100000..1}
+#!/bin/bash
+# 一定要使用bash运行
+for i in {0..1000..1}
   do
 	sleep 1
-	curl -s -o /dev/null http://www.imooc.com/article/15384
-	curl -s -o /dev/null http://www.imooc.com/article/15384
-	curl -s -o /dev/null http://www.imooc.com/article/15406
-	curl -s -o /dev/null http://www.imooc.com/article/15390
-	curl -s -o /dev/null http://www.imooc.com/article/15384
-	curl -s -o /dev/null http://www.imooc.com/article/15388
- done
+	curl -s -o /dev/null http://210.35.16.80/
 # 循环访问网页
