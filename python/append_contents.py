@@ -1,13 +1,13 @@
-import urllib.parse
 import os
 import sys
 import getopt
+import time
 
 '''
     处理 markdown 常用操作：
          添加目录（注意出现的字母要全部小写） 目录采用的URL的编码可以不转码，但是要确定不能有空格
          目录中的 【】. 在跳转路径中视为没有  即 [【.d】](#d) 不允许出现空格以及逗号感叹号， `前不能有空格
-         使用shell实现更好
+         使用shell实现更不好！！！
 '''
 
 def repalces(line, *lists):
@@ -40,14 +40,27 @@ def deal_line():
         print("- ", line)
         file.write("- " + line)
     file.close()
+    
+def line_prepender(filename, resultList):
+    ''' 行首追加  '''
+    with open(filename, 'r+') as f:
+        content = f.read()
+        f.seek(0, 0)
+        for line in resultList:
+            f.write(line.rstrip('\r\n') + '\n')
+        f.write(content)
 
 def append_title(CodeFlag, filename=None):
     if filename == None:
-        files = openfile()
+        # files = openfile()
+        return 0 
     else:
         files = open(os.path.abspath(filename), 'r+')
-    files.write("\n`目录`\n")
+    # files.write("\n`目录`\n")
     lines = files.readlines()
+    results = []
+    nowTime = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+    results.append("`目录`\n")
     for line in lines:
         if line.startswith("#"):
             line = line.strip('\n')
@@ -59,22 +72,13 @@ def append_title(CodeFlag, filename=None):
             line = line.replace("#", "").strip()
             temp = line
             line = repalces(line, ".", " ", "【", "】")
-            # line = line.replace(".", "").strip()
-            # line = line.replace(" ", "").strip()
-            # line = line.replace("【","").strip()
-            # line = line.replace("】","").strip()
-            
-            if CodeFlag:
-                # 将中文和特殊字符进行URL编码
-                result = urllib.parse.quote_from_bytes(line.lower().encode('utf-8'))
-            else:
-                result = line.lower()
-
-            files.write(tab + "- [" + temp + "](#" + result + ")\n")
-            print(tab + "- [" + temp + "](#" + result + ")\n")
+            result = line.lower()
+            # files.write(tab + "- [" + temp + "](#" + result + ")\n")
+            results.append(tab + "- [" + temp + "](#" + result + ")\n")
+    results.append("*目录创建于"+nowTime+"*\n")
+    line_prepender(filename, results)
 
 def test():
-    print(urllib.parse.quote_from_bytes(".Redis资料篇".lower().encode('utf-8')))
     file = openfile()
     for line in file:
         print(line)
@@ -84,6 +88,9 @@ def test():
     # print(temp.encode('utf-8'))
     
 def main():
+    ignoreList = [
+        'SUMMARY.md', 'README.md', 'CODE_OF_CONDUCT.md','Process.md'
+        ]
     '''主函数'''
     opts,args = getopt.getopt(sys.argv[1:], 'htla:')
     for op, value in opts:
@@ -105,6 +112,8 @@ def main():
             filename = None
             if len(sys.argv) > 3:
                 filename = sys.argv[3]
+                if filename in ignoreList:
+                    return 0
             if value == 'n':
                 append_title(False, filename)
             else:
