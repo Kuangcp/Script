@@ -5,7 +5,7 @@ import time
 
 '''
     处理 markdown 常用操作：
-         添加目录（注意出现的字母要全部小写） 目录采用的URL的编码可以不转码，但是要确定不能有空格
+         添加目录（注意出现的字母要全部小写） 目录采用的URL的编码可以不转码，空格要转成-
          目录中的 【】. 在跳转路径中视为没有  即 [【.d】](#d) 不允许出现空格以及逗号感叹号， `前不能有空格
          使用shell实现更不好！！！
 '''
@@ -71,11 +71,12 @@ def append_title(CodeFlag, filename=None):
                 tab += "    "
             line = line.replace("#", "").strip()
             temp = line
-            line = repalces(line, ".", " ", "【", "】")
+            line = repalces(line, ".", "【", "】")
+            line = line.replace(" ", "-").strip()
             result = line.lower()
             # files.write(tab + "- [" + temp + "](#" + result + ")\n")
             results.append(tab + "- [" + temp + "](#" + result + ")\n")
-    results.append("*目录创建于"+nowTime+"*\n")
+    results.append("\n*目录创建于"+nowTime+"*\n")
     line_prepender(filename, results)
 
 def test():
