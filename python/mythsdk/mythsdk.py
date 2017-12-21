@@ -48,8 +48,10 @@ def create_index():
         width:200px;
         float:left;
     }
-    </style>
-    </head><body><h2>Java常用SDK</h2>
+    </style></head><body>
+    <h2>工具包</h2>
+    <a href='/myth-tomcat-8.5.14.zip'>Myth自定义解压即用tomcat8.5</a>
+    <h2>Java常用SDK</h2>
     ''')
     data = loadconfig()
     sdks = data["sdks"]
@@ -61,7 +63,7 @@ def create_index():
         # print("<h3>", sdk, "</h3>")
         result.append("<div class='sdk'>")
         result.append("<h3>"+sdk+"</h3>")
-        result.append("<a href='/myth-tomcat-8.5.14.zip'>Myth自定义解压即用tomcat8.5</a>")
+        # result.append("<a href='/myth-tomcat-8.5.14.zip'>Myth自定义解压即用tomcat8.5</a>")
         for version in sdks[sdk]:
             # print("<a href='/"+sdk+"-"+version+".zip'>"+sdk+"-"+version+"</a><br/>")
             result.append("<a href='/"+sdk+"-"+version+".zip'>"+sdk+"-"+version+"</a><br/>")
