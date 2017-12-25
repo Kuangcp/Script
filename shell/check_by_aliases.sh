@@ -1,7 +1,7 @@
 #!/bin/sh
 
-configPath="/home/kcp/Application/Script/python/config/repos.md"
-#  检查仓库 shell重写，弃用这种方式
+configPath="/home/kcp/.kcp_aliases"
+#  检查仓库 shell重写，使用aliases文件更方便
 readLine(){
     i=$1
     temp=""
@@ -31,42 +31,57 @@ readLine(){
     change=`expr match "$temp" ".*修改"`
     if [ "$change" != "0" ]; then 
         if [ "$3"x = "0"x -a "$4"x = "0"x ];then
-            echo $2
+            echo $2 # 输出有颜色的仓库标题
             title=1
-            # echo "cd $4 && git branch"
-            # branchs=`cd $4 && git branch`
-            # echo "\033[0;32m当前分支："$branchs"\033[0m"
         fi
-        
         echo ""$temp
     fi
     return $title #返回是否输出过标题
 }
-# 
+# 用来切分一行内容
+LinePath=''
+splitLine(){
+    # 函数是不能返回字符串的 只能返回整型得知运行结果，用一个变量进行存取来达到目的
+    vars=`expr match "$1" "alias.Kg.*"`
+    if [ "$vars" = "0" ]; then 
+        return 0;
+    fi 
+    vars=${1%%#*} # 删除#右边
+    vars=${vars#*cd } # 删除cd左边
+    vars=${vars%\'*} # 删除右边引号
+    LinePath="$vars"
+}
+
+# 读取配置文件
 readFile(){
     title=0
     cat $1 | while read line
     do 
-        #记录一次仓库循环中是否输出过标题
+        # 记录一次仓库循环中是否输出过标题
         show_title=0
-        # 排除非/开头的行
-        start_char=`expr match "$line" "/*"`
+
+        start_char= splitLine "$line"
+        # echo "收到的结果______"$LinePath
         if [ "$start_char" = "0" ]; then 
             continue
+        fi
+        if [ "$LinePath"x = "x" ]; then 
+            continue
         fi 
-        var=${line%%#*} 
-        result=`cd $var && git status 2>&1`
-        # 将真正输出的内容先放在数组里，判断后再全部输出
-        echo "$result" | while read i 
+        # echo "收到的结果"$LinePath
+        result=`cd "$LinePath" && git status 2>&1`  #将真正输出的内容先放在数组里，判断后再全部输出
+        echo "$result" | while read i  
         do  
-            title= readLine "$i" "\033[0;35m..............${line}\033[0m" "${title}" "${show_title}"
+            title= readLine "$i" "\033[0;35m......................    ${line#*cd }\033[0m" "${title}" "${show_title}"
             if [ "$title"x = "1"x ]; then
                 # cd $var && git branch
                 show_title=1
             fi
         done
+        LinePath='' # 清除缓存变量
     done
 }
+# 新增一行内容
 appendFile(){
     repo_path=`pwd`
     if [ "$2"x = ""x ]; then
@@ -75,7 +90,10 @@ appendFile(){
     fi
     echo "请输入仓库注释"
     read comment
-    echo $repo_path" # "$comment >> $1
+    echo "请输入别名名称，请确认没有重复的别名！！"
+    read aliasName
+    # echo $repo_path" # "$comment >> $1
+    echo "alias Kg."$aliasName"=\'cd $repo_path\' # $comment" >> $1
     echo "添加完成"
 }
 
@@ -84,18 +102,21 @@ pushAll(){
     cat $1 | while read line
     do 
         # 排除非/开头的行
-        start_char=`expr match "$line" "/*"`
+        start_char= splitLine "$line"
         if [ "$start_char" = "0" ]; then 
             continue
         fi 
-        var=${line%%#*} 
-        echo "\033[0;35m"$var"\033[0m"
-        result=`cd $var && git status`
+        if [ "$LinePath"x = "x" ]; then 
+            continue
+        fi 
+        echo "\033[0;35m"$LinePath"\033[0m"
+        result=`cd $LinePath && git status`
         haveCommit=`expr match "$result" ".*领先"`
         # echo $result$haveCommit
         if [ $haveCommit != 0 ];then 
-            cd $var && git push
+            cd $LinePath && git push
         fi
+        LinePath=''
     done
 }
 
@@ -138,9 +159,6 @@ case $1 in
     -f)
         vim $configPath
         return 0;;
-    # *)
-    #     echo "Ignorant"
-    # ;; 
 esac
 
 readFile "$configPath"
