@@ -31,10 +31,15 @@ readLine(){
     change=`expr match "$temp" ".*修改"`
     if [ "$change" != "0" ]; then 
         if [ "$3"x = "0"x -a "$4"x = "0"x ];then
-            echo $2 # 输出有颜色的仓库标题
+            # 输出有颜色的仓库标题
+            path=${2%%#*}
+            name=${2#*#}
+            printf "\033[0;32m%-60s" $path
+            printf "\033[1;34m《%s》\n" $name
             title=1
         fi
-        echo ""$temp
+        # 其他部分：修改的文件
+        echo "  "$temp
     fi
     return $title #返回是否输出过标题
 }
@@ -46,9 +51,9 @@ splitLine(){
     if [ "$vars" = "0" ]; then 
         return 0;
     fi 
-    vars=${1%%#*} # 删除#右边
-    vars=${vars#*cd } # 删除cd左边
-    vars=${vars%\'*} # 删除右边引号
+    vars=${1%%#*} # 截取#左边
+    vars=${vars#*cd } # 截取cd右边
+    vars=${vars%\'*} # 截取 右边引号 之左
     LinePath="$vars"
 }
 # 列出仓库 加上颜色
@@ -94,7 +99,7 @@ readFile(){
         result=`cd "$LinePath" && git status 2>&1`  #将真正输出的内容先放在数组里，判断后再全部输出
         echo "$result" | while read i  
         do  
-            title= readLine "$i" "\033[0;35m......................    ${line#*cd }\033[0m" "${title}" "${show_title}"
+            title= readLine "$i" "${line#*cd }" "${title}" "${show_title}"
             if [ "$title"x = "1"x ]; then
                 # cd $var && git branch
                 show_title=1
@@ -147,14 +152,14 @@ case $1 in
     -h | h | help)
         start='\033[0;32m'
         end='\033[0m'
-        echo "sh check_repos.sh <params>"
-        echo "$start  -h|h|help$end     输出帮助信息"
-        echo "$start  -l|l|list$end     列出所有仓库"
-        echo "$start  -p|p|push$end     推送本地的提交"
-        echo "$start  -a|ac$end         添加仓库以及注释信息|自动添加当前目录"
-        echo "$start  -i <image>$end    仅是图片仓库：在当前目录方便得到图片URL"
-        echo "$start  -f$end            打开配置文件"
-        # echo ""
+        echo "运行：sh check_repos.sh $start <params> $end"
+        printf "  $start%-16s$end%-20s\n" "-h|h|help" "输出帮助信息"
+        printf "  $start%-16s$end%-20s\n" "-l|l|list" "列出所有仓库"
+        printf "  $start%-16s$end%-20s\n" "-p|p|push" "推送本地的提交"
+        printf "  $start%-16s$end%-20s\n" "-a<ac>" "手动添加仓库以及注释信息或者<自动添加当前目录>"
+        printf "  $start%-16s$end%-20s\n" "-i <image>" "仅是图片仓库：在当前目录方便得到图片URL"
+        printf "  $start%-16s$end%-20s\n" "-f" "打开配置文件"
+        # printf "  $start%-16s$end%-20s\n" "" ""
         return 0
     ;;
     -p | push | p)
