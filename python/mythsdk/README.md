@@ -4,7 +4,8 @@
 > 2017-08-31 10:36:38
 
 ## How to Use
-> 先配置好压缩包，然后上传，更改配置文件，然后mk up 再mk l 就能看到新添加的sdk了
+> 先配置好压缩包sdk-version.zip(version/bin结构)，然后上传，更改配置文件然后提交仓库
+> 然后客户端mk up 再mk l 就能看到新添加的sdk了。
 
 ### config
 - ![qiniu](https://raw.githubusercontent.com/Kuangcp/ImageRepos/masters/Image/mythsdk/qiniu.gng)

@@ -51,6 +51,28 @@ splitLine(){
     vars=${vars%\'*} # 删除右边引号
     LinePath="$vars"
 }
+# 列出仓库 加上颜色
+listRepos(){
+    cat $1 | while read line
+    do 
+        vars=`expr match "$line" "alias.Kg.*"`
+        if [ "$vars" = "0" ]; then 
+            continue
+        fi
+        # echo $line
+        temp=${line%%#*}
+        end='\033[0m'
+        #裁剪字符串
+        str_alias=${line%=*}
+        str_alias=${str_alias#*alias}
+        str_path=${temp#*cd}
+        str_comment=${line#*#}
+        # 格式化输出
+        printf "\033[0;33m%-25s" $str_alias
+        printf "\033[0;36m%-70s" $str_path
+        printf "\033[0;32m%-20s\n" $str_comment
+    done
+}
 
 # 读取配置文件
 readFile(){
@@ -88,12 +110,12 @@ appendFile(){
         echo "请输入仓库路径："
         read repo_path
     fi
-    echo "请输入仓库注释"
+    echo "请输入仓库注释/说明"
     read comment
-    echo "请输入别名名称，请确认没有重复的别名！！"
+    echo "请输入别名,当输入 a 得到 Kg.a"
     read aliasName
     # echo $repo_path" # "$comment >> $1
-    echo "alias Kg."$aliasName"=\'cd $repo_path\' # $comment" >> $1
+    echo "alias Kg."$aliasName"='cd $repo_path' # $comment" >> $1
     echo "添加完成"
 }
 
@@ -123,11 +145,15 @@ pushAll(){
 # 读取参数
 case $1 in 
     -h | h | help)
+        start='\033[0;32m'
+        end='\033[0m'
         echo "sh check_repos.sh <params>"
-        echo "  -h|h|help    输出帮助信息"
-        echo "  -p|p|push    推送本地的提交"
-        echo "  -a <c>       添加仓库以及注释信息<添加当前目录>"
-        echo "  -i <image>   仅是图片仓库：在当前目录方便得到图片URL"
+        echo "$start  -h|h|help$end     输出帮助信息"
+        echo "$start  -l|l|list$end     列出所有仓库"
+        echo "$start  -p|p|push$end     推送本地的提交"
+        echo "$start  -a|ac$end         添加仓库以及注释信息|自动添加当前目录"
+        echo "$start  -i <image>$end    仅是图片仓库：在当前目录方便得到图片URL"
+        echo "$start  -f$end            打开配置文件"
         # echo ""
         return 0
     ;;
@@ -136,10 +162,13 @@ case $1 in
         echo "推送全部完成"
         return 0;;
     -a)
-        appendFile $configPath $2
+        appendFile $configPath ''
         return 0;;
-    -l)
-        cat $configPath
+    -ac)
+        appendFile $configPath 'currentPath'
+        return 0;;
+    -l | l | list)
+        listRepos $configPath
         return 0;;
     -i)
         # 配置图片仓库地址即可
