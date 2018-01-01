@@ -19,3 +19,5 @@
 /home/kcp/IdeaProjects/weixin # 优惠购 13
 /home/kcp/IdeaProjects/BaseLearn/myth-poi # 封装的简易工具 14
 /home/kcp/IdeaProjects/oa # OA项目 15
+
+/home/kcp/IdeaProjects/SpringBoot/Reply/graduate-reply # 毕业设计

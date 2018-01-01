@@ -60,7 +60,7 @@ def append_title(CodeFlag, filename=None):
     lines = files.readlines()
     results = []
     nowTime = time.strftime('%Y-%m-%d',time.localtime(time.time()))
-    results.append("`目录`\n")
+    results.append("`目录`\n\n")
     for line in lines:
         if line.startswith("#"):
             line = line.strip('\n')
