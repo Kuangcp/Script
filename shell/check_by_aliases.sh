@@ -32,8 +32,14 @@ readLine(){
     if [ "$change" != "0" ]; then 
         if [ "$3"x = "0"x -a "$4"x = "0"x ];then
             # 输出有颜色的仓库标题
-            path=${2%%#*}
-            name=${2#*#}
+            # echo $2
+            aliasName=${2%=*}
+            aliasName=${aliasName#*Kg.}
+            line=${2#*cd }
+            path=${line%%#*}
+            path=${path%\'*}
+            name=${line#*#}
+            printf "\033[0;35mKg.%-10s" $aliasName
             printf "\033[0;32m%-60s" $path
             printf "\033[1;34m《%s》\n" $name
             title=1
@@ -99,7 +105,7 @@ readFile(){
         result=`cd "$LinePath" && git status 2>&1`  #将真正输出的内容先放在数组里，判断后再全部输出
         echo "$result" | while read i  
         do  
-            title= readLine "$i" "${line#*cd }" "${title}" "${show_title}"
+            title= readLine "$i" "$line" "${title}" "${show_title}"
             if [ "$title"x = "1"x ]; then
                 # cd $var && git branch
                 show_title=1
