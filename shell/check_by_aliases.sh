@@ -77,10 +77,11 @@ listRepos(){
         str_alias=${line%=*}
         str_alias=${str_alias#*alias}
         str_path=${temp#*cd}
+        str_path=${str_path%\'*}
         str_comment=${line#*#}
         # 格式化输出
-        printf "\033[0;33m%-25s" $str_alias
-        printf "\033[0;36m%-70s" $str_path
+        printf "\033[0;33m%-20s" $str_alias
+        printf "\033[0;36m%-56s" $str_path
         printf "\033[0;32m%-20s\n" $str_comment
     done
 }
