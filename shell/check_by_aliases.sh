@@ -1,5 +1,6 @@
 #!/bin/sh
 
+## TODO bug: 不能检查到删除新增文件的仓库，只是检查了修改的仓库
 configPath="/home/kcp/.kcp_aliases"
 #  检查仓库 shell重写，使用aliases文件更方便
 readLine(){
