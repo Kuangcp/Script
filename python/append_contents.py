@@ -42,13 +42,26 @@ def deal_line():
     file.close()
     
 def line_prepender(filename, resultList):
-    ''' 行首追加  '''
+    ''' 将集合追加到文件头部'''
     with open(filename, 'r+') as f:
-        content = f.read()
+        # content = f.read()
+        origin_lines = f.readlines()
         f.seek(0, 0)
         for line in resultList:
             f.write(line.rstrip('\r\n') + '\n')
-        f.write(content)
+        # 加上一个逻辑 将目录结构不进行拼接,这样就实现了自动更新目录
+        start_flag=False
+        for single in origin_lines:
+            # print("输出", single)
+            if("`目录 start`" in single):
+                print("开始")
+                start_flag=True
+            if start_flag:
+                continue
+            if("`目录 end`" in single):
+                print("结束")
+                start_flag=False
+            f.write(single)
 
 def append_title(CodeFlag, filename=None):
     if filename == None:
@@ -60,7 +73,7 @@ def append_title(CodeFlag, filename=None):
     lines = files.readlines()
     results = []
     nowTime = time.strftime('%Y-%m-%d',time.localtime(time.time()))
-    results.append("`目录`\n \n")
+    results.append("`目录 start`\n \n")
     for line in lines:
         if line.startswith("#"):
             line = line.strip('\n')
@@ -76,7 +89,7 @@ def append_title(CodeFlag, filename=None):
             result = line.lower()
             # files.write(tab + "- [" + temp + "](#" + result + ")\n")
             results.append(tab + "- [" + temp + "](#" + result + ")\n")
-    results.append("\n*目录创建于"+nowTime+"*\n"+"*"*40)
+    results.append("\n`目录 end` *目录创建于"+nowTime+"*\n"+"*"*40)
     line_prepender(filename, results)
 
 def test():
