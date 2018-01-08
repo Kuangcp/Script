@@ -9,13 +9,12 @@ case $1 in
         printf "  $start%-20s$end%-20s\n" "-h|h|help" "输出帮助信息"
         printf "  $start%-20s$end%-20s\n" "-i|i|index" "生成索引目录"
         printf "  $start%-20s$end%-20s\n" "no param" "生成索引目录"
-
-    ;;
+        ;;
     -i | i | index)
         echo $2
         result=`python3 ~/Application/Script/python/append_contents.py -a n $2`
         echo -e "$result"
-    ;;
+        ;;
     -ai | ai | allIndex)
         files=`ls *.md`
         for file in $files
@@ -26,12 +25,14 @@ case $1 in
                 echo -e "$result"
             fi
         done
-    ;;
+        ;;
     *)
-    echo $1
-        result=`python3 ~/Application/Script/python/append_contents.py -a n $1`
-        echo -e "$result"
-    ;;
+        echo $1
+        # 过滤掉 - 的字符串 
+        
+            result=`python3 ~/Application/Script/python/append_contents.py -a n $1`
+            echo -e "$result"
+        ;;
 esac
 
 

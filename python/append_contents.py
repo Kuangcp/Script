@@ -65,11 +65,12 @@ def line_prepender(filename, resultList):
                 continue
             if start_flag:
                 continue
-            # end 之后的一行也不插入
-            if hr_line <= 1:
+            # end 之后的一行也不插入  并且防止没有目录的文件被删除两行
+            if hr_line <= 1 and hr_line != 0:
                 hr_line = hr_line + 1
                 continue
             f.write(single)
+    print("更新目录完成")
 
 def append_title(CodeFlag, filename=None):
     if filename == None:
