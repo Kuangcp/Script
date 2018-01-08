@@ -11,8 +11,9 @@ import time
 '''
 
 def repalces(line, *lists):
+    ''' 删除指定的字符 '''
     for key in lists:
-        line = line.replace(key, "").strip()
+        line = line.replace(key, "")
     return line
 
 # 打开目标文件，找不到文件会一直等待重新输入
@@ -51,16 +52,23 @@ def line_prepender(filename, resultList):
             f.write(line.rstrip('\r\n') + '\n')
         # 加上一个逻辑 将目录结构不进行拼接,这样就实现了自动更新目录
         start_flag=False
+        hr_line=0
         for single in origin_lines:
             # print("输出", single)
             if("`目录 start`" in single):
-                print("开始")
+                print("    目录开始")
                 start_flag=True
+            if("`目录 end`" in single):
+                print("    目录结束")
+                start_flag=False
+                hr_line = hr_line + 1
+                continue
             if start_flag:
                 continue
-            if("`目录 end`" in single):
-                print("结束")
-                start_flag=False
+            # end 之后的一行也不插入
+            if hr_line <= 1:
+                hr_line = hr_line + 1
+                continue
             f.write(single)
 
 def append_title(CodeFlag, filename=None):
@@ -84,7 +92,8 @@ def append_title(CodeFlag, filename=None):
                 tab += "    "
             line = line.replace("#", "").strip()
             temp = line
-            line = repalces(line, ".", "【", "】")
+            # 删除字符 TODO标题最后一个空格（在去除字符前）会被忽略掉 引发bug
+            line = repalces(line, ".", "【", "】", ":", "：", ",", "，", "/", "(", ")", "*", "。")
             line = line.replace(" ", "-").strip()
             result = line.lower()
             # files.write(tab + "- [" + temp + "](#" + result + ")\n")
