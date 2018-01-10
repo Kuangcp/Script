@@ -167,13 +167,14 @@ case $1 in
         start='\033[0;32m'
         end='\033[0m'
         echo "运行：sh check_repos.sh $start <params> $end"
-        printf "  $start%-16s$end%-20s\n" "-h|h|help" "输出帮助信息"
         printf "  $start%-16s$end%-20s\n" "no param" "列出所有操作过的仓库"
+        printf "  $start%-16s$end%-20s\n" "-h|h|help" "输出帮助信息"
         printf "  $start%-16s$end%-20s\n" "-l|l|list" "列出所有仓库"
         printf "  $start%-16s$end%-20s\n" "-p|p|push" "推送本地的提交"
-        printf "  $start%-16s$end%-20s\n" "-a<ac>" "手动添加仓库以及注释信息或者<自动添加当前目录>"
-        printf "  $start%-16s$end%-20s\n" "-i <image>" "仅是图片仓库：在当前目录方便得到图片URL"
-        printf "  $start%-16s$end%-20s\n" "-f" "打开配置文件"
+        printf "  $start%-16s$end%-20s\n" "-a/ac" "手动添加仓库以及注释信息或者/自动添加当前目录"
+        printf "  $start%-16s$end%-20s\n" "-i <imagefile>" "仅是图片仓库：在当前目录方便得到图片URL"
+        printf "  $start%-16s$end%-20s\n" "-f <file>" "github上文本文件URL"
+        printf "  $start%-16s$end%-20s\n" "-c" "打开配置文件"
         # printf "  $start%-16s$end%-20s\n" "" ""
         return 0
     ;;
@@ -206,6 +207,10 @@ case $1 in
         echo "\n"$url$subPath"/"$2"\n"
         return 0;;
     -f)
+        # 根据当前目录 得到具有 .git文件夹的目录 然后Git remote 然后拼接 预留出其他平台的方案出来 
+        echo ""
+        ;;
+    -c)
         vim $configPath
         return 0;;
     *)
