@@ -208,7 +208,46 @@ case $1 in
         return 0;;
     -f)
         # 根据当前目录 得到具有 .git文件夹的目录 然后Git remote 然后拼接 预留出其他平台的方案出来 
-        echo ""
+        # 思路: 循环 往上找10级目录,找到了.git文件夹就执行 git remote -v 命令,然后github的拼接出来
+        # 怎么以.git所在的位置得到文件的相对路径??
+        echo "开始寻找项目根目录..."
+        for i in `seq 10`
+        do
+            result=`ls -al | grep d.*git` # 搜索d开头的结果,也就是文件夹
+            echo $result
+            if [ "$result"z = "z" ]; then 
+                cd ..
+            else 
+                break
+            fi
+            if [ `pwd` = "/" ]; then
+                echo "查找结束! 已经到系统根目录了!"
+                break
+            fi
+        done
+        if [ "$result"z != "z" ]; then 
+            remote_link=`git remote -v`
+        fi 
+        # echo "$remote_link"
+        for line in $remote_link
+        do 
+            # echo "222"$line
+            isGithub=`expr match "$line" ".*github"`
+            if [ $isGithub != 0 ]; then 
+                isRepo=${line#*:}
+                isRepo=${isRepo%%\.*}
+                
+                result=`git branch`
+                isBranch=${result#* }
+                echo "https://github.com/"$isRepo"/blob/"$isBranch
+                break
+                # TODO 只差文件路径了
+
+            fi 
+                      
+        done
+        
+
         ;;
     -c)
         vim $configPath
