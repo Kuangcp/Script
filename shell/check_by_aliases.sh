@@ -209,12 +209,14 @@ case $1 in
     -f)
         # 根据当前目录 得到具有 .git文件夹的目录 然后Git remote 然后拼接 预留出其他平台的方案出来 
         # 思路: 循环 往上找10级目录,找到了.git文件夹就执行 git remote -v 命令,然后github的拼接出来
-        # 怎么以.git所在的位置得到文件的相对路径??
         echo "开始寻找项目根目录..."
+        github='github'
+        gitee='gitee'
+        current_path=`pwd`
         for i in `seq 10`
         do
             result=`ls -al | grep d.*git` # 搜索d开头的结果,也就是文件夹
-            echo $result
+            # echo $result
             if [ "$result"z = "z" ]; then 
                 cd ..
             else 
@@ -227,27 +229,28 @@ case $1 in
         done
         if [ "$result"z != "z" ]; then 
             remote_link=`git remote -v`
+            project_path=`pwd`
         fi 
         # echo "$remote_link"
         for line in $remote_link
         do 
-            # echo "222"$line
+            # TODO 进一步抽象出一个方法出来
+            # 得到github路径
             isGithub=`expr match "$line" ".*github"`
             if [ $isGithub != 0 ]; then 
                 isRepo=${line#*:}
                 isRepo=${isRepo%%\.*}
                 
                 result=`git branch`
-                isBranch=${result#* }
-                echo "https://github.com/"$isRepo"/blob/"$isBranch
+                isBranch=${result#* } # 得到分支名
+                index=${#project_path} # 得到项目路径长度
+                index=$(($index+1))
+                relative_path=`expr substr "$current_path" $index 100` # 将当前路径减去项目路径
+                echo "    \033[0;36mhttps://github.com/"$isRepo"/blob/"$isBranch$relative_path"/"$2"\033[0m"
                 break
-                # TODO 只差文件路径了
-
             fi 
-                      
+            # 得到gitee路径
         done
-        
-
         ;;
     -c)
         vim $configPath
