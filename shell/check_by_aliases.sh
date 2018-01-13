@@ -257,7 +257,7 @@ case $1 in
         subPath=`expr substr "$path" ${#imagePath} ${#path}`
         echo "\n"$url$subPath"/"$2"\n"
         return 0;;
-    -f)
+    -f | f )
         # 思路: 循环 往上找10级目录,找到了.git文件夹就执行 git remote -v 命令,然后github的拼接出来
         get_file_url $1 $2;;
     -c)
