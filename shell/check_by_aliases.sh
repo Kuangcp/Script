@@ -4,7 +4,6 @@
 
 configPath="/home/kcp/.kcp_aliases"
 
-
 # 读取配置文件,分析每一行,分析仓库状态 并输出
 readConfigAnalysisRepos(){
     temp=""
@@ -161,6 +160,59 @@ pushAll(){
     done
 }
 
+# 根据平台的不同输出不同的URL Github Gitee Gitlab URL构造是一样的 有关联对应的仓库才输出
+show_link(){
+    for line in $1
+    do 
+        isGithub=`expr match "$line" ".*"$2`
+        if [ $isGithub != 0 ]; then 
+            result=`git branch`
+            isBranch=${result#* } # 得到分支名
+            index=${#project_path} # 得到项目路径长度
+            index=$(($index+1))
+            relative_path=`expr substr "$current_path" $index 100` # 将当前路径减去项目路径
+            
+            url=${line#* } # 截取空格之后的URL
+            isHttps=`expr match "$url" "https*"`
+            # HTTPS 和 SSH 两种方式的仓库URL进行转换
+            if [ $isHttps != 0 ]; then 
+                isRepo=${url%%\.git*}
+                echo "  \033[0;36m"$isRepo"/blob/"$isBranch$relative_path"/"$3"\033[0m\n"
+            else
+                isRepo=${line#*:} # 截取:右边
+                isRepo=${isRepo%%\.*} # 截取.左边
+                echo "  \033[0;36mhttps://$2.com/"$isRepo"/blob/"$isBranch$relative_path"/"$3"\033[0m\n"
+            fi
+            break
+        fi
+    done
+}
+get_file_url(){
+    echo "开始寻找项目根目录..."
+    current_path=`pwd`
+    for i in `seq 10` # 限制最多往上找10级目录
+    do
+        result=`ls -al | grep d.*git` # 搜索d开头的结果,也就是文件夹
+        if [ "$result"z = "z" ]; then 
+            cd ..
+        else 
+            break
+        fi
+        if [ `pwd` = "/" ]; then
+            echo "查找结束! 已经到系统根目录了!"
+            break
+        fi
+    done
+    if [ "$result"z != "z" ]; then 
+        remote_link=`git remote -v`
+        project_path=`pwd`
+    fi 
+
+    show_link "$remote_link" "github" $2
+    show_link "$remote_link" "gitee" $2
+    # show_link "$remote_link" "gitlab" $2
+}
+
 # 入口 读取脚本参数调用对应 函数
 case $1 in 
     -h | h | help)
@@ -176,8 +228,7 @@ case $1 in
         printf "  $start%-16s$end%-20s\n" "-f <file>" "github上文本文件URL"
         printf "  $start%-16s$end%-20s\n" "-c" "打开配置文件"
         # printf "  $start%-16s$end%-20s\n" "" ""
-        return 0
-    ;;
+        return 0;;
     -p | push | p)
         pushAll "$configPath"
         echo "推送全部完成"
@@ -207,56 +258,11 @@ case $1 in
         echo "\n"$url$subPath"/"$2"\n"
         return 0;;
     -f)
-        # 根据当前目录 得到具有 .git文件夹的目录 然后Git remote 然后拼接 预留出其他平台的方案出来 
         # 思路: 循环 往上找10级目录,找到了.git文件夹就执行 git remote -v 命令,然后github的拼接出来
-        echo "开始寻找项目根目录..."
-        github='github'
-        gitee='gitee'
-        current_path=`pwd`
-        for i in `seq 10`
-        do
-            result=`ls -al | grep d.*git` # 搜索d开头的结果,也就是文件夹
-            # echo $result
-            if [ "$result"z = "z" ]; then 
-                cd ..
-            else 
-                break
-            fi
-            if [ `pwd` = "/" ]; then
-                echo "查找结束! 已经到系统根目录了!"
-                break
-            fi
-        done
-        if [ "$result"z != "z" ]; then 
-            remote_link=`git remote -v`
-            project_path=`pwd`
-        fi 
-        # echo "$remote_link"
-        for line in $remote_link
-        do 
-            # TODO 进一步抽象出一个方法出来
-            # 得到github路径
-            isGithub=`expr match "$line" ".*github"`
-            if [ $isGithub != 0 ]; then 
-                isRepo=${line#*:}
-                isRepo=${isRepo%%\.*}
-                
-                result=`git branch`
-                isBranch=${result#* } # 得到分支名
-                index=${#project_path} # 得到项目路径长度
-                index=$(($index+1))
-                relative_path=`expr substr "$current_path" $index 100` # 将当前路径减去项目路径
-                echo "    \033[0;36mhttps://github.com/"$isRepo"/blob/"$isBranch$relative_path"/"$2"\033[0m"
-                break
-            fi 
-            # 得到gitee路径
-        done
-        ;;
+        get_file_url $1 $2;;
     -c)
         vim $configPath
         return 0;;
     *)
-        readFile "$configPath"
-        ;;
+        readFile "$configPath";;
 esac
-# readFile "$configPath"
