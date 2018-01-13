@@ -1,21 +1,52 @@
 
 # TODO 自动更新指定目录的所有md文件的目录
 
+function read_dir(){
+    for file in `ls $1`
+    do
+        if [ -d $1"/"$file ]  #注意此处之间一定要加上空格，否则会报错 
+        # 这里是判断是否是文件夹,文件夹就进入
+        then
+            read_dir $1"/"$file
+        else
+            echo ">>"$1"/"$file
+            # echo $file
+            cat '/home/kcp/Application/Script/shell/text/ignore.conf' | while read line
+            do
+                # echo "$line"
+                # echo $file
+                type=${file#*\.}
+                # echo "后缀"$type
+                if [ "$type" = "md" ]; then 
+                    echo $file
+                    if [ "$file" = "$line" ];then 
+                        echo "--------------"$file
+                    fi 
+                fi
+                # break
+            done
+            # break
+
+            # [[ "${2[@]/$file/}" != "${2[@]}" ]] && echo "$file in array"
+        fi
+    done
+}
+
 case $1 in 
     -h | h | help)
         start='\033[0;32m'
         end='\033[0m'
         printf "%-20s$start%-20s$end\n" "运行：bash deal_md.sh " "<params>"
         printf "  $start%-20s$end%-20s\n" "-h|h|help" "输出帮助信息"
-        printf "  $start%-20s$end%-20s\n" "-i|i|index" "生成索引目录"
-        printf "  $start%-20s$end%-20s\n" "no param" "生成索引目录"
-        ;;
+        printf "  $start%-20s$end%-20s\n" "-i|i|index" "更新索引目录"
+        printf "  $start%-20s$end%-20s\n" "-c|c|current" "更新当前目录所有md文件的索引目录"
+        printf "  $start%-20s$end%-20s\n" "-a|a|all" "更新指定目录下所有md文件的索引目录"
+        printf "  $start%-20s$end%-20s\n" "no param" "更新索引目录";;
     -i | i | index)
         echo $2
         result=`python3 ~/Application/Script/python/append_contents.py -a n $2`
-        echo -e "$result"
-        ;;
-    -ai | ai | allIndex)
+        echo -e "$result";;
+    -c | c | current)
         files=`ls *.md`
         for file in $files
         do 
@@ -24,15 +55,20 @@ case $1 in
                 result=`python3 ~/Application/Script/python/append_contents.py -a n $file`
                 echo -e "$result"
             fi
-        done
+        done;;
+    -a | a | all)
+        note_path='/home/kcp/Documents/Notes/Notes'
+        echo "开始更新全部, 目录: "$note_path
+
+        # ignore_list=('README.md','CODE_OF_CONDUCT.md')
+        read_dir $note_path
+
         ;;
     *)
         echo $1
         # 过滤掉 - 的字符串 
-        
-            result=`python3 ~/Application/Script/python/append_contents.py -a n $1`
-            echo -e "$result"
-        ;;
+        result=`python3 ~/Application/Script/python/append_contents.py -a n $1`
+        echo -e "$result";;
 esac
 
 
