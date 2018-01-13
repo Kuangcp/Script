@@ -1,7 +1,8 @@
 
 # TODO 自动更新指定目录的所有md文件的目录
+# ignore_flag=1
 
-function read_dir(){
+read_dir(){
     for file in `ls $1`
     do
         if [ -d $1"/"$file ]  #注意此处之间一定要加上空格，否则会报错 
@@ -9,25 +10,17 @@ function read_dir(){
         then
             read_dir $1"/"$file
         else
-            echo ">>"$1"/"$file
-            # echo $file
-            cat '/home/kcp/Application/Script/shell/text/ignore.conf' | while read line
-            do
-                # echo "$line"
-                # echo $file
-                type=${file#*\.}
-                # echo "后缀"$type
-                if [ "$type" = "md" ]; then 
-                    echo $file
-                    if [ "$file" = "$line" ];then 
-                        echo "--------------"$file
-                    fi 
-                fi
-                # break
-            done
-            # break
-
-            # [[ "${2[@]/$file/}" != "${2[@]}" ]] && echo "$file in array"
+            # echo ">>"$1"/"$file
+            # 判断当前文件是否属于忽略文件 是则文件名否则空
+            ignore_file=`cat /home/kcp/Application/Script/shell/text/ignore.conf | grep $file`
+            # 判断文件名是否符合正则,负责则文件名否则空
+            type=`echo $file | grep .*md$`
+            # 不是忽略文件并且文件名符合要求
+            if [ "$ignore_file"z = "z" ] && [ "$type"z != "z" ]; then 
+                echo ">>>>>>"$file
+                result=`python3 ~/Application/Script/python/append_contents.py -a n $1'/'$file`
+                echo -e "$result"
+            fi 
         fi
     done
 }
