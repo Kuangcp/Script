@@ -133,7 +133,7 @@ appendFile(){
     echo "请输入别名,当输入 a 得到 Kg.a"
     read aliasName
     echo "alias Kg."$aliasName"='cd $repo_path' # $comment" >> $1
-    echo "添加完成"
+    echo "添加完成, 请更新 .bashrc或其他别名配置文件"
 }
 
 # push所有仓库
