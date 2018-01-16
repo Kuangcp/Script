@@ -5,5 +5,9 @@
 - [快速查看改动的git仓库](/python/check_repos.py) 
 - [批量重命名文件](/python/rename_image.py)
 
+## 相关的脚本库
+
+- [useful-script](https://github.com/oldratlee/useful-scripts)
+- [wizard-script](https://github.com/robertleepeak/wizard-scripts)`有关Java的各种实用性脚本`
 
 
