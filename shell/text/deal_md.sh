@@ -15,7 +15,6 @@ read_dir(){
         then
             read_dir $1"/"$file
         else
-            # echo ">>"$1"/"$file
             # 判断当前文件是否属于忽略文件 是则文件名否则空
             ignore_file=`cat $config_ignore_file | grep $file`
             # 判断文件名是否符合正则,负责则文件名否则空
@@ -36,11 +35,12 @@ case $1 in
         end='\033[0m'
         printf "%-20s$start%-20s$end\n" "运行：bash deal_md.sh " "<params>"
         printf "  $start%-20s$end%-20s\n" "-h|h|help" "输出帮助信息"
-        printf "  $start%-20s$end%-20s\n" "-i|i|index" "更新索引目录"
+        printf "  $start%-20s$end%-20s\n" "-i|i|index <file>" "更新文件索引目录"
         printf "  $start%-20s$end%-20s\n" "-c|c|current" "更新当前目录所有md文件的索引目录"
         printf "  $start%-20s$end%-20s\n" "-a|a|all" "更新指定目录下所有md文件的索引目录"
-        printf "  $start%-20s$end%-20s\n" "-al|al|alter" "更新指定git仓库下修改过的文件目录"
-        printf "  $start%-20s$end%-20s\n" "no param" "更新索引目录";;
+		# printf "\t\t>> 建议 add文件 后执行,不然就可能出现重复执行的情况了<<\n"
+        printf "  $start%-20s$end%-20s\n" "-al|al|alter" "更新指定Git仓库下修改过的md文件的索引目录"
+        printf "  $start%-20s$end%-20s\n" "<file>" "缺省参数,更新文件索引目录";;
     -i | i | index)
         echo $2
         result=`python3 $config_python_file -a n $2`
@@ -72,12 +72,8 @@ case $1 in
                     result=`python3 $config_python_file -a n $config_target_repo/$map_result`
                     echo -e "$result"
                 fi
-                
             fi
-        done
-
-        # echo "更新修改文件的目录"
-        ;;
+        done;;
     *)
         echo $1
         # 过滤掉 - 的字符串 
