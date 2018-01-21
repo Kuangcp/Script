@@ -56,10 +56,10 @@ def line_prepender(filename, resultList):
         for single in origin_lines:
             # print("输出", single)
             if("`目录 start`" in single):
-                print("    目录开始")
+                print("    目录开始  >>", end='')
                 start_flag=True
             if("`目录 end`" in single):
-                print("    目录结束")
+                print("    目录结束  >>", end='')
                 start_flag=False
                 hr_line = hr_line + 1
                 continue
@@ -70,7 +70,7 @@ def line_prepender(filename, resultList):
                 hr_line = hr_line + 1
                 continue
             f.write(single)
-    print("更新目录完成")
+    print("   更新目录完成")
 
 def append_title(CodeFlag, filename=None):
     if filename == None:
