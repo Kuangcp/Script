@@ -68,7 +68,7 @@ case $1 in
             # echo "初始化"$change_flag
             # echo ">>"$line
             # 当前行出现了 修改 或者 新增 或者 -> (表示重命名) 任一,才会更新下面出现的md文件
-            if [ `echo $line | grep -E "[修改]+|[新增]+|[->]+"` ]; then
+            if [ `echo $line | grep -E "(修改)+|(新文件)+|(->)+"` ]; then
                 change_flag=1
             fi
             map_result=`echo "$line" | grep ".md"`
