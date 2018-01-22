@@ -61,18 +61,35 @@ case $1 in
     -al | al | alter)
         # TODO 更新指定git仓库里修改的文件的目录
         result=`cd $config_target_repo && git status`
+        # 使用标志变量, 前缀为修改或者新增的行 才能进行更新, 每个文件都判断一次并更新这个标志变量一次
+        change_flag=0 
         for line in $result
         do
+            # echo "初始化"$change_flag
+            # echo ">>"$line
+            # 当前行出现了 修改 或者 新增 或者 -> (表示重命名) 任一,才会更新下面出现的md文件
+            if [ `echo $line | grep -E "[修改]+|[新增]+|[->]+"` ]; then
+                change_flag=1
+            fi
             map_result=`echo "$line" | grep ".md"`
+            # echo "判断后"$change_flag
             
             if [ "$map_result"z != 'z' ]; then
-                ignore_file=`cat $config_ignore_file | grep $map_result`
-                if [ "$ignore_file"z = "z" ];then
-                    printf "\033[0;32m已修改该文件: "$map_result"\033[0m"
-                    result=`python3 $config_python_file -a n $config_target_repo/$map_result`
-                    echo -e "$result"
+                if [ $change_flag = 1 ]; then
+                    # 下面这种方式只能完全匹配不能局部匹配
+                    # ignore_file=`cat $config_ignore_file | grep $map_result`
+                    ignore=`cat $config_ignore_file`
+                    ignore_file=`echo $map_result | grep "$ignore" `
+                    echo "::::"$map_result
+                    if [ "$ignore_file"z = "z" ];then
+                        printf "\033[0;32m已修改该文件: "$map_result"\033[0m"
+                        result=`python3 $config_python_file -a n $config_target_repo/$map_result`
+                        echo -e "$result"
+                    fi
                 fi
+                change_flag=0
             fi
+            # echo "恢复"$change_flag
         done;;
     *)
         echo $1
@@ -80,3 +97,6 @@ case $1 in
         result=`python3 $config_python_file -a n $1`
         echo -e "$result";;
 esac
+
+# 2018-01-22 23:11:14
+# 解决了一个更新删除和重命名的文件的目录的错误
