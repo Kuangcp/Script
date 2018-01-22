@@ -99,7 +99,8 @@ def append_title(CodeFlag, filename=None):
             result = line.lower()
             # files.write(tab + "- [" + temp + "](#" + result + ")\n")
             results.append(tab + "- [" + temp + "](#" + result + ")\n")
-    results.append("\n`目录 end` *目录创建于"+nowTime+"*\n"+"*"*40)
+    results.append("\n`目录 end` *目录创建于"+nowTime+"* | 更多: [CSDN](http://blog.csdn.net/kcp606) | [oschina](https://my.oschina.net/kcp1104) | [码云](https://gitee.com/kcp1104) ")
+    results.append("*"*40)
     line_prepender(filename, results)
 
 def test():
