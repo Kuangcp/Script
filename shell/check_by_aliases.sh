@@ -21,20 +21,19 @@ readConfigAnalysisRepos(){
     fi 
     # 判断是否需要添加进来，去除掉没有修改,增加,删除的仓库
     change=`expr match "$1" ".*修改"`
+    new_file=`expr match "$1" ".*新文件"`
     have_add=`expr match "$1" ".*未跟踪"`
     have_delete=`expr match "$1" ".*删除"`
     # echo $have_add
-    if [ "$change" != "0" ] || [ "$have_add" != "0" ] || [ "$have_delete" != "0" ]; then 
+    if [ "$change" != "0" ] || [ "$have_add" != "0" ] || [ "$have_delete" != "0" ] || [ "$new_file" != "0" ]; then 
         # echo "\033[0;33m"$i" \033[0m"
+        # echo "筛选:"$1
         temp="\033[0;33m ${1} \033[0m"
         flag=0
-    fi
-    if [ "$flag"x = "1"x ]; then
-        temp="${temp}${1}"
-    fi
-
-    # 输出仓库彩色标题信息 去除了没有操作的仓库
-    if [ "$change" != "0" ]  || [ "$have_add" != "0" ] || [ "$have_delete" != "0" ]; then 
+        if [ "$flag"x = "1"x ]; then
+            temp="${temp}${1}"
+        fi
+        # 输出仓库彩色标题信息 去除了没有操作的仓库
         if [ "$3"x = "0"x -a "$4"x = "0"x ];then
             # 输出有颜色的仓库标题
             aliasName=${2%=*}
