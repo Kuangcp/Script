@@ -21,6 +21,7 @@ readConfigAnalysisRepos(){
     fi 
     # 判断是否需要添加进来，去除掉没有修改,增加,删除的仓库
     change=`expr match "$1" ".*修改"`
+
     new_file=`expr match "$1" ".*新文件"`
     have_add=`expr match "$1" ".*未跟踪"`
     have_delete=`expr match "$1" ".*删除"`
@@ -28,7 +29,8 @@ readConfigAnalysisRepos(){
     if [ "$change" != "0" ] || [ "$have_add" != "0" ] || [ "$have_delete" != "0" ] || [ "$new_file" != "0" ]; then 
         # echo "\033[0;33m"$i" \033[0m"
         # echo "筛选:"$1
-        temp="\033[0;33m ${1} \033[0m"
+        # temp="\033[0;33m ${1} \033[0m"
+        temp=$1
         flag=0
         if [ "$flag"x = "1"x ]; then
             temp="${temp}${1}"
@@ -48,7 +50,12 @@ readConfigAnalysisRepos(){
             title=1
         fi
         # 输出git命令运行结果 即文件名
-        echo "  "$temp
+
+        other=`expr match "$1" ".*尚未加入"`
+        # echo $1$other
+        if [ $other = 0 ]; then
+            printf "  \033[0;33m%s\033[0m\n" "$1"
+        fi
     fi
     return $title #返回是否输出过标题
 }
@@ -227,20 +234,20 @@ case $1 in
         printf "  $start%-16s$end%-20s\n" "-f <file>" "github上文本文件URL"
         printf "  $start%-16s$end%-20s\n" "-c" "打开配置文件"
         # printf "  $start%-16s$end%-20s\n" "" ""
-        return 0;;
+        exit 0;;
     -p | push | p)
         pushAll "$configPath"
         echo "推送全部完成"
-        return 0;;
+        exit 0;;
     -a)
         appendFile $configPath ''
-        return 0;;
+        exit 0;;
     -ac)
         appendFile $configPath 'currentPath'
-        return 0;;
+        exit 0;;
     -l | l | list)
         listRepos $configPath
-        return 0;;
+        exit 0;;
     -i)
         # 配置图片仓库地址即可
         imagePath="/home/kcp/Pictures/ImageRepos"
@@ -249,19 +256,19 @@ case $1 in
         isRepo=`expr match "$path" ".*$imagePath"`
         if [ $isRepo = 0 ]; then 
             echo "请在图片仓库运行"
-            return 0
+            exit 0
         fi 
         imagePath=$imagePath" "
         # 要手动设置图片仓库的相对路径的长度 30 这之前的要截取掉
         subPath=`expr substr "$path" ${#imagePath} ${#path}`
         echo "\n"$url$subPath"/"$2"\n"
-        return 0;;
+        exit 0;;
     -f | f )
         # 思路: 循环 往上找10级目录,找到了.git文件夹就执行 git remote -v 命令,然后github的拼接出来
         get_file_url $1 $2;;
     -c)
         vim $configPath
-        return 0;;
+        exit 0;;
     *)
         readFile "$configPath";;
 esac

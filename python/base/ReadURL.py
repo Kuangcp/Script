@@ -10,27 +10,28 @@ class ReadURL:
 
     def readhtml(self):
         ''' 将url解析成soup对象 '''
-        headers = {'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64; rv:53.0) Gecko/20100101 Firefox/53.0',
-               'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-               'Accept-Language' : 'zh-CN,en-US;q=0.7,en;q=0.3'
-                #'' : '',
-                #'' : '',
-               }
+        headers = {
+            'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64; rv:58.0) Gecko/20100101 Firefox/58.0',
+            'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language' : 'zh-CN,en-US;q=0.7,en;q=0.3',
+            'Referer' : 'http://blog.csdn.net/kcp606',
+            'Upgrade-Insecure-Requests' : '1'
+            }
         print('-'*30)
         print('尝试读取 URL',self.url)
         # 这个逻辑就是, 如果读取超时,就重新发起一次,如果还是失败,直接终止
         try:
             result = requests.get(self.url, timeout=4, headers=headers)
         except Exception:
-            print("!!!!!!!! 超时等待5s后重试 !!!!!!!!", self.url)
+            print("!!!!!!!! 请求超时, 正在等待5s后重试 !!!!!!!!", self.url)
             try:    
                 sleep(5)
                 result = requests.get(self.url, timeout=5, headers=headers)
             except Exception:
-                print("第二次重试失败 程序退出")
+                print("第二次重试失败 程序自动退出")
                 sys.exit(1)
         
-        print("  ->读取返回状态码",result)
+        print("  ->读取结果: ",result)
         if str(result) == '<Response [200]>':
             pass
         elif str(result).startswith('<Response [4'):
