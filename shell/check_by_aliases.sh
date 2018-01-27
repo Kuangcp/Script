@@ -1,4 +1,3 @@
-#!/bin/sh
 #  检查仓库 shell重写，使用aliases文件更方便
 # 只适用于中文系统
 
@@ -155,7 +154,7 @@ pushAll(){
         if [ "$LinePath"x = "x" ]; then 
             continue
         fi 
-        echo "\033[0;35m"$LinePath"\033[0m"
+        printf "\033[0;35m%s\033[0m\n" $LinePath
         result=`cd $LinePath && git status`
         haveCommit=`expr match "$result" ".*领先"`
         # echo $result$haveCommit
@@ -239,16 +238,16 @@ case $1 in
         pushAll "$configPath"
         echo "推送全部完成"
         exit 0;;
-    -a)
+    -a | a)
         appendFile $configPath ''
         exit 0;;
-    -ac)
+    -ac | ac)
         appendFile $configPath 'currentPath'
         exit 0;;
     -l | l | list)
         listRepos $configPath
         exit 0;;
-    -i)
+    -i | i)
         # 配置图片仓库地址即可
         imagePath="/home/kcp/Pictures/ImageRepos"
         url="https://raw.githubusercontent.com/Kuangcp/ImageRepos/master"
@@ -266,7 +265,7 @@ case $1 in
     -f | f )
         # 思路: 循环 往上找10级目录,找到了.git文件夹就执行 git remote -v 命令,然后github的拼接出来
         get_file_url $1 $2;;
-    -c)
+    -c | c)
         vim $configPath
         exit 0;;
     *)
