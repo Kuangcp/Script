@@ -1,3 +1,4 @@
+#!/bin/dash
 #  检查仓库 shell重写，使用aliases文件更方便
 # 只适用于中文系统
 

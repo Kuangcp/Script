@@ -2,8 +2,7 @@ import sys
 import subprocess
 import os
 
-# 应该使用shell来写的
-
+# 依赖于一个配置文件格式如下: 绝对路径#注释
 # 执行命令,如果仓库没有变动就不输出
 def command(cmd, content_line, count):
     # 执行命令，后面的都是处理输出内容
