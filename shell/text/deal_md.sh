@@ -4,7 +4,7 @@ config_ignore_file='/home/kcp/Application/Script/shell/text/ignore.conf'
 config_python_file='/home/kcp/Application/Script/python/append_contents.py'
 # md的仓库
 config_target_repo='/home/kcp/Documents/Notes/Notes'
- 
+
 read_dir(){
     ''' 递归阅读文件, 然后更新md文件的目录 '''
     for file in `ls $1`

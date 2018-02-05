@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import os
 import sys
 import json
@@ -6,7 +7,7 @@ import subprocess
 
 # json_url = " https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
 # 默认的配置文件的地址
-json_url = " http://git.oschina.net/kcp1104/script/raw/master/python/mythsdk/config.json"
+json_url = "https://gitee.com/kcp1104/script/raw/master/python/mythsdk/config.json"
 # 存放了sdk的七牛云的域名
 cloud_url = None
 ## 这个github 上 sdk 只有几个，大多数没有
@@ -77,10 +78,13 @@ def create_index():
             
 def list_all(sdk=None):
     ''' 列出所有sdk以及版本号 '''
-    # if sdk == None:
-    print("="*70)
-    print("\033[1;33mAll can install SDK list:\n       \033[1;32mused is green     \033[1;35minstalled is purple     \033[0maviable is white")
-    print("="*70)
+    # start_separator = "\033[0;32m"+"▼"*80+"\033[0m"
+    # end_separator = "\033[0;32m"+"▲"*80+"\033[0m"
+    start_separator = "\033[0;32m"+"★ "+"."*35+" ★ "+"."*35+" ★"+"\033[0m"
+    print(start_separator)
+    if sdk == None:
+        print("\033[1;33mList all installable SDK:\n       \033[1;32mused is green     \033[1;35minstalled is purple     \033[0minstallable is white")
+        print(start_separator)
     data = loadconfig()
     sdks = data["sdks"]
     result_list = []
@@ -90,7 +94,7 @@ def list_all(sdk=None):
         if sdk!=None and sdk!=one:
                 continue
         # print(""+one+":")
-        result = result + "\033[1;33m>>\033[1;36m"+one+"\033[0m\n"
+        result = result + "\033[1;33m→ \033[1;36m"+one+"\033[0m\n"
         version = data["sdks"][one]
         count = 0
         for ver in version:
@@ -99,21 +103,19 @@ def list_all(sdk=None):
                 # print("\033[1;32m    "+ver+"\033[0m", end="")
                 result = result+"\033[1;32m    "+ver+"\033[0m  "
             elif os.path.exists(root_path+"/"+one+"/"+ver):
-                # print("\033[1;35m    "+ver+"\033[0m", end="")
                 result = result +"\033[1;35m    "+ver+"\033[0m  "
             else:
                 ver = "    "+ver+"  "
-                # print(ver, end="")
                 result = result + ver
-                if count%8 == 7 :
-                    # print("")
-                    result = result +"\n"
-        # print("\n")
-        result = result + "\n"
+                # if count%7 == 0 :
+                #     # print("")
+                #     result = result +"\n"
+        # result = result + "\n"
         result_list.append(result)
     result_list.sort()
     for result in result_list:
         print(result)
+    # print(end_separator)
 # TODO 还没开始写
 def auto():
     ''' 使用规定的目录结构放置zip包 自动化配置sdk环境''' 

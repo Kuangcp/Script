@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from base.ReadURL import ReadURL
 
 # 增加某用户的CSDN阅读量, 发现是每天都能去增加一次
