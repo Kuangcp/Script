@@ -4,7 +4,7 @@
 # 读取文件
 def read_alias():
     contents = []
-    alias = open('/home/kcp/.kcp_aliases')
+    alias = open('/home/kcp/.kcp_aliases.conf')
     lines = alias.readlines()
     for line in lines:
         line = line.strip()

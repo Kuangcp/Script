@@ -1,35 +1,31 @@
 #!/bin/dash
 #  检查仓库 shell重写，使用aliases文件更方便
-# 只适用于中文系统
+# 只适用于使用中文语言的Linux系统
 
-configPath="/home/kcp/.kcp_aliases"
+configPath="/home/kcp/.git_aliases.conf"
 
 # 读取配置文件,分析每一行,分析仓库状态 并输出
 readConfigAnalysisRepos(){
     temp=""
     flag=1
     title=0
+    
+    # 对比之下,expr比grep更快
     clean=`expr match "$1" ".*干净"`
-    # 去除无关信息
+    # cleans=`echo $1|grep "干净"`
+    # echo "["$clean"]|["$cleans"]"
+    
+    # 过滤掉没有修改的仓库
     if [ "$clean" != "0" ]; then 
         break
     fi
-    change=`expr match "$1" ".*变更"`
-    use=`expr match "$1" ".*使用"`
-    if [ "$use" != "0" -o "$change" != "0" ]; then
-        continue
-    fi 
     # 判断是否需要添加进来，去除掉没有修改,增加,删除的仓库
     change=`expr match "$1" ".*修改"`
-
     new_file=`expr match "$1" ".*新文件"`
     have_add=`expr match "$1" ".*未跟踪"`
     have_delete=`expr match "$1" ".*删除"`
     # echo $have_add
     if [ "$change" != "0" ] || [ "$have_add" != "0" ] || [ "$have_delete" != "0" ] || [ "$new_file" != "0" ]; then 
-        # echo "\033[0;33m"$i" \033[0m"
-        # echo "筛选:"$1
-        # temp="\033[0;33m ${1} \033[0m"
         temp=$1
         flag=0
         if [ "$flag"x = "1"x ]; then
@@ -50,7 +46,6 @@ readConfigAnalysisRepos(){
             title=1
         fi
         # 输出git命令运行结果 即文件名
-
         other=`expr match "$1" ".*尚未加入"`
         # echo $1$other
         if [ $other = 0 ]; then
@@ -104,7 +99,6 @@ readFile(){
     do 
         # 记录一次仓库循环中是否输出过标题
         show_title=0
-
         start_char= splitLine "$line"
         # echo "收到的结果______"$LinePath
         if [ "$start_char" = "0" ]; then 
@@ -193,6 +187,7 @@ show_link(){
         fi
     done
 }
+# 获取仓库中文件的远程URL,目前实现了Github和Gitee
 get_file_url(){
     echo "开始寻找项目根目录..."
     current_path=`pwd`
