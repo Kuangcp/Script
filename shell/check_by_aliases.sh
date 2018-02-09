@@ -1,6 +1,5 @@
 #!/bin/dash
-#  检查仓库 shell重写，使用aliases文件更方便
-# 只适用于使用中文语言的Linux系统
+# 根据aliase文件来检查git仓库, 只适用于使用中文语言的Linux系统
 
 configPath="/home/kcp/.git_aliases.conf"
 
@@ -9,23 +8,19 @@ readConfigAnalysisRepos(){
     temp=""
     flag=1
     title=0
-    
     # 对比之下,expr比grep更快
     clean=`expr match "$1" ".*干净"`
     # cleans=`echo $1|grep "干净"`
     # echo "["$clean"]|["$cleans"]"
-    
     # 过滤掉没有修改的仓库
     if [ "$clean" != "0" ]; then 
         break
     fi
-    # 判断是否需要添加进来，去除掉没有修改,增加,删除的仓库
-    change=`expr match "$1" ".*修改"`
-    new_file=`expr match "$1" ".*新文件"`
-    have_add=`expr match "$1" ".*未跟踪"`
-    have_delete=`expr match "$1" ".*删除"`
-    # echo $have_add
-    if [ "$change" != "0" ] || [ "$have_add" != "0" ] || [ "$have_delete" != "0" ] || [ "$new_file" != "0" ]; then 
+    # echo $1
+    crud=`expr match "$1" '.*[新修跟踪删除领]'`
+    ignore=`expr match "$1" '.*<文件>'`
+    if [ "$crud" != "0" ] && [ "$ignore" = '0' ];then
+    # if [ "$change" != "0" ] || [ "$have_add" != "0" ] || [ "$have_delete" != "0" ] || [ "$new_file" != "0" ]; then 
         temp=$1
         flag=0
         if [ "$flag"x = "1"x ]; then
@@ -40,9 +35,14 @@ readConfigAnalysisRepos(){
             path=${line%%#*}
             path=${path%\'*}
             name=${line#*#}
-            printf "\033[0;35mKg.%-10s" $aliasName
-            printf "\033[0;32m%-60s" $path
-            printf "\033[1;34m《%s》\n" $name
+
+            # printf "\033[0;35mKg.%-10s" $aliasName
+            # printf "\033[0;32m%-60s" $path
+            # printf "\033[1;34m《%s》\n" $name
+
+            printf "\033[1;40mKg.%-10s" $aliasName
+            printf "\033[32m%-60s" $path
+            printf "\033[34m%-30s\33[0m\n" "《$name 》"
             title=1
         fi
         # 输出git命令运行结果 即文件名
@@ -97,6 +97,11 @@ readFile(){
     title=0
     cat $1 | while read line
     do 
+        # 配置文件中含有+号则表示不进行检查
+        ignore=`echo "$line" | grep "+"`
+        if [ "$ignore"x != "x" ];then 
+            continue
+        fi
         # 记录一次仓库循环中是否输出过标题
         show_title=0
         start_char= splitLine "$line"
@@ -111,6 +116,7 @@ readFile(){
         result=`cd "$LinePath" && git status 2>&1`  #将真正输出的内容先放在数组里，判断后再全部输出
         echo "$result" | while read i  
         do  
+            # echo ">>>>>"$i
             title= readConfigAnalysisRepos "$i" "$line" "${title}" "${show_title}"
             if [ "$title"x = "1"x ]; then
                 # cd $var && git branch
