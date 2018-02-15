@@ -5,11 +5,19 @@ import sys
 import subprocess
 import os
 # 参考自 https://github.com/angusshire/greenhat  吐槽下里面的Tab符
+
+
 '''
     运行在 python3.5
     参数1 必须  从输入的日期的开始往前总共多少天(含输入的日期)
     参数2 缺省为今天 , 输入的日期 日期有错误?不是当前,而是前一天(原因是 0点的问题,0点github认为是前一天 0点过1秒才算今天.....)
     参数3 缺省为1 , 每天的提交量
+
+    最终运行的命令, 如果要用shell重写, 时间的计算就是问题了
+    echo 'Mon Feb 12 12:00:00 2018  -0400101291' > realwork.txt;
+    git add realwork.txt;
+    GIT_AUTHOR_DATE='Mon Feb 12 12:00:00 2018  -0400' GIT_COMMITTER_DATE='Mon Feb 12 12:00:00 2018  -0400' git commit -m 'update';
+
 '''
 # 修改日期关键在这条命令 GIT_AUTHOR_DATE='Sun Feb 14 00:00:00 2016' GIT_COMMITTER_DATE='Sun Feb 14 00:00:00 2016' git commit -m 'update';
 
