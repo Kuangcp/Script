@@ -44,9 +44,9 @@ def deal_line():
     
 def line_prepender(filename, resultList):
     ''' 将集合追加到文件头部'''
-    with open(filename, 'r+') as f:
-        # content = f.read()
-        origin_lines = f.readlines()
+    # 将读写分开,就没有那种诡异的bug了
+    origin_lines = open(filename, 'r').readlines()
+    with open(filename, 'w+') as f:
         f.seek(0, 0)
         for line in resultList:
             f.write(line.rstrip('\r\n') + '\n')
@@ -65,12 +65,13 @@ def line_prepender(filename, resultList):
                 continue
             if start_flag:
                 continue
-            # end 之后的一行也不插入  并且防止没有目录的文件被删除两行
+            # 不插入分割线  并且防止没有目录的文件被删除两行
             if hr_line <= 1 and hr_line != 0:
                 hr_line = hr_line + 1
                 continue
             f.write(single)
     print("   更新目录完成")
+    
 
 def append_title(CodeFlag, filename=None):
     if filename == None:
@@ -87,10 +88,8 @@ def append_title(CodeFlag, filename=None):
         if line.startswith("#"):
             line = line.strip('\n')
             weight = line.count("#")
-            tab = ""
+            tab = "    "*(weight - 1)
             # 空格格式的安排
-            for i in range(weight - 1):
-                tab += "    "
             line = line.replace("#", "").strip()
             temp = line
             # 删除字符 TODO标题最后一个空格（在去除字符前）会被忽略掉 引发bug

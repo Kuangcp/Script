@@ -75,9 +75,9 @@ case $1 in
                     # ignore_file=`cat $config_ignore_file | grep $map_result`
                     ignore=`cat $config_ignore_file`
                     ignore_file=`echo $map_result | grep "$ignore" `
-                    echo "::::"$map_result
+                    # echo "::::"$map_result
                     if [ "$ignore_file"z = "z" ];then
-                        printf "\033[0;32m已修改该文件: "$map_result"\033[0m"
+                        printf "\033[0;32m 修改 : "$map_result"\033[0m"
                         result=`python3 $config_python_file -a n $config_target_repo/$map_result`
                         printf "$result\n"
                     fi
