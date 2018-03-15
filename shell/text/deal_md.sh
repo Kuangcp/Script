@@ -1,9 +1,18 @@
+# 在脚本旁边建立 local.conf文件 并添加以下配置
+# 笔记的仓库路径
+# config_target_repo='/home/kcp/Documents/Notes/Notes'
+
+path=$(cd `dirname $0`; pwd)
+
 # 忽略文件目录
-config_ignore_file='/home/kcp/Application/Script/shell/text/ignore.conf'
+config_ignore_file=$path'/ignore.conf'
 # 脚本文件目录
-config_python_file='/home/kcp/Application/Script/python/append_contents.py'
-# md的仓库
-config_target_repo='/home/kcp/Documents/Notes/Notes'
+config_python_file=${path%%shell*}'python/append_contents.py'
+
+# 读取本地配置文件
+while read line;do  
+    eval "$line"  
+done < "$path"/local.conf
 
 read_dir(){
     ''' 递归阅读文件, 然后更新md文件的目录 '''
@@ -87,6 +96,7 @@ case $1 in
             # echo "恢复"$change_flag
         done;;
     *)
+        # 没有参数的时候, 就是单文件的更新
         printf "[%s]" $1
         # 过滤掉 - 的字符串 , 将Python脚本的输出存放到变量中
         result=`python3 $config_python_file -a n $1`
@@ -95,3 +105,6 @@ esac
 
 # 2018-01-22 23:11:14
 # 解决了一个更新删除和重命名的文件的目录的错误
+
+# 2018-03-15 21:16:55
+# 将所有依赖性配置外置, 脱离仓库
