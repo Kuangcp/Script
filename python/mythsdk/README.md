@@ -12,12 +12,13 @@
 - 使用自己的七牛云，上传好zip，就能方便的使用了。 
 - zip格式是 `sdk-version.zip` 内容是 `version/bin` 这样的目录结构
 
-
 ### install 
 - `git clone https://git.oschina.net/kcp1104/script.git`
 - `cd script/python/mythsdk/`
-- `python3 mythsdk.py l`
-- `./init.sh` may be should run `chmod 744 init.sh`
+- `python3 mythsdk.py up` 
+    - then `python3 mythsdk.py l` can view all sdk
+- `./init.sh` 
+    - may be should run `chmod 744 init.sh`
 
 ### use
 

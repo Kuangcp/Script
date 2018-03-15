@@ -257,8 +257,9 @@ def update_config():
     ''' 升级配置文件 '''
     jsonfile = init()+'/.mythsdk/config.json'
     print("更新配置文件")
-    shell("rm "+jsonfile)
-    shell("curl -o "+jsonfile+json_url)
+    if os.path.exists(jsonfile):
+        shell("rm "+jsonfile)
+    shell("curl -o "+jsonfile+" "+json_url)
 
 
 def one_param(action):
