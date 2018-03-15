@@ -93,12 +93,12 @@ def append_title(CodeFlag, filename=None):
             line = line.replace("#", "").strip()
             temp = line
             # 删除字符 TODO标题最后一个空格（在去除字符前）会被忽略掉 引发bug
-            line = repalces(line, ".", "【", "】", ":", "：", ",", "，", "/", "(", ")", "*", "。")
+            line = repalces(line, ".", "【", "】", ":", "：", ",", "，", "/", "(", ")", "*", "。", "?", "？")
             line = line.replace(" ", "-").strip()
             result = line.lower()
             # files.write(tab + "- [" + temp + "](#" + result + ")\n")
             results.append(tab + "- [" + temp + "](#" + result + ")\n")
-    results.append("\n`目录 end` *目录创建于"+nowTime+"* | 更多: [CSDN](http://blog.csdn.net/kcp606) | [oschina](https://my.oschina.net/kcp1104) | [码云](https://gitee.com/kcp1104) ")
+    results.append("\n`目录 end` |_"+nowTime+"_| [码云](https://gitee.com/kcp1104) | [CSDN](http://blog.csdn.net/kcp606) | [OSChina](https://my.oschina.net/kcp1104)")
     results.append("*"*40)
     line_prepender(filename, results)
 
@@ -112,10 +112,10 @@ def test():
     # print(temp.encode('utf-8'))
     
 def main():
+    '''主函数'''
     ignoreList = [
         'SUMMARY.md', 'README.md', 'CODE_OF_CONDUCT.md','Process.md'
         ]
-    '''主函数'''
     opts,args = getopt.getopt(sys.argv[1:], 'htla:')
     for op, value in opts:
         if op == '-h':

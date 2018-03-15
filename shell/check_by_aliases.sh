@@ -40,8 +40,8 @@ readConfigAnalysisRepos(){
             # printf "\033[0;32m%-60s" $path
             # printf "\033[1;34m《%s》\n" $name
 
-            printf "\033[1;40mKg.%-10s" $aliasName
-            printf "\033[32m%-60s" $path
+            printf "\033[1;34mKg.%-10s" $aliasName
+            printf "\033[1;32m%-60s" $path
             printf "\033[34m%-30s\33[0m\n" "《$name 》"
             title=1
         fi
