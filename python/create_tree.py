@@ -10,11 +10,10 @@ import subprocess
 # 忽略的文件夹
 dirs=['.git','SQL','Docker']
 # 所有要被忽略的文件
-files=['CODE_OF_CONDUCT.md', 'README.md', 'Learn_CSS3.md', 'Learn_Html5.md']
+files=['PULL_REQUEST_TEMPLATE.md', 'ISSUE_TEMPLATE.md', 'CODE_OF_CONDUCT.md', 'README.md', 'CSS3.md', 'HTML5.md']
 flag_show=False
 flag_append=False
 result = []
-
 
 def show_help():
     print("使用: python3 create_tree.py [-s] [-a] [-h] ")
@@ -26,12 +25,14 @@ def listfiles(name):
     lists = []
     dir_list = []
     temp = os.listdir(name)
+    temp.sort()
+    # print(temp)
     for r in temp:
         if(not os.path.isdir(name+'/'+r)):
             lists.append(r)
         else:
             #print("是目录:::::::::::",r)
-            dir_list.insert(0, r)
+            dir_list.append(r)
             #lists.insert(0,r)
     lists.sort()
     lists = dir_list + lists
@@ -118,4 +119,5 @@ if flag_append :
         dest.write('# Summary\n\n* [Introduction](README.md)\n\n')
         for res in result:
             dest.write(res+'\n')
+    print('重新生成目录树完成!')
         
