@@ -7,7 +7,7 @@ import subprocess
 
 # json_url = " https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
 # 默认的配置文件的地址
-json_url = "https://gitee.com/kcp1104/script/raw/master/python/mythsdk/config.json"
+json_url = "https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
 # 存放了sdk的七牛云的域名
 cloud_url = None
 ## 这个github 上 sdk 只有几个，大多数没有
