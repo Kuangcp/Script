@@ -1,7 +1,7 @@
 #!/bin/dash
 # 根据aliase文件来检查git仓库, 只适用于使用中文语言的Linux系统
 
-configPath="/home/kcp/.git_repo"
+configPath="/home/kcp/.repos"
 
 # 读取配置文件,分析每一行,分析仓库状态 并输出
 readConfigAnalysisRepos(){
