@@ -5,27 +5,10 @@ import json
 import getpass
 import subprocess
 
-# json_url = " https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
-# 默认的配置文件的地址
-json_url = "https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
-# 存放了sdk的七牛云的域名
-cloud_url = None
-## 这个github 上 sdk 只有几个，大多数没有
-github_url = "https://raw.githubusercontent.com/kuangcp/Apps/master/zip/"
-
-'''
-2017-08-30 16:19:16
-    配置sdk的环境，因为用sdkman用的很不爽，就用这个来做到大致的功能，自动下载的话，用的github网太慢体验不好
-        1.自动配置环境变量  
-        2.更改当前的sdk版本 
-        3.列出所以可以下载的sdk 
-        4.自动下载指定版本的sdk 
-2017-10-02 21:07:02
-    新添加了几个sdk，优化了代码规范
-2017-11-12 12:50:27
-    增加域名解析，编辑主页 
-    kk index 然后打开七牛手动刷新缓存？？？？
-'''
+# SDK的版本配置文件 Github
+json_url = " https://raw.githubusercontent.com/Kuangcp/Script/master/python/mythsdk/config.json"
+# Gitee
+# json_url = "https://gitee.com/kcp1104/script/raw/master/python/mythsdk/config.json"
 
 def shell(cmd):
     subprocess.call(cmd, shell=True)
@@ -142,7 +125,7 @@ def download_fromgit(sdk, version):
 def down_fromqiniu(sdk, version):
     ''' 使用七牛云作为存储 '''
     config_md = init()+"/.mythsdk/config.md"
-    global cloud_url
+    cloud_url = None
     if os.path.exists(config_md):
         cloud_url = open(config_md).readline().rstrip()
     if cloud_url == None:
@@ -320,6 +303,9 @@ def init():
         subprocess.call("mkdir ~/.mythsdk", shell=True)
         subprocess.call("mkdir ~/.mythsdk/zip & mkdir ~/.mythsdk/sdk", shell=True)
     return user
+
+# def init():
+#     return '/home/kcp/test'
 
 def main():
     init()

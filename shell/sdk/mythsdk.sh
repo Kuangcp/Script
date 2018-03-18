@@ -1,10 +1,9 @@
 #!/bin/dash
 
 # dash 重写mythsdk
-
 jsonUrl='https://gitee.com/kcp1104/script/raw/master/python/mythsdk/config.json'
 qiNiu=''
-githubUrl='https://raw.githubusercontent.com/kuangcp/Apps/master/zip/'
+# githubUrl='https://raw.githubusercontent.com/kuangcp/Apps/master/zip/'
 # bashPath='~/.mythsdk/'
 userDir=`cd && pwd`
 basePath=$userDir'/test/sdk/'
@@ -52,5 +51,12 @@ case $1 in
     ;;
     -l | l | list)
         listAllSdk
+    ;;
+    *)
+        a="1 2 3   4"
+        for version in $a
+        do
+            echo 11"$version"
+        done
     ;;
 esac
