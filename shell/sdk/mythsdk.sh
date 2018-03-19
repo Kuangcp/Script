@@ -40,16 +40,29 @@ listAllSdk(){
         sdkUrl=`sed -n $(($i+2))','$(($i+2))'p' $configPath`
         sdkVersion=`sed -n $(($i+3))','$(($i+3))'p' $configPath`
         
-        printf "\033[1;34m%s$end " "$sdkName"
-        if [ $1"z" = "0z" ];then
-            printf "\033[0;35m %s$end  \033[1;31m%s\n    " "$sdkInfo" "$sdkUrl" 
+        if [ "# "$2 = "# " ];then
+            printf "\033[1;34m%s$end " "$sdkName"
+            if [ $1"z" = "0z" ];then
+                printf "\033[0;35m %s$end  \033[1;31m%s\n    " "$sdkInfo" "$sdkUrl" 
+            fi
+            printf "\n    $start"
+            for version in $sdkVersion
+            do
+                printf $version"  "
+            done
+            printf $end"\n"
+        elif [ "# "$2 = "$sdkName" ];then
+            printf "\033[1;34m%s$end " "$sdkName"
+            if [ $1"z" = "0z" ];then
+                printf "\033[0;35m %s$end  \033[1;31m%s\n    " "$sdkInfo" "$sdkUrl" 
+            fi
+            printf "\n    $start"
+            for version in $sdkVersion
+            do
+                printf $version"  "
+            done
+            printf $end"\n"
         fi
-        printf "\n    $start"
-        for version in $sdkVersion
-        do
-            printf $version"  "
-        done
-        printf $end"\n"
         i=$(($i+5))
     done
 }
@@ -61,10 +74,10 @@ case $1 in
         printf "$format" "-l|l|list" "列出所有sdk"
     ;;
     -l | l | list)
-        listAllSdk
+        listAllSdk 1 $2
     ;;
     -ls | ls | lists)
-        listAllSdk 0
+        listAllSdk 0 $2
     ;;
     *)
         a="1 2 3   4"
@@ -74,3 +87,18 @@ case $1 in
         done
     ;;
 esac
+
+
+# python  myth.py <params> ：
+#      l|list <sdk>： 
+#         输出所有可安装的sdk,指定则输出指定sdk信息
+#      h|help :
+#         帮助信息
+#      q domain :
+#         配置存放了sdk的七牛云地址 http://xxx/
+#      up|update :
+#         更新配置文件，即sdk库
+#      u|use sdk version :
+#         使用已安装的指定sdk的版本
+#      i|install sdk <version> : 
+#         安装指定版本，不指定则安装最新版
