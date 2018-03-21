@@ -2,6 +2,8 @@
 # 根据aliase文件来检查git仓库, 只适用于使用中文语言的Linux系统
 
 configPath="/home/kcp/.repos"
+# 进行目录迭代的最大深度
+maxDeep=10
 
 # 读取配置文件,分析每一行,分析仓库状态 并输出
 readConfigAnalysisRepos(){
@@ -183,11 +185,11 @@ show_link(){
             # HTTPS 和 SSH 两种方式的仓库URL进行转换
             if [ $isHttps != 0 ]; then 
                 isRepo=${url%%\.git*}
-                echo "  \033[0;36m"$isRepo"/blob/"$isBranch$relative_path"/"$3"\033[0m\n"
+                echo "$isRepo/blob/$isBranch$relative_path/$3\n"
             else
                 isRepo=${line#*:} # 截取:右边
                 isRepo=${isRepo%%\.*} # 截取.左边
-                echo "  \033[0;36mhttps://$2.com/"$isRepo"/blob/"$isBranch$relative_path"/"$3"\033[0m\n"
+                echo "https://$2.com/$isRepo/blob/$isBranch$relative_path/$3\n"
             fi
             break
         fi
@@ -195,9 +197,8 @@ show_link(){
 }
 # 获取仓库中文件的远程URL,目前实现了Github和Gitee
 get_file_url(){
-    echo "开始寻找项目根目录..."
     current_path=`pwd`
-    for i in `seq 10` # 限制最多往上找10级目录
+    for i in `seq $maxDeep` # 限制最多往上找10级目录
     do
         result=`ls -al | grep d.*git` # 搜索d开头的结果,也就是文件夹
         if [ "$result"z = "z" ]; then 
@@ -206,36 +207,41 @@ get_file_url(){
             break
         fi
         if [ `pwd` = "/" ]; then
-            echo "查找结束! 已经到系统根目录了!"
-            break
+            echo "查找Git仓库失败! 已经到系统根目录了!"
+            exit
         fi
     done
+    if [ $i = $maxDeep ];then
+        echo "目录太深了, 请检查当前目录是否正确, 或者进脚本配置最大迭代深度"
+        exit
+    fi
     if [ "$result"z != "z" ]; then 
         remote_link=`git remote -v`
         project_path=`pwd`
     fi 
-
     show_link "$remote_link" "github" $2
     show_link "$remote_link" "gitee" $2
     # show_link "$remote_link" "gitlab" $2
 }
-
+help(){
+    start='\033[0;32m'
+    end='\033[0m'
+    echo "运行：sh check_repos.sh $start <params> $end"
+    printf "  $start%-16s$end%-20s\n" "no param" "列出所有操作过的仓库"
+    printf "  $start%-16s$end%-20s\n" "-h|h|help" "输出帮助信息"
+    printf "  $start%-16s$end%-20s\n" "-l|l|list" "列出所有仓库"
+    printf "  $start%-16s$end%-20s\n" "-p|p|push" "推送本地的提交"
+    printf "  $start%-16s$end%-20s\n" "-a/ac" "手动添加仓库以及注释信息或者/自动添加当前目录"
+    printf "  $start%-16s$end%-20s\n" "-i <imagefile>" "仅是图片仓库：在当前目录方便得到图片URL"
+    printf "  $start%-16s$end%-20s\n" "-f <file>" "github上文本文件URL"
+    printf "  $start%-16s$end%-20s\n" "-c" "打开配置文件"
+    # printf "  $start%-16s$end%-20s\n" "" ""
+    exit 0
+}
 # 入口 读取脚本参数调用对应 函数
 case $1 in 
     -h | h | help)
-        start='\033[0;32m'
-        end='\033[0m'
-        echo "运行：sh check_repos.sh $start <params> $end"
-        printf "  $start%-16s$end%-20s\n" "no param" "列出所有操作过的仓库"
-        printf "  $start%-16s$end%-20s\n" "-h|h|help" "输出帮助信息"
-        printf "  $start%-16s$end%-20s\n" "-l|l|list" "列出所有仓库"
-        printf "  $start%-16s$end%-20s\n" "-p|p|push" "推送本地的提交"
-        printf "  $start%-16s$end%-20s\n" "-a/ac" "手动添加仓库以及注释信息或者/自动添加当前目录"
-        printf "  $start%-16s$end%-20s\n" "-i <imagefile>" "仅是图片仓库：在当前目录方便得到图片URL"
-        printf "  $start%-16s$end%-20s\n" "-f <file>" "github上文本文件URL"
-        printf "  $start%-16s$end%-20s\n" "-c" "打开配置文件"
-        # printf "  $start%-16s$end%-20s\n" "" ""
-        exit 0;;
+        help;;
     -p | push | p)
         pushAll "$configPath"
         echo "推送全部完成"

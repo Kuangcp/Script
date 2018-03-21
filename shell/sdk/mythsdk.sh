@@ -17,25 +17,23 @@ current='\033[0;31m'
 exist='\033[0;32m'
 end='\033[0m'
 
-# 初始化脚本所需目录结构
-initDir(){
-    # echo $basePath
-    if [ ! -d $basePath ];then 
-        echo "不存在目录"$basePath
-        mkdir -p $basePath"zip" && mkdir -p $basePath"sdk"
+createDir(){
+    if [ ! -d $1 ];then 
+        mkdir -p $1
     fi
 }
 updateConfig(){
     curl -o $configPath $jsonUrl
 }
-# 加载配置文件,如果本地没有就去默认URL下载
+# 初始化目录结构, 加载配置文件, 如果本地没有就去默认URL下载
 loadConfig(){
-    initDir
+    createDir $basePath"zip"
+    createDir $basePath"sdk"
     if [ ! -f $configPath ];then
         updateConfig
     fi
 }
-# 因为sdk 是#后有空格, 所以导致了三个参数进来
+# 因为sdk 是#后有空格, 所以导致了三个参数进来, 恰巧这个空格省去了我切分出sdk的名字
 # 查询sdk是否有对应版本的目录, 有就说明下载了, 如果bin目录下有current文件,说明正在使用
 querySDKExist(){
     if [ -f $basePath"sdk/"$2"/"$3"/bin/current" ]; then
@@ -47,6 +45,19 @@ querySDKExist(){
         return 0
     fi
     printf $3"  "
+}
+showOneSdk(){
+    sdkName=$2
+    sdkVersion=$3
+    printf "\033[1;34m%-15s$end " "$sdkName"
+    if [ $1"z" = "0z" ];then
+        printf "\033[0;35m %-30s  \033[1;31m%-10s$end" "$sdkUrl" "$sdkInfo" 
+    fi
+    printf "\n    "
+    for version in $sdkVersion; do
+        querySDKExist $sdkName $version
+    done
+    printf "\n"
 }
 # 列出所有可安装的sdk以及状态
 listAllSdk(){
@@ -60,31 +71,12 @@ listAllSdk(){
         sdkUrl=`sed -n $(($i+2))','$(($i+2))'p' $configPath`
         sdkVersion=`sed -n $(($i+3))','$(($i+3))'p' $configPath`
         
+        # $2 没有值,就只会跑第一个 列出所有
         if [ "# "$2 = "# " ];then
-            printf "\033[1;34m%-15s$end " "$sdkName"
-            if [ $1"z" = "0z" ];then
-                printf "\033[0;35m %-30s  \033[1;31m%-10s$end" "$sdkUrl" "$sdkInfo" 
-            fi
-            printf "\n    "
-            for version in $sdkVersion
-            do
-                querySDKExist $sdkName $version
-                # printf $exist$version$end"  "
-            done
-            printf "\n"
+            showOneSdk $1 "$sdkName" "$sdkVersion"
         # 展示具体的sdk版本信息
         elif [ "# "$2 = "$sdkName" ];then
-            printf "\033[1;34m%-15s$end " "$sdkName"
-            if [ $1"z" = "0z" ];then
-                printf "\033[0;35m %-30s  \033[1;31m%s$end" "$sdkUrl" "$sdkInfo" 
-            fi
-            printf "\n   "
-            for version in $sdkVersion
-            do
-                querySDKExist $sdkName $version
-                # printf  $exist$version$end"  "
-            done
-            printf "\n"
+            showOneSdk $1 "$sdkName" "$sdkVersion"
         fi
         i=$(($i+5))
     done
@@ -96,7 +88,7 @@ initQiNiu(){
         printf $error"    请配置七牛云的域名!!\n"$end
         exit
     fi
-    source $secretPath
+    . $secretPath
 }
 # 只是根据URL下载文件到对应位置
 downloadZip(){
@@ -120,22 +112,16 @@ downloadZip(){
 }
 # 检查配置文件中是否有该sdk以及version, 返回1则是有 0反之
 checkExist(){
-    # echo "cat $configPath | grep "^ $1$""
     result=`cat -n $configPath | grep "# $1$"`
-    
-    echo  $result
     for i in $result
     do
         versions=`sed -n $(($i+3))','$(($i+3))'p' $configPath`
-        # printf "$versions"
         for version in $versions
         do
-            # printf "$version | $2" 
             if [ "$version" = "$2" ];then 
                 return 1
             fi 
         done 
-        # return 0
         printf $error"仓库没有该sdk或者该版本\n"$end
         exit
     done
