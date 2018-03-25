@@ -43,8 +43,8 @@ readConfigAnalysisRepos(){
             # printf "\033[1;34m《%s》\n" $name
 
             printf "\033[1;34mKg.%-10s" $aliasName
-            printf "\033[1;32m%-60s" $path
-            printf "\033[34m%-30s\33[0m\n" "《$name 》"
+            printf "\033[1;32m%-50s" $path
+            printf "\033[34m%-20s\33[0m\n" "《$name 》"
             title=1
         fi
         # 输出git命令运行结果 即文件名
