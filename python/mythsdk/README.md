@@ -1,7 +1,8 @@
 # MythSDK
 > 类似sdkman一样的工具，但是这个脚本是基于 .bash_aliases 修改来配置环境变量的<br/>
 > 因为使用sdkman导致终端开启慢，才写的这个脚本,所有sdk放在了七牛上 所以要自行配置<br/>
-> 2017-08-31 10:36:38
+
+> [Shell的实现](/shell/sdk/README.md)`添加了一些功能`
 
 ## How to Use
 > 先配置好压缩包sdk-version.zip(version/bin结构)，然后上传，更改配置文件然后提交仓库
@@ -13,7 +14,7 @@
 - zip格式是 `sdk-version.zip` 内容是 `version/bin` 这样的目录结构
 
 ### install 
-- `git clone https://git.oschina.net/kcp1104/script.git`
+- `git clone --depth 1 https://github.com/kuangcp/script.git`
 - `cd script/python/mythsdk/`
 - `python3 mythsdk.py up` 
     - then `python3 mythsdk.py l` can view all sdk
@@ -30,11 +31,3 @@
 - `mk u gradle 3.5` 使用指定版本
 - `mk i java` 安装 java最新版（json配置文件的最后一个版本）
     - `mk i gradle 4.0` 安装指定版本
-
-### TODO
-> 增加删除压缩包, 删除压缩包以及解压文件, 删除解压文件 三个功能
-
-添加介绍信息和官网地址
-    "info":{
-        "ant":["构建工具", "url"]
-    },

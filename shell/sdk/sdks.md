@@ -15,8 +15,8 @@ http://
 
 # gradle
 现代化的构建工具  
-http://  
-3.5 4.0 4.1 4.2 4.2.1 4.3.1 4.4.1 4.5
+http://services.gradle.org/distributions/  
+3.5 4.0 4.1 4.2 4.2.1 4.3.1 4.4.1 4.5 4.6
 
 # grails
 基于Groovy的类Rails框架  
@@ -30,7 +30,7 @@ http://
 
 # java
 Java的JDK包  
-http://  
+http://www.oracle.com/technetwork/java/javase/downloads/index.html  
 1.7.0_80 1.8.0_131 1.8.0_144
 
 # kotlin
@@ -65,7 +65,7 @@ http://
 
 # springboot
 Spring的快速开发框架  
-http://  
+https://projects.spring.io/spring-boot/  
 1.3.5 1.4.0 1.5.2 1.5.3 1.5.4 1.5.5 1.5.6 1.5.7 1.5.9 1.5.10
 
 # sshoogr
