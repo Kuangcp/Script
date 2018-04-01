@@ -8,7 +8,7 @@ jsonUrl='https://raw.githubusercontent.com/Kuangcp/Script/master/shell/sdk/sdks.
 
 # githubUrl='https://raw.githubusercontent.com/kuangcp/Apps/master/zip/'
 userDir=`cd && pwd`
-basePath=$userDir'/test/mythsdk'
+basePath=$userDir'/.mythsdk'
 configPath=$basePath'/sdks.md'
 secretPath=$basePath'/secret.conf'
 
