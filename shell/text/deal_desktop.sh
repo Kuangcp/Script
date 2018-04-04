@@ -13,7 +13,7 @@ case $1 in
     ;;
     -a | a | add)
         path=`pwd`
-        echo '[Desktop Entry]\nCategories=Development;
+        echo '#!/usr/bin/env xdg-open\n[Desktop Entry]\nCategories=Development;
 Exec='$path'\nIcon='$path'\nName='$2'
 Terminal=false\nType=Application\n'>>$2'.desktop'
     ;;
