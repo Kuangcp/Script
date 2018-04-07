@@ -1,7 +1,7 @@
 help(){
     start='\033[0;32m'
     end='\033[0m'
-    printf "运行：dash file_tool.sh $start <params> $end\n"
+    printf "运行：dash FileTool.sh $start <params> $end\n"
     printf "  $start%-16s$end%-20s\n" "-h|h|help" "帮助"
 }
 
