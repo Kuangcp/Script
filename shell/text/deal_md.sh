@@ -1,15 +1,13 @@
 # 在脚本旁边建立 local.conf文件 并添加以下配置
-# 笔记的仓库路径
-# config_target_repo='/home/kcp/Documents/Notes/Notes'
+# 笔记的仓库路径, 而且最后留一行空行  config_target_repo='/home/kcp/Documents/Notes/Notes'
 
 path=$(cd `dirname $0`; pwd)
-
 # 忽略文件目录
 config_ignore_file=$path'/ignore.conf'
 # 脚本文件目录
 config_python_file=${path%%shell*}'python/append_contents.py'
 
-# 读取本地配置文件
+# 读取本地配置文件 初始化 config_target_repo
 while read line;do  
     eval "$line"  
 done < "$path"/local.conf
@@ -58,33 +56,24 @@ case $1 in
                 printf "%s\n" "$result"
             fi
         done;;
-        
     -a | a | all)
-        printf "开始更新全部, 目录: %s" "$config_target_repo"
+        printf "开始更新全部, 目录: %s\n" "$config_target_repo"
         read_dir $config_target_repo;;
-
     -al | al | alter)
-        result=`cd $config_target_repo && git status`
+        printf "更新已修改文件, 目录: %s\n" "$config_target_repo"
+        result=`cd $config_target_repo && git status -s`
         # 使用标志变量, 前缀为修改或者新增的行 才能进行更新, 每个文件都判断一次并更新这个标志变量一次
         change_flag=0 
-        for line in $result
-        do
-            # echo "初始化"$change_flag
+        for line in $result;do
             # echo ">>"$line
-            # 当前行出现了 修改 或者 新增 或者 -> (表示重命名) 任一,才会更新下面出现的md文件
-            if [ `echo $line | grep -E "(修改)+|(新文件)+|(->)+"` ]; then
+            if [ `echo $line | grep -E "^[A|M]+$|^\?\?$"` ]; then
                 change_flag=1
             fi
             map_result=`echo "$line" | grep ".md"`
-            # echo "判断后"$change_flag
-            
             if [ "$map_result"z != 'z' ]; then
                 if [ $change_flag = 1 ]; then
-                    # 下面这种方式只能完全匹配不能局部匹配
-                    # ignore_file=`cat $config_ignore_file | grep $map_result`
                     ignore=`cat $config_ignore_file`
                     ignore_file=`echo $map_result | grep "$ignore" `
-                    # echo "::::"$map_result
                     if [ "$ignore_file"z = "z" ];then
                         printf "\033[0;32m 修改 : "$map_result"\033[0m"
                         result=`python3 $config_python_file -a n $config_target_repo/$map_result`
@@ -93,7 +82,6 @@ case $1 in
                 fi
                 change_flag=0
             fi
-            # echo "恢复"$change_flag
         done;;
     *)
         # 没有参数的时候, 就是单文件的更新
@@ -102,9 +90,3 @@ case $1 in
         result=`python3 $config_python_file -a n $1`
         printf "$result\n";;
 esac
-
-# 2018-01-22 23:11:14
-# 解决了一个更新删除和重命名的文件的目录的错误
-
-# 2018-03-15 21:16:55
-# 将所有依赖性配置外置, 脱离仓库
