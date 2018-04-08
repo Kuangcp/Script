@@ -40,16 +40,16 @@ readConfigAnalysisRepos(){
             # printf "\033[0;32m%-60s" $path
             # printf "\033[1;34m《%s》\n" $name
 
-            printf "\033[1;34mKg.%-10s" $aliasName
-            printf "\033[1;32m%-50s" $path
-            printf "\033[34m%-20s\33[0m\n" "《$name 》"
+            printf "\033[1;32mKg.%-10s" $aliasName
+            printf "\033[0;32m%-50s" $path
+            printf "\033[1;32m%-20s\33[0m\n" "《$name 》"
             title=1
         fi
         # 输出git命令运行结果 即文件名
         other=`expr match "$1" ".*尚未加入"`
         # echo $1$other
         if [ $other = 0 ]; then
-            printf "  \033[0;33m%s\033[0m\n" "$1"
+            printf "  \033[0;36m%s\033[0m\n" "$1"
         fi
     fi
     return $title #返回是否输出过标题
