@@ -13,12 +13,9 @@ while read line;do
 done < "$path"/local.conf
 
 read_dir(){
-    ''' 递归阅读文件, 然后更新md文件的目录 '''
-    for file in `ls $1`
-    do
-        if [ -d $1"/"$file ]  #注意此处之间一定要加上空格，否则会报错 
-        # 这里是判断是否是文件夹,文件夹就进入 
-        then
+    # 递归阅读文件, 然后更新md文件的目录
+    for file in `ls $1`;do
+        if [ -d $1"/"$file ]; then
             read_dir $1"/"$file
         else
             # 判断当前文件是否属于忽略文件 是则文件名否则空
@@ -27,7 +24,7 @@ read_dir(){
             type=`echo $file | grep .*md$`
             # 不是忽略文件并且文件名符合要求
             if [ "$ignore_file"z = "z" ] && [ "$type"z != "z" ]; then 
-                printf ">>>>>>%s" $file
+                printf ">>>>>> \033[0;32m%s\033[0m" $file
                 result=`python3 $config_python_file  -a n $1'/'$file`
                 printf "$result\n"
             fi 
@@ -48,8 +45,7 @@ case $1 in
         printf "  $start%-20s$end%-20s\n" "-al|al|alter" "更新指定Git仓库下修改过的md文件的索引目录";;
     -c | c | current)
         files=`ls *.md`
-        for file in $files
-        do 
+        for file in $files;do 
             if test -f $file; then
                 printf "[%s]" $file
                 result=`python3 $config_python_file -a n $file`

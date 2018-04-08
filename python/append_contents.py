@@ -6,8 +6,6 @@ import time
 '''
 处理 markdown 常用操作：
     添加目录（注意出现的字母要全部小写） 目录采用的URL的编码可以不转码
-    TODO 将命令更加简化,直接配置成对某目录递归的更新目录区域,省去每次的操作
-    使用shell实现更不好！！！
 '''
 
 def repalces(line, *lists):
