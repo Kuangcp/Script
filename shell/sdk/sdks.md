@@ -31,7 +31,7 @@ http://
 # java
 Java的JDK包  
 http://www.oracle.com/technetwork/java/javase/downloads/index.html  
-1.7.0_80 1.8.0_131 1.8.0_144
+1.7.0-80 1.8.0-131 1.8.0-144
 
 # kotlin
 一门正在跨前后端的语言  

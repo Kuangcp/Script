@@ -7,9 +7,7 @@ maxDeep=10
 
 # 读取配置文件,分析每一行,分析仓库状态 并输出
 readConfigAnalysisRepos(){
-    temp=""
-    flag=1
-    title=0
+    temp="";flag=1;title=0;
     # 对比之下,expr比grep更快
     clean=`expr match "$1" ".*干净"`
     # cleans=`echo $1|grep "干净"`

@@ -8,7 +8,7 @@ jsonUrl='https://raw.githubusercontent.com/Kuangcp/Script/master/shell/sdk/sdks.
 
 # githubUrl='https://raw.githubusercontent.com/kuangcp/Apps/master/zip/'
 userDir=`cd && pwd`
-basePath=$userDir'/test/mythsdk'
+basePath=$userDir'/.mythsdk'
 configPath=$basePath'/sdks.md'
 secretPath=$basePath'/secret.conf'
 
@@ -47,7 +47,9 @@ appendPath(){
 
     echo $sdk"_HOME="$basePath"/sdk/"$sdk"/current" >> $trueFile
     if [ $sdk = 'java' ];then
-        echo 'export JRE_HOME=${'$sdk'_HOME}/jre \n export CLASSPATH=.:${'$sdk'_HOME}/lib:${JRE_HOME}/lib \n export PATH=${'$sdk'_HOME}/bin:$PATH'  >> $trueFile
+        echo 'export JRE_HOME=${'$sdk'_HOME}/jre' >> $trueFile
+        echo 'export CLASSPATH=.:${'$sdk'_HOME}/lib:${JRE_HOME}/lib' >> $trueFile
+        echo 'export PATH=${'$sdk'_HOME}/bin:$PATH'  >> $trueFile
     else
         echo "export PATH=\$PATH:$"$sdk"_HOME/bin" >> $trueFile
     fi
