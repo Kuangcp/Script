@@ -12,6 +12,7 @@ checkTime='10m' # 轮询周期 10分钟
 # timeOut=5 # 存活时间 5s
 # checkTime='1s' # 轮询周期 1s
 
+error='\033[0;31m'
 start='\033[0;32m'
 end='\033[0m'
 
@@ -59,7 +60,20 @@ moveFile(){
 }
 # * 通配符删除
 moveAll(){
+    if [ "$1"1 = "1" ];then
+        
+        printf "delete all file? [y/n] " 
+        read answer
+        if [ ! "$answer" = "y" ];then
+            exit
+        fi
+    fi
     list=`ls $1`
+    num=${#list}
+    if [ $num = 0 ];then
+        printf $error"no matches found $1 \n"
+        exit
+    fi
     for file in $list; do
         # echo "$file"
         moveFile "$file"
@@ -80,11 +94,15 @@ case $1 in
     -h | h | help)
         help
     ;;
-    a)
+    -a)
         moveAll "$2"
         (lazyDelete &)  
     ;;
     *)
+        if [ "$1"1 = "1" ];then
+            printf $error"pelease select specific file\n" 
+            exit
+        fi
         moveFile "$1"
         (lazyDelete &)
     ;;

@@ -2,8 +2,8 @@
 from evdev import InputDevice
 from select import select
 
-def detectInputKey(count):
-    dev = InputDevice('/dev/input/event0')
+def detectInputKey(count, eventNum):
+    dev = InputDevice('/dev/input/event'+str(eventNum))
     while True:
         select([dev], [], [])
         for event in dev.read():
@@ -11,8 +11,9 @@ def detectInputKey(count):
                 count+=1
                 print(count)
 
-count = 0
-detectInputKey(count)
+print("please input listen event: ", end='')
+eventNum=input()
+detectInputKey(0, eventNum)
 
 # TODO 结合redis的zset,每天的敲击都记录下来
 
