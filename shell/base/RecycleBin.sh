@@ -55,6 +55,10 @@ moveFile(){
     # echo "input file : $fileName"
     deleteTime=`date +%s`
     log "◆ prepare to delete $currentPath/$fileName"
+    if [ ! -f "$currentPath/$fileName" ] && [ ! -d "$currentPath/$fileName" ] && [ ! -L "$currentPath/$fileName" ];then 
+        printf $error"file not exist \n"
+        exit
+    fi
     # 全部加上双引号是因为文件名中有可能会有空格
     mv "$currentPath/$fileName" "$trashPath/$fileName.$deleteTime"
 }
@@ -85,18 +89,22 @@ log(){
 }
 help(){
     printf "Run ./RecycleBin.sh $start <params> $end\n"
-    printf "  $start%-16s$end%-20s\n" "-h|h|help" "show help"
+    printf "  $start%-16s$end%-20s\n" "-h|help" "show help"
     printf "  $start%-16s$end%-20s\n" "file/dir" "move file/dir to trash dir"
-    printf "  $start%-16s$end%-20s\n" "a \"pattern\"" "all pattern file "
+    printf "  $start%-16s$end%-20s\n" "-a \"pattern\"" "all pattern file "
+    printf "  $start%-16s$end%-20s\n" "-log" "show log"
 }
 init
 case $1 in 
-    -h | h | help)
+    -h | help)
         help
     ;;
     -a)
         moveAll "$2"
         (lazyDelete &)  
+    ;;
+    -log)
+        less $logFile
     ;;
     *)
         if [ "$1"1 = "1" ];then
