@@ -4,6 +4,6 @@ if [ "$1" = "" ];then
 fi
 
 # 编译
-g++ `pwd`/$file -o `pwd`/${file%.*}.run
+g++ `pwd`/$file -o `pwd`/run.${file%.*}.run
 # 执行
-`pwd`/${file%.*}.run
+`pwd`/run.${file%.*}.run
