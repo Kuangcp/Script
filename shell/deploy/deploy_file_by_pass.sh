@@ -1,5 +1,6 @@
 # 通过密码上传war到指定的服务器并重启Tomcat
-. ./server.conf
+path=$(cd `dirname $0`; pwd)
+. $path/server.conf
 
 
 # sshpass -p "tHoxVL4F" scp -P 32200 target/ROOT.war huoshu@47.100.46.134:/home/huoshu/
