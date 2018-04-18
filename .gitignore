@@ -1,5 +1,11 @@
 *.html
+*.dump
+*.out
+
 __pycache__/
 .vscode/
+
+
 local.conf
 server.conf
+
