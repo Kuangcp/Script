@@ -103,7 +103,7 @@ load(){
 
 
 help(){
-    printf "%-20s$start%-20s$end\n" "运行：bash deal_md.sh " "<options>"
+    printf "%-20s$start%-20s$end\n" "运行：bash svn_backup.sh " "<options>"
     printf "  $start%-20s$end%-20s\n" "-h|h|help" "输出帮助信息"
     printf "  $start%-20s$end%-20s\n" "-d" "对全部仓库进行备份"
     printf "  $start%-20s$end%-20s\n" "-l <repoName>" "对指定仓库或全部仓库合并出一个完整的latest.dump文件"
