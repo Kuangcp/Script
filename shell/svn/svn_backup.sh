@@ -43,6 +43,7 @@ merge(){
 }
 dump(){
     for repoName in $repos;do
+        echo '准备 备份'$repoName
         dates=`date +%Y-%m-%d`
         # 获取最新版本号
         latestVersion=`svn info $url$repoName --username $username --password $password --xml`
@@ -70,7 +71,8 @@ dump(){
         fi
         # latestVersion=3
         # 除了首次备份, 之后都是增量备份
-        if [ ! $lastVersion = 1 ];then
+        if [ $lastVersion = 1 ];then
+            echo "首次备份"
             svnrdump dump $url$repoName --username $username --password $password -r $lastVersion:$latestVersion --incremental > "${repoName}_${dates}_ver_${lastVersion}-${latestVersion}_.dump"
         fi
         # 判断是否需要归并
