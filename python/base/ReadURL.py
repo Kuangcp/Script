@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import sys, os
 from time import sleep
 
+# 需要安装 requests bs4 lxml 模块
 class ReadURL:
     ''' 读取URL并解析'''
     def __init__(self, url):
