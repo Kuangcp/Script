@@ -7,6 +7,7 @@ repos='test'
 username='kuangchengping'
 password='123456'
 mergeDay=3
+backupDir='/home/kcp/test'
 
 
 path=$(cd `dirname $0`; pwd)
@@ -22,28 +23,28 @@ init(){
 }
 merge(){
     repoName=$1;lastVersion=$2;dates=$3;
-    allFile=`ls ${repoName}*all.dump 2>/dev/null`
+    allFile=`ls $backupDir/${repoName}*all.dump 2>/dev/null`
     # echo $allFile
     if [ $allFile'z' = 'z' ];then 
-        svnrdump dump $url$repoName --username $username --password $password > "${repoName}_${dates}_ver${latestVersion}.all.dump"
+        svnrdump dump $url$repoName --username $username --password $password > "$backupDir/${repoName}_${dates}_ver${latestVersion}.all.dump"
         return 0
     fi
-    files=`ls -tr $repoName*_.dump 2>/dev/null`
+    files=`ls -tr $backupDir/$repoName*_.dump 2>/dev/null`
     if [ $files'z' = 'z' ] ;then
-        printf  $error"没有更新\n"$end
+        printf  "`date +%y-%m-%d\ %H:%M:%S` $error 没有更新\n"$end
     else
-        mv $allFile "${repoName}_${dates}_ver${latestVersion}.all.dump"
-        allFile="${repoName}_${dates}_ver${latestVersion}.all.dump"
+        mv $backupDir/$allFile "$backupDir/${repoName}_${dates}_ver${latestVersion}.all.dump"
+        allFile="${repoName}_${dates}_ver_${latestVersion}.all.dump"
         for file in $files;do
-            echo "归并 "$file" >> "$allFile
-            cat $file >> $allFile
+            echo `date +%y-%m-%d\ %H:%M:%S`" 归并 "$file" >> "$allFile
+            cat $backupDir/$file >> $backupDir/$allFile
         done
-        rm -f $repoName*_.dump
+        rm -f $backupDir/$repoName*_.dump
     fi
 }
 dump(){
     for repoName in $repos;do
-        echo '准备 备份'$repoName
+        echo `date +%y-%m-%d\ %H:%M:%S`' 开始备份'$repoName
         dates=`date +%Y-%m-%d`
         # 获取最新版本号
         latestVersion=`svn info $url$repoName --username $username --password $password --xml`
@@ -52,7 +53,7 @@ dump(){
         if [ "$latestVersion" -gt 0 ] 2>/dev/null ;then 
             echo '' > /dev/null
         else
-            printf $error"$repoName 仓库配置错误, 请检查配置 \n"$end
+            printf "`date +%y-%m-%d\ %H:%M:%S`$error$repoName 仓库配置错误, 请检查配置 \n"$end
             continue
         fi 
         # 如果是指定天数就全量备份否则增量备份, 且注意,版本号区间是不能重叠的否则导入失败
@@ -65,19 +66,21 @@ dump(){
         else
             ((lastVersion++))
             if [ $lastVersion -gt $latestVersion ];then
-                printf $error$repoName" 仓库没有更新\n"$end
+                printf "`date +%y-%m-%d\ %H:%M:%S` $error$repoName 仓库没有更新\n"$end
                 continue
             fi            
         fi
         # latestVersion=3
         # 除了首次备份, 之后都是增量备份
         if [ $lastVersion = 1 ];then
-            echo "首次备份"
-            svnrdump dump $url$repoName --username $username --password $password -r $lastVersion:$latestVersion --incremental > "${repoName}_${dates}_ver_${lastVersion}-${latestVersion}_.dump"
+            echo `date +%y-%m-%d\ %H:%M:%S`" 首次备份"
+            svnrdump dump $url$repoName --username $username --password $password > "$backupDir/${repoName}_${dates}_ver_${latestVersion}.all.dump"
+        else
+            svnrdump dump $url$repoName --username $username --password $password -r $lastVersion:$latestVersion --incremental > "$backupDir/${repoName}_${dates}_ver_${lastVersion}-${latestVersion}_.dump"
         fi
         # 判断是否需要归并
         if [ `date +%u` = $mergeDay ];then
-            merge $repoName $lates"${repoName}_${dates}_ver${latestVersion}.all.dump"tVersion $dates
+            merge $repoName $latestVersion $dates
         fi
         # 更新版本号
         sed -i "s/"$repoName"lastVersion=.*/"$repoName"lastVersion="$latestVersion"/g" $configFile
@@ -85,19 +88,19 @@ dump(){
 }
 load(){
     repoName=$1;
-    allFile=`ls ${repoName}*all.dump 2>/dev/null`
+    allFile=`ls $backupDir/${repoName}*all.dump 2>/dev/null`
     if [ $allFile'z' = 'z' ];then 
-        printf $error$repoName"没有完整备份文件\n"$end
+        printf "`date +%y-%m-%d\ %H:%M:%S` $error$repoName 没有完整备份文件\n"$end
         return 1
     fi
-    files=`ls -tr $repoName*_.dump 2>/dev/null`
+    files=`ls -tr $backupDir/$repoName*_.dump 2>/dev/null`
     if [ $files'z' = 'z' ] ;then
-        printf $error$repoName"没有更新\n"$end
+        printf "`date +%y-%m-%d\ %H:%M:%S` $error$repoName 没有更新\n"$end
     else
-        cp $allFile latest.dump
+        cp $allFile $backupDir/${repoName}.latest.dump
         for file in $files;do
-            echo "归并 "$file" >> latest.dump"
-            cat $file >> latest.dump
+            echo `date +%y-%m-%d\ %H:%M:%S`" 归并 "$file" >> ${repoName}.latest.dump"
+            cat $file >> $backupDir/${repoName}.latest.dump
         done
     fi
 }
