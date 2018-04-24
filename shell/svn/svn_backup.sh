@@ -1,21 +1,35 @@
 #!/bin/bash
 
-# 远程URL
-url='http://192.168.10.200/svn/'
-# 项目 空格分隔, 只能是根路径 不能出现 test/test
-repos='test'
-username='kuangchengping'
-password='123456'
-mergeDay=3
-backupDir='/home/kcp/test'
-
+# # 远程URL
+# url='http://192.168.10.200/svn/'
+# # 项目 空格分隔, 只能是根路径 不能出现 test/test
+# repos='test'
+# username='kuangchengping'
+# password='123456'
+# mergeDay=3
+# backupDir='/home/kcp/test'
 
 path=$(cd `dirname $0`; pwd)
 configFile=$path/backup.conf
+mainConfig=$path/local.conf
 start='\033[0;32m'
 error='\033[0;31m'
 end='\033[0m'
 init(){
+    if [ ! -f $mainConfig ];then
+        printf "`date +%y-%m-%d\ %H:%M:%S` $error 请配置主配置文件\n$end"
+        echo -e "# 远程URL" >> $mainConfig
+        echo -e "url='http://192.168.10.200/svn/'" >> $mainConfig
+        echo -e "# 项目 空格分隔, 只能是根路径 不能出现 test/test" >> $mainConfig
+        echo -e "repos='project1 project2 project3'" >> $mainConfig
+        echo -e "username=''">> $mainConfig
+        echo -e "password=''">> $mainConfig
+        echo -e "# 每周六进行合并操作 " >> $mainConfig
+        echo -e "mergeDay=6">> $mainConfig
+        echo -e "backupDir='/home/kcp/test'">> $mainConfig
+        exit 1
+    fi
+    . $mainConfig
     if [ ! -f $configFile ];then
         touch $configFile
     fi

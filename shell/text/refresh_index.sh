@@ -12,8 +12,8 @@ readFile(){
     done
 }
 case $1 in 
-    h|help)
-
+    -h|-help)
+        help
     ;;
     *)
         readFile $1

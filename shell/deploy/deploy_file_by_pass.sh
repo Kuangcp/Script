@@ -2,11 +2,6 @@
 path=$(cd `dirname $0`; pwd)
 . $path/server.conf
 
-
-# sshpass -p "tHoxVL4F" scp -P 32200 target/ROOT.war huoshu@47.100.46.134:/home/huoshu/
-
-# 健康 🍎 幸福💑 就是💝爱
-
 loadConfig(){
     perfix=$1;process=$2;
     temp=${perfix}host;
@@ -36,7 +31,6 @@ loadConfig(){
     sshpass -p "${pass}" scp -P $port $file $user@$host:$path
     echo "$comm$process"
     echo sshpass -p \""${pass}\"" ssh -t -p $port $user@$host "\"$comm$process\""
-
 }
 
 help(){
@@ -52,6 +46,19 @@ case $1 in
         help
     ;;
     -up)
+        if [ -f server.conf ];then
+            echo "请初始化配置文件"
+            echo -e "A_host=''" >> server.conf
+            echo -e "A_port=''" >> server.conf
+            echo -e "A_user=''" >> server.conf
+            echo -e "A_pass=''" >> server.conf
+            echo -e "A_work='/home/kcp/work/yy'" >> server.conf
+            echo -e "A_file='target/ROOT.war'" >> server.conf
+            echo -e "A_path='/home/huoshu/'" >> server.conf
+            echo -e "A_build='mvn clean package -Pyy_fengkuangqiangda_'" >> server.conf
+            echo -e "A_comm='sudo mv /home/huoshu/ROOT.war /data/services/fengkuangqiangda/process'" >> server.conf
+            exit 1
+        fi
         # echo $#
         if [ $# -lt 3 ];then
             echo "请输入 配置系列 进程号";exit
