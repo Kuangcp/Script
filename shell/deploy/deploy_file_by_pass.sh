@@ -28,9 +28,12 @@ loadConfig(){
     build="$build"$process
     echo ${build}|awk '{run=$0;system(run)}'
     # echo $build
+    echo "sshpass -p "${pass}" scp -P $port $file $user@$host:$path"
     sshpass -p "${pass}" scp -P $port $file $user@$host:$path
     echo "$comm$process"
     echo sshpass -p \""${pass}\"" ssh -t -p $port $user@$host "\"$comm$process\""
+    sshpass -p "${pass}" ssh -t -p $port $user@$host "$comm$process"
+    sshpass -p "${pass}" ssh -t -p $port $user@$host "$comm$process"
 }
 
 help(){
