@@ -5,6 +5,8 @@ configPath="/home/kcp/.repos"
 # 进行目录迭代的最大深度
 maxDeep=10
 
+start='\033[0;32m'
+end='\033[0m'
 # 读取配置文件,分析每一行,分析仓库状态 并输出
 readConfigAnalysisRepos(){
     temp="";flag=1;title=0;
@@ -71,8 +73,7 @@ splitLine(){
 
 # 列出仓库 加上颜色
 listRepos(){
-    cat $1 | while read line
-    do 
+    cat $1 | while read line ; do 
         vars=`expr match "$line" "alias.Kg.*"`
         if [ "$vars" = "0" ]; then 
             continue
@@ -95,8 +96,7 @@ listRepos(){
 # 读取配置文件
 readFile(){
     title=0
-    cat $1 | while read line
-    do 
+    cat $1 | while read line ; do 
         # 配置文件中含有+号则表示不进行检查
         ignore=`echo "$line" | grep "+"`
         if [ "$ignore"x != "x" ];then 
@@ -114,12 +114,9 @@ readFile(){
         fi 
         # echo "收到的结果"$LinePath
         result=`cd "$LinePath" && git status 2>&1`  #将真正输出的内容先放在数组里，判断后再全部输出
-        echo "$result" | while read i  
-        do  
-            # echo ">>>>>"$i
+        echo "$result" | while read i ; do  
             title= readConfigAnalysisRepos "$i" "$line" "${title}" "${show_title}"
             if [ "$title"x = "1"x ]; then
-                # cd $var && git branch
                 show_title=1
             fi
         done
@@ -145,8 +142,7 @@ appendFile(){
 # push所有仓库
 pushAll(){
     title=0
-    cat $1 | while read line
-    do 
+    cat $1 | while read line; do 
         # 排除非/开头的行
         start_char= splitLine "$line"
         if [ "$start_char" = "0" ]; then 
@@ -159,7 +155,7 @@ pushAll(){
         result=`cd $LinePath && git status`
         haveCommit=`expr match "$result" ".*领先"`
         # echo $result$haveCommit
-        if [ $haveCommit != 0 ];then 
+        if [ $haveCommit != 0 ]; then 
             cd $LinePath && git push
         fi
         LinePath=''
@@ -168,8 +164,7 @@ pushAll(){
 
 # 根据平台的不同输出不同的URL Github Gitee Gitlab URL构造是一样的 有关联对应的仓库才输出
 show_link(){
-    for line in $1
-    do 
+    for line in $1; do 
         isGithub=`expr match "$line" ".*"$2`
         if [ $isGithub != 0 ]; then 
             result=`git branch`
@@ -194,10 +189,9 @@ show_link(){
     done
 }
 # 获取仓库中文件的远程URL,目前实现了Github和Gitee
-get_file_url(){
+getFileLocateUrl(){
     current_path=`pwd`
-    for i in `seq $maxDeep` # 限制最多往上找10级目录
-    do
+    for i in `seq $maxDeep`; do # 限制最多往上找10级目录
         result=`ls -al | grep d.*git` # 搜索d开头的结果,也就是文件夹
         if [ "$result"z = "z" ]; then 
             cd ..
@@ -209,7 +203,7 @@ get_file_url(){
             exit
         fi
     done
-    if [ $i = $maxDeep ];then
+    if [ $i = $maxDeep ]; then
         echo "目录太深了, 请检查当前目录是否正确, 或者进脚本配置最大迭代深度"
         exit
     fi
@@ -221,25 +215,41 @@ get_file_url(){
     show_link "$remote_link" "gitee" $2
     # show_link "$remote_link" "gitlab" $2
 }
+pullRepos(){
+    . /home/kcp/.repos
+    flag=0
+    for repo in "$@" ; do
+        if [ $flag = 0 ];then
+            flag=1
+            continue
+        fi
+        # printf " $repo \n"
+        path="`alias Kg.$repo`" 
+        path=${path##*cd}
+        path=${path%\'*}
+        printf " $start$path$end \n"
+        cd $path && git pull
+    done
+}
 help(){
-    start='\033[0;32m'
-    end='\033[0m'
     echo "运行：sh check_repos.sh $start <params> $end"
     printf "  $start%-16s$end%-20s\n" "no param" "列出所有操作过的仓库"
     printf "  $start%-16s$end%-20s\n" "-h|h|help" "输出帮助信息"
     printf "  $start%-16s$end%-20s\n" "-l|l|list" "列出所有仓库"
     printf "  $start%-16s$end%-20s\n" "-p|p|push" "推送本地的提交"
+    printf "  $start%-16s$end%-20s\n" "-pl|pull <repos...>" "下拉一些远程仓库的提交"
     printf "  $start%-16s$end%-20s\n" "-a/ac" "手动添加仓库以及注释信息或者/自动添加当前目录"
     printf "  $start%-16s$end%-20s\n" "-i <imagefile>" "仅是图片仓库：在当前目录方便得到图片URL"
     printf "  $start%-16s$end%-20s\n" "-f <file>" "github上文本文件URL"
     printf "  $start%-16s$end%-20s\n" "-c" "打开配置文件"
-    # printf "  $start%-16s$end%-20s\n" "" ""
     exit 0
 }
 # 入口 读取脚本参数调用对应 函数
 case $1 in 
     -h | h | help)
         help;;
+    -pl|pull)
+        pullRepos $@;;
     -p | push | p)
         pushAll "$configPath"
         echo "推送全部完成"
@@ -270,7 +280,7 @@ case $1 in
         exit 0;;
     -f | f )
         # 思路: 循环 往上找10级目录,找到了.git文件夹就执行 git remote -v 命令,然后github的拼接出来
-        get_file_url $1 $2;;
+        getFileLocateUrl $1 $2;;
     -c | c)
         vim $configPath
         exit 0;;
