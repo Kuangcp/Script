@@ -1,21 +1,31 @@
 #!/usr/bin/python3
 from base.ReadURL import ReadURL
-
+from time import sleep
 # 增加某用户的CSDN阅读量, 发现是每天都能去增加一次
 
 def read_blog(list_url):
     readUrl = ReadURL(list_url)
     soup = readUrl.readhtml()
-    li_list = soup.find_all('li')
-    for li_element in li_list:
-        li_class = readUrl.getelement(str(li_element), 'class')
-        if li_class == "blog-unit":
-            # print(li_element)
-            a_href = readUrl.getelement(str(li_element), 'href')
-            readUrl.url = a_href
+    titleList = soup.find_all('h4')
+    for line in titleList:
+        classType = readUrl.getelement(str(line), 'class')
+        if classType == 'text-truncate':
+            line = str(line)
+            # print(">>"+line);
+            temp = line.split('a href="')[1];
+            # print("<<"+temp)
+            url = temp.split('" target=')[0]
+            readUrl.url = url
             readUrl.readhtml()
-            # print("*"*40)
 
-for i in range(1, 3, 1):
-    list_url = 'http://blog.csdn.net/kcp606/article/list/'+str(i)
-    read_blog(list_url)
+
+
+def main():
+    while (1):
+        for i in range(1, 3, 1):
+            list_url = 'http://blog.csdn.net/kcp606/article/list/'+str(i)
+            print(list_url)
+            # read_blog(list_url)
+        sleep(5)
+
+main()

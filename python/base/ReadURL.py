@@ -54,5 +54,5 @@ class ReadURL:
             if ele.startswith(element):
                 return ele.split('"')[1]
         # log.write("------ "+line+"没有属性"+element+"\n")
-        print("------ "+block+"没有属性"+element+"\n")
+        print(">>>>>>> "+block+"没有属性"+element+"\n")
         return 'none'

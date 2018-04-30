@@ -6,11 +6,6 @@ runPath=$(cd `dirname $0`; pwd)
 . $runPath/config.sh
 . $runPath/download.sh
 
-head(){
-    printf $exist"★ ................................... ★ ................................... ★\n"$end
-    printf $error"    used is red   $exist installed is green   $end installable is white\n"
-    printf $exist"★ ................................... ★ ................................... ★\n"$end
-}
 help(){
     format="  $exist%s $yellow%s $end:\n      %s\n"
     printf "$format" "-h|h|help" "" "帮助"
@@ -30,12 +25,10 @@ case $1 in
         updateConfig
     ;;
     -l | l | list)
-        head
         loadConfig
         listAllSdk 1 $2
     ;;
     -ls | ls | lists)
-        head
         loadConfig
         listAllSdk 0 $2
     ;;

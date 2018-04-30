@@ -35,7 +35,7 @@ http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
 # kotlin
 一门正在跨前后端的语言  
-http://  
+https://kotinlang.org  
 1.1.4 1.2.0
 
 # kscript
@@ -50,7 +50,7 @@ http://
 
 # maven
 Java的传统构建工具  
-http://  
+http://maven.apache.org/  
 3.2.5 3.3.1 3.3.3 3.3.9 3.5.0 3.5.2
 
 # sbt
@@ -60,7 +60,7 @@ http://
 
 # scala
 Scala语言,大数据处理  
-http://  
+http://www.scala-lang.org/  
 2.12.0 2.12.3
 
 # springboot

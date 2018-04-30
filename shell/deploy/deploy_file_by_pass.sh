@@ -1,6 +1,7 @@
 # 通过密码上传war到指定的服务器并重启Tomcat
 path=$(cd `dirname $0`; pwd)
-. $path/server.conf
+mainConfig=$path/server.conf
+. $mainConfig
 
 loadConfig(){
     perfix=$1;process=$2;
@@ -28,9 +29,12 @@ loadConfig(){
     build="$build"$process
     echo ${build}|awk '{run=$0;system(run)}'
     # echo $build
+    echo "sshpass -p "${pass}" scp -P $port $file $user@$host:$path"
     sshpass -p "${pass}" scp -P $port $file $user@$host:$path
     echo "$comm$process"
     echo sshpass -p \""${pass}\"" ssh -t -p $port $user@$host "\"$comm$process\""
+    sshpass -p "${pass}" ssh -t -p $port $user@$host "$comm$process"
+    # sshpass -p "${pass}" ssh -t -p $port $user@$host "cd /data/services/jumper/process${process} &&  bash run.sh"
 }
 
 help(){
@@ -46,17 +50,17 @@ case $1 in
         help
     ;;
     -up)
-        if [ -f server.conf ];then
+        if [ ! -f $mainConfig ];then
             echo "请初始化配置文件"
-            echo -e "A_host=''" >> server.conf
-            echo -e "A_port=''" >> server.conf
-            echo -e "A_user=''" >> server.conf
-            echo -e "A_pass=''" >> server.conf
-            echo -e "A_work='/home/kcp/work/yy'" >> server.conf
-            echo -e "A_file='target/ROOT.war'" >> server.conf
-            echo -e "A_path='/home/huoshu/'" >> server.conf
-            echo -e "A_build='mvn clean package -Pyy_fengkuangqiangda_'" >> server.conf
-            echo -e "A_comm='sudo mv /home/huoshu/ROOT.war /data/services/fengkuangqiangda/process'" >> server.conf
+            echo -e "A_host=''" >> $mainConfig
+            echo -e "A_port=''" >> $mainConfig
+            echo -e "A_user=''" >> $mainConfig
+            echo -e "A_pass=''" >> $mainConfig
+            echo -e "A_work='/home/kcp/work/yy'" >> $mainConfig
+            echo -e "A_file='target/ROOT.war'" >> $mainConfig
+            echo -e "A_path='/home/huoshu/'" >> $mainConfig
+            echo -e "A_build='mvn clean package -Pyy_fengkuangqiangda_'" >> $mainConfig
+            echo -e "A_comm='sudo mv /home/huoshu/ROOT.war /data/services/fengkuangqiangda/process'" >> $mainConfig
             exit 1
         fi
         # echo $#
