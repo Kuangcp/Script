@@ -1,8 +1,10 @@
 # 实现 每天的计数
+# less /proc/bus/input/devices 找到键盘的事件号 例如  H: Handlers=sysrq kbd leds event16
 from evdev import InputDevice
 from select import select
 
 def detectInputKey(count, eventNum):
+    ''' 传入计数器, 事件号, 开始记录按键 '''
     dev = InputDevice('/dev/input/event'+str(eventNum))
     while True:
         select([dev], [], [])
@@ -16,7 +18,7 @@ eventNum=input()
 detectInputKey(0, eventNum)
 
 # TODO 结合redis的zset,每天的敲击都记录下来
-
+# 原函数,按压动作的监听和对应动作
 # def detectInputKey():
 #     dev = InputDevice('/dev/input/event4')
 #     while True:
