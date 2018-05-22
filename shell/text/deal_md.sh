@@ -3,7 +3,7 @@
 
 path=$(cd `dirname $0`; pwd)
 # 忽略文件目录
-config_ignore_file=$path'/ignore.conf'
+config_ignore_file=$path'/ignore.ini'
 # 脚本文件目录
 config_python_file=${path%%shell*}'python/append_contents.py'
 
