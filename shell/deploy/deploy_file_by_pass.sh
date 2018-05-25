@@ -5,24 +5,17 @@ mainConfig=$path/server.conf
 
 loadConfig(){
     perfix=$1;process=$2;
-    temp=${perfix}host;
-    host=${!temp}
-    temp=${perfix}port;
-    port=${!temp}
-    temp=${perfix}user;
-    user=${!temp}
-    temp=${perfix}pass;
-    pass=${!temp}
-    temp=${perfix}work;
-    work=${!temp}
-    temp=${perfix}file;
-    file=${!temp}
-    temp=${perfix}path;
-    path=${!temp}
-    temp=${perfix}build;
-    build=${!temp}
-    temp=${perfix}comm;
-    comm=${!temp}
+
+    temp=${perfix}host;host=${!temp}
+    temp=${perfix}port;port=${!temp}
+    temp=${perfix}user;user=${!temp}
+    temp=${perfix}pass;pass=${!temp}
+    temp=${perfix}work;work=${!temp}
+    temp=${perfix}file;file=${!temp}
+    temp=${perfix}path;path=${!temp}
+    temp=${perfix}build;build=${!temp}
+    temp=${perfix}comm;comm=${!temp}
+    # temp=${perfix}comm;comm=${!temp}
 
     echo $host $port $user $pass $file $path $comm
     cd $work
@@ -34,7 +27,7 @@ loadConfig(){
     echo "$comm$process"
     echo sshpass -p \""${pass}\"" ssh -t -p $port $user@$host "\"$comm$process\""
     sshpass -p "${pass}" ssh -t -p $port $user@$host "$comm$process"
-    # sshpass -p "${pass}" ssh -t -p $port $user@$host "cd /data/services/jumper/process${process} &&  bash run.sh"
+    # sshpass -p "${pass}" ssh -t -p $port $user@$host "cd /data/services/jumper/process${process} && sh run.sh"
 }
 
 help(){
