@@ -12,12 +12,19 @@ case $1 in
         help
     ;;
     -a | a | add)
+        if [ $2'z' = 'z' ];then
+            echo '请输入文件名'
+            exit
+        fi
         path=`pwd`
-        echo '#!/usr/bin/env xdg-open\n[Desktop Entry]\nCategories=Development;
-Exec='$path'\nIcon='$path'\nName='$2'
-Terminal=false\nType=Application\n'>>$2'.desktop'
+        echo '#!/usr/bin/env xdg-open\n[Desktop Entry]\nCategories=Development;'>>$2'.desktop'
+        echo 'Exec='$path'\nIcon='$path'\nName='$2'Terminal=false\nType=Application\n'>>$2'.desktop'
     ;;
     -c | c | cp)
+        if [ $2'z' = 'z' ];then
+            echo '请输入文件名'
+            exit
+        fi
         path=`pwd`
         sudo cp $path'/'$2'.desktop' '/usr/share/applications/'$2'.desktop'
     ;;

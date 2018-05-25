@@ -2,11 +2,11 @@ from evdev import InputDevice
 from select import select
 import redis
 import time
+import os
+from configparser import ConfigParser
 
-conn = redis.Redis(host='127.0.0.1', port=6666, db=2)
-
-def detectInputKey(eventNum):
-    ''' 传入计数器, 事件号, 开始记录按键 '''
+def detectInputKey(eventNum, conn):
+    ''' 记录每个按键次数以及总按键数 '''
     today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
     dev = InputDevice('/dev/input/event'+str(eventNum))
     while True:
@@ -16,6 +16,25 @@ def detectInputKey(eventNum):
                 conn.zincrby(today, event.code)
                 conn.incr(today+'-all')
 
-print("please input listen event: ", end='')
-eventNum=input()
-detectInputKey(eventNum)
+
+def main():
+    # 加载配置文件
+    path = os.path.split(os.path.realpath(__file__))[0]
+    mainConf = path + '/main.conf'
+    if not os.path.exists(mainConf) :
+        print('请参考readme 配置初始化文件')
+        return 0 
+    cf = ConfigParser()
+    cf.read(mainConf)
+    host = cf.get('redis', 'host')
+    port = cf.get('redis', 'port')
+    db = cf.get('redis', 'db')
+    password = cf.get('redis', 'password')
+    eventNum = cf.get('event', 'key')
+    if password == '':
+        conn = redis.Redis(host=host, port=port, db=db)
+    else:
+        conn = redis.Redis(host=host, port=port, db=db, password=password)
+    detectInputKey(eventNum, conn)
+
+main()

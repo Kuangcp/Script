@@ -27,7 +27,7 @@ showLog(){
 # green='\033[0;32m'
 # yellow='\033[0;33m'
 # yarn='\033[0;34m'
-# pulper='\033[0;35m'
+# purple='\033[0;35m'
 # blue='\033[0;36m'
 # white='\033[0;37m'
 # default='\033[0m'
