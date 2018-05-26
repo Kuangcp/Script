@@ -25,7 +25,9 @@ docker run --name redis -p 6666:6379 -d redis3:latest
 > 记录键盘code和键对应的是hash结构
 - code <-> key
 
-## 3.配置键的code和键对应
+## 3.在redis中配置键的code和键对应
+> hash结构 键为 key_map 
+
 我的键盘是Poker II
 ```conf
 1 = Esc
@@ -122,4 +124,5 @@ docker run --name redis -p 6666:6379 -d redis3:latest
 >> 然后填写到配置文件中去
 
 ## 5.root用户执行
-> 执行`RecordClickWithRedis.py`即可将敲击键的次数记录到redis中去, 通过 Analysis.py 可以分析出一天中最多的敲击次数, 也可以自己增加统计所有次数和所有的排行
+> 执行`RecordClickWithRedis.py`即可将敲击键的次数记录到redis中去  
+> 通过 Analysis.py 可以分析出一天中最多的敲击次数, 也可以自己增加统计所有次数和所有的排行

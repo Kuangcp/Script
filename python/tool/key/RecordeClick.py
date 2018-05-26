@@ -15,16 +15,3 @@ def detectInputKey(count, eventNum):
 print("please input listen event: ", end='')
 eventNum=input()
 detectInputKey(0, eventNum)
-
-# TODO 结合redis的zset,每天的敲击都记录下来
-# 原函数,按压动作的监听和对应动作
-# def detectInputKey():
-#     dev = InputDevice('/dev/input/event5')
-#     while True:
-#         select([dev], [], [])
-#         for event in dev.read():
-#             if (event.value == 1 or event.value == 0) and event.code != 0:
-#                 print("Key: %s Status: %s" % (event.code, "pressed" if event.value else "release"))
-                
-# detectInputKey()
-

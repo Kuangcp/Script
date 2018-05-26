@@ -30,6 +30,6 @@ def show_today():
     count_num(today)
 
 if __name__=="__main__":
-    # show_today()
+    show_today()
     # count_num('2018-05-26')
-    list_map()
+    # list_map()
