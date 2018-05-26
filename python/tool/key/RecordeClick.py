@@ -1,6 +1,4 @@
 # 实现 每天的计数 需要 evdev
-# less /proc/bus/input/devices 找到键盘的事件号, 主要看name和handlers
-#   例如  H: Handlers=sysrq kbd leds event16
 from evdev import InputDevice
 from select import select
 
@@ -12,7 +10,7 @@ def detectInputKey(count, eventNum):
         for event in dev.read():
             if event.value == 1 and event.code != 0:
                 count+=1
-                print(count)
+                print(count, event.code)
 
 print("please input listen event: ", end='')
 eventNum=input()

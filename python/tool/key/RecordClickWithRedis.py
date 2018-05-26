@@ -16,8 +16,7 @@ def detectInputKey(eventNum, conn):
                 conn.zincrby(today, event.code)
                 conn.incr(today+'-all')
 
-
-def main():
+def get_conf():
     # 加载配置文件
     path = os.path.split(os.path.realpath(__file__))[0]
     mainConf = path + '/main.conf'
@@ -26,15 +25,23 @@ def main():
         return 0 
     cf = ConfigParser()
     cf.read(mainConf)
+    return cf
+
+def get_conn():
+    cf = get_conf()
     host = cf.get('redis', 'host')
     port = cf.get('redis', 'port')
     db = cf.get('redis', 'db')
     password = cf.get('redis', 'password')
-    eventNum = cf.get('event', 'key')
     if password == '':
         conn = redis.Redis(host=host, port=port, db=db)
     else:
         conn = redis.Redis(host=host, port=port, db=db, password=password)
-    detectInputKey(eventNum, conn)
+    return conn
 
-main()
+def main():
+    eventNum = get_conf().get('event', 'key')
+    detectInputKey(eventNum, get_conn())
+
+if __name__=="__main__":
+    main()
