@@ -18,7 +18,7 @@ case $1 in
         fi
         path=`pwd`
         echo '#!/usr/bin/env xdg-open\n[Desktop Entry]\nCategories=Development;'>>$2'.desktop'
-        echo 'Exec='$path'\nIcon='$path'\nName='$2'Terminal=false\nType=Application\n'>>$2'.desktop'
+        echo 'Exec='$path'\nIcon='$path'\nName='$2'\nTerminal=false\nType=Application\n'>>$2'.desktop'
     ;;
     -c | c | cp)
         if [ $2'z' = 'z' ];then
