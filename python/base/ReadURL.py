@@ -19,7 +19,7 @@ class ReadURL:
             'Upgrade-Insecure-Requests' : '1'
             }
         print('-'*30)
-        print('尝试读取 URL',self.url)
+        print('尝试读取 URL',self.url, end='')
         # 这个逻辑就是, 如果读取超时,就重新发起一次,如果还是失败,直接终止
         try:
             result = requests.get(self.url, timeout=4, headers=headers)
@@ -32,7 +32,7 @@ class ReadURL:
                 print("第二次重试失败 程序自动退出")
                 sys.exit(1)
         
-        print("  ->读取结果: ",result)
+        print("  -> 读取结果: ",result)
         if str(result) == '<Response [200]>':
             pass
         elif str(result).startswith('<Response [4'):
@@ -54,5 +54,5 @@ class ReadURL:
             if ele.startswith(element):
                 return ele.split('"')[1]
         # log.write("------ "+line+"没有属性"+element+"\n")
-        print(">>>>>>> "+block+"没有属性"+element+"\n")
+        # print(">>>>>>> "+block+"没有属性"+element+"\n")
         return 'none'
