@@ -1,6 +1,5 @@
 #!/bin/dash
 
-# TODO 重写输出别名文件
 path=$(cd `dirname $0`; pwd)
 aliasFile=$path/all_alias.conf
 start='\033[0;32m'
@@ -66,9 +65,13 @@ case $1 in
         vi $aliasFile
     ;;
     -a)
-        show $2 1
+        if [ $2'z' = 'z' ];then
+            echo "请指定文件索引"
+            exit
+        fi
+        show $2 1 | less
     ;;
     *)
-        show $1
+        show $1 | less
     ;;
 esac

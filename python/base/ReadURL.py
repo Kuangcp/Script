@@ -32,7 +32,7 @@ class ReadURL:
                 print("第二次重试失败 程序自动退出")
                 sys.exit(1)
         
-        print("  -> 读取结果: ",result)
+        print("  -> 读取结果: \033[0;32m",result, '\033[0m')
         if str(result) == '<Response [200]>':
             pass
         elif str(result).startswith('<Response [4'):
