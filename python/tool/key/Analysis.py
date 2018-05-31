@@ -4,7 +4,7 @@ from RecordClickWithRedis import get_conn
 
 def count_num(date):
     conn = get_conn()
-    print('total : ', conn.get(date+'-all').decode())
+    print('total : ', conn.get('all-'+date).decode())
     all = conn.zrevrange(date, 0, -1, True)
     map = conn.hgetall('key_map')
     for key in all:

@@ -14,7 +14,7 @@ def detectInputKey(eventNum, conn):
         for event in dev.read():
             if event.value == 1 and event.code != 0:
                 conn.zincrby(today, event.code)
-                conn.incr(today+'-all')
+                conn.incr('all-'+today)
 
 def get_conf():
     # 加载配置文件
