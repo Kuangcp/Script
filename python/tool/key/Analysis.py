@@ -1,18 +1,24 @@
-import time
+import datetime
+import fire
 from RecordClickWithRedis import get_conf
 from RecordClickWithRedis import get_conn
 
 def count_num(date):
     conn = get_conn()
-    print('total : ', conn.get('all-'+date).decode())
+    total_num = conn.get('all-'+date)
+    if total_num is None:
+        print(date, '没有记录')
+        return 0
+    
+    print("%41s"%('\033[0;33m'+date+'\033[0m'))
+    print("%25s%s"%('total',':\033[0;32m'+total_num.decode()+'\033[0m'))
     all = conn.zrevrange(date, 0, -1, True)
     map = conn.hgetall('key_map')
     for key in all:
         name = map.get(key[0])
         if not name == None:
             name = name.decode()
-        # print(key[0],'#', name,'|', key[1])
-        print(key[1], '==', name)
+        print("%-6s -- \033[0;32m%s\033[0m"%(key[1], name))
 
 def list_map():
     conn = get_conn()
@@ -25,11 +31,30 @@ def list_map():
         value = all.get(str(key).encode())
         print(key,'=', value.decode())
 
-def show_today():
-    today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
-    count_num(today)
+def show_day(days=None):
+    if days is None:
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        count_num(today)
+    else:
+        now_time = datetime.datetime.now()
+        yes_time = now_time + datetime.timedelta(days)
+        new_time = yes_time.strftime('%Y-%m-%d')
+        count_num(new_time)
 
-if __name__=="__main__":
-    show_today()
-    # count_num('2018-05-26')
-    # list_map()
+    
+
+def show_help():
+    start='\033[0;32m'
+    end='\033[0m'
+    print("%-26s %-20s"%(start+"-h"+end, "帮助"))
+    print("%-26s %-20s"%(start+"-b num"+end, "展示 num 天前的记录"))
+
+def main(action=None, days=None):
+    if action is None:
+        show_day()
+    if action == '-h':
+        show_help()
+    if action == '-b' and days is not None:
+        show_day(days*-1)
+
+fire.Fire(main)
