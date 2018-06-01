@@ -132,3 +132,6 @@ docker run --name redis -p 6666:6379 -d redis3:latest
 alias reco.redis='(python3 /path/to/RecordClickWithRedis.py &)'
 ```
 之后只需登录root, 执行reco.redis即可在后台记录了
+
+- [ ] 按时间段分析 所有敲击, 做出统计报表
+

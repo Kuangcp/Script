@@ -26,11 +26,11 @@ case $1 in
     ;;
     -l | l | list)
         loadConfig
-        listAllSdk 1 $2
+        listAllSdk 1 $2 | less
     ;;
     -ls | ls | lists)
         loadConfig
-        listAllSdk 0 $2
+        listAllSdk 0 $2 | less
     ;;
     -i | i | install)
         downByQiNiu $2 $3
@@ -42,7 +42,7 @@ case $1 in
         echo "domain="$2>$secretPath
     ;;
     -u | u | use)
-        changeVersion $2 $3
+        changeVersion $2 $3 
     ;;
     *)
         printf $yellow"请输入参数:\n"
