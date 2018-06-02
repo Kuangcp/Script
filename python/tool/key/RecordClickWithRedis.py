@@ -5,6 +5,8 @@ import time
 import os
 from configparser import ConfigParser
 
+file = '/main.conf'
+
 def detectInputKey(eventNum, conn):
     ''' 记录每个按键次数以及总按键数 '''
     dev = InputDevice('/dev/input/event'+str(eventNum))
@@ -16,10 +18,10 @@ def detectInputKey(eventNum, conn):
                 conn.zincrby(today, event.code)
                 conn.incr('all-'+today)
 
-def get_conf():
+def get_conf(file):
     # 加载配置文件
     path = os.path.split(os.path.realpath(__file__))[0]
-    mainConf = path + '/main.conf'
+    mainConf = path + file
     if not os.path.exists(mainConf) :
         print('请参考readme 配置初始化文件')
         return 0 
@@ -27,8 +29,8 @@ def get_conf():
     cf.read(mainConf)
     return cf
 
-def get_conn():
-    cf = get_conf()
+def get_conn(file):
+    cf = get_conf(file)
     host = cf.get('redis', 'host')
     port = cf.get('redis', 'port')
     db = cf.get('redis', 'db')
@@ -40,8 +42,9 @@ def get_conn():
     return conn
 
 def main():
-    eventNum = get_conf().get('event', 'key')
-    detectInputKey(eventNum, get_conn())
+    global redis
+    eventNum = get_conf(file).get('event', 'key')
+    detectInputKey(eventNum, get_conn(file))
 
 if __name__=="__main__":
     main()

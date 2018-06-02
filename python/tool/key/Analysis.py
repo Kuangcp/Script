@@ -3,8 +3,11 @@ import fire
 from RecordClickWithRedis import get_conf
 from RecordClickWithRedis import get_conn
 
+file = '/main.conf'
+
 def count_num(date):
-    conn = get_conn()
+    global file
+    conn = get_conn(file)
     total_num = conn.get('all-'+date)
     if total_num is None:
         print(date, '没有记录')
@@ -21,7 +24,8 @@ def count_num(date):
         print("%-6s -- \033[0;32m%s\033[0m"%(key[1], name))
 
 def list_map():
-    conn = get_conn()
+    global file
+    conn = get_conn(file)
     keys = []
     all = conn.hgetall('key_map')
     for key in all.keys():
@@ -40,8 +44,6 @@ def show_day(days=None):
         yes_time = now_time + datetime.timedelta(days)
         new_time = yes_time.strftime('%Y-%m-%d')
         count_num(new_time)
-
-    
 
 def show_help():
     start='\033[0;32m'
