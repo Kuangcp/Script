@@ -65,7 +65,6 @@ moveFile(){
 # * 通配符删除
 moveAll(){
     if [ "$1"1 = "1" ];then
-        
         printf "delete all file? [y/n] " 
         read answer
         if [ ! "$answer" = "y" ];then

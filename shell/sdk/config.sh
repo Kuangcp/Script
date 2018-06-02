@@ -9,6 +9,7 @@ jsonUrl='https://raw.githubusercontent.com/Kuangcp/Script/master/shell/sdk/sdks.
 # githubUrl='https://raw.githubusercontent.com/kuangcp/Apps/master/zip/'
 userDir=`cd && pwd`
 basePath=$userDir'/.mythsdk'
+# basePath='/home/kcp/test/mythsdk'
 configPath=$basePath'/sdks.md'
 secretPath=$basePath'/secret.conf'
 
@@ -44,12 +45,10 @@ loadConfig(){
 # .bashrc/.zshrc 文件追加 环境变量 信息
 appendPath(){
     sdk=$1
-    
     if [ "$trueFile"z = "z" ];then
         trueFile=$userDir"/."$shellType"rc"
     fi
-
-    echo $sdk"_HOME="$basePath"/sdk/"$sdk"/current" >> $trueFile
+    echo "\n"$sdk"_HOME="$basePath"/sdk/"$sdk"/current" >> $trueFile
     if [ $sdk = 'java' ];then
         echo 'export JRE_HOME=${'$sdk'_HOME}/jre' >> $trueFile
         echo 'export CLASSPATH=.:${'$sdk'_HOME}/lib:${JRE_HOME}/lib' >> $trueFile

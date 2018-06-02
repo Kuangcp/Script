@@ -39,26 +39,25 @@ error='\033[0;31m'
 help(){
     printf "运行：dash manager.sh $start <params> $end\n"
     printf "  $start%-16s$end%-20s\n" "-h|h|help" "帮助"
-    printf "  $start%-16s$end%-20s\n" "-up <processNum>" "更新对应process的ROOT.war"
-    printf "  $start%-16s$end%-20s\n" "-re" "重启Tomcat"
-    printf "  $start%-16s$end%-20s\n" "-l" "显示日志"
+    printf "  $start%-16s$end%-20s\n" "-up num" "更新对应num的ROOT.war"
+    printf "  $start%-16s$end%-20s\n" "-re num" "重启Tomcat"
+    printf "  $start%-16s$end%-20s\n" "-l num" "显示日志"
 }
 
 case $1 in 
     -h | h | help)
         help
     ;;
-    -re)
-        restart
+    -re|re)
+        restart $2
     ;;
-    -up)
+    -up|up)
         update $2
     ;;
-    -l)
-        showLog
+    -l|l)
+        showLog $2
     ;;
     *)
         help
     ;;
-
 esac

@@ -13,6 +13,9 @@ case $1 in
     -a)
         protoc *.proto --java_out=./
     ;;
+    -c)
+        cat $2 | xsel -b
+    ;;
     *)
         protoc $@ --java_out=./
     ;;

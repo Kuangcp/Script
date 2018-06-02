@@ -7,14 +7,14 @@ from configparser import ConfigParser
 
 def detectInputKey(eventNum, conn):
     ''' 记录每个按键次数以及总按键数 '''
-    today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
     dev = InputDevice('/dev/input/event'+str(eventNum))
     while True:
+        today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
         select([dev], [], [])
         for event in dev.read():
             if event.value == 1 and event.code != 0:
                 conn.zincrby(today, event.code)
-                conn.incr(today+'-all')
+                conn.incr('all-'+today)
 
 def get_conf():
     # 加载配置文件
