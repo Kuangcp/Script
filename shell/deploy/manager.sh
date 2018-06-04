@@ -23,18 +23,14 @@ showLog(){
     less process$1/logs/catalina.out
 }
 
-# red='\033[0;31m'
-# green='\033[0;32m'
-# yellow='\033[0;33m'
-# yarn='\033[0;34m'
-# purple='\033[0;35m'
-# blue='\033[0;36m'
-# white='\033[0;37m'
-# default='\033[0m'
-
 start='\033[0;32m'
 end='\033[0m'
 error='\033[0;31m'
+
+updateSelf(){
+    curl https://raw.githubusercontent.com/Kuangcp/Script/master/shell/deploy/manager.sh -o manager.sh
+    echo "脚本更新完成"
+}
 
 help(){
     printf "运行：dash manager.sh $start <params> $end\n"
@@ -56,6 +52,9 @@ case $1 in
     ;;
     -l|l)
         showLog $2
+    ;;
+    -update)
+        updateSelf
     ;;
     *)
         help
