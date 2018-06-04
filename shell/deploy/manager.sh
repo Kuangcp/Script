@@ -19,8 +19,11 @@ restart(){
     bin/startup.sh &&
     cd ..
 }
-showLog(){
+showOut(){
     less process$1/logs/catalina.out
+}
+showLog(){
+    less process$1/log/game.log
 }
 
 start='\033[0;32m'
@@ -38,21 +41,37 @@ help(){
     printf "  $start%-16s$end%-20s\n" "-update" "更新此脚本"
     printf "  $start%-16s$end%-20s\n" "-up num" "更新对应num的ROOT.war"
     printf "  $start%-16s$end%-20s\n" "-re num" "重启Tomcat"
-    printf "  $start%-16s$end%-20s\n" "-l num" "显示日志"
+    printf "  $start%-16s$end%-20s\n" "-on num" "启动Tomcat"
+    printf "  $start%-16s$end%-20s\n" "-off num" "关闭Tomcat"
+    printf "  $start%-16s$end%-20s\n" "-l num" "显示项目日志"
+    printf "  $start%-16s$end%-20s\n" "-t num" "显示Tomcat输出"
+    printf "  $start%-16s$end%-20s\n" "-cnf num" "进入项目配置目录"
 }
 
 case $1 in 
     -h | h | help)
         help
     ;;
-    -re|re)
+    -re)
         restart $2
     ;;
-    -up|up)
+    -up)
         update $2
     ;;
-    -l|l)
+    -t)
+        showOut $2
+    ;;
+    -l)
         showLog $2
+    ;;
+    -on)
+        process$2/bin/startup.sh
+    ;;
+    -off)
+        process$2/bin/shutdown.sh
+    ;;
+    -cnf)
+        cd process$2/webapps/ROOT/WEB-INF/classes/config
     ;;
     -update)
         updateSelf

@@ -33,3 +33,5 @@
 
 > 个人备忘: 所有本地化隐私化配置放在 local.conf 文件中
 
+- 管理服务器发布脚本
+  -  `curl https://raw.githubusercontent.com/Kuangcp/Script/master/shell/deploy/manager.sh -o manager.sh`
