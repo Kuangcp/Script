@@ -35,6 +35,7 @@ updateSelf(){
 help(){
     printf "运行：dash manager.sh $start <params> $end\n"
     printf "  $start%-16s$end%-20s\n" "-h|h|help" "帮助"
+    printf "  $start%-16s$end%-20s\n" "-update" "更新此脚本"
     printf "  $start%-16s$end%-20s\n" "-up num" "更新对应num的ROOT.war"
     printf "  $start%-16s$end%-20s\n" "-re num" "重启Tomcat"
     printf "  $start%-16s$end%-20s\n" "-l num" "显示日志"
