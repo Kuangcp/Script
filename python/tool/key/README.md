@@ -29,6 +29,7 @@ docker run --name redis -p 6666:6379 -d redis3:latest
 > hash结构 键为 key_map 
 
 - 我的键盘是Poker II [键 code 映射配置文件](pokerII.ini)
+    - 使用 import_conf.py 即可完成导入
 
 ## 4. 找到键盘的事件号
 > `less /proc/bus/input/devices` 找到键盘的事件号, 主要看name和handlers
