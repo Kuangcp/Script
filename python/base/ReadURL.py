@@ -24,7 +24,7 @@ class ReadURL:
         try:
             result = requests.get(self.url, timeout=4, headers=headers)
         except Exception:
-            print("!!!!!!!! 请求超时, 正在等待5s后重试 !!!!!!!!", self.url)
+            print("\n <<请求超时, 正在等待5s后重试>> ", self.url)
             try:    
                 sleep(5)
                 result = requests.get(self.url, timeout=5, headers=headers)

@@ -56,11 +56,13 @@ case $1 in
             echo -e "A_comm='sudo mv /home/huoshu/ROOT.war /data/services/fengkuangqiangda/process'" >> $mainConfig
             exit 1
         fi
-        # echo $#
         if [ $# -lt 3 ];then
             echo "请输入 配置系列 进程号";exit
         fi
         loadConfig $2'_' $3
+    ;;
+    -ma)
+        cat $path/manager.sh
     ;;
     *)
         help
