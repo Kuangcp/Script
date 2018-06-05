@@ -1,3 +1,4 @@
+#!/bin/sh
 # 管理 项目/process1 ... process4 这样的目录结构的Tomcat
 
 update(){
@@ -72,6 +73,7 @@ case $1 in
     ;;
     -cnf)
         cd process$2/webapps/ROOT/WEB-INF/classes/config
+        # sh 运行是在子shell中的, 所以要用 source 执行该脚本
     ;;
     -update)
         updateSelf
