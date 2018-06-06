@@ -49,14 +49,18 @@ def show_help():
     start='\033[0;32m'
     end='\033[0m'
     print("%-26s %-20s"%(start+"-h"+end, "帮助"))
-    print("%-26s %-20s"%(start+"-b num"+end, "展示 num 天前的记录"))
+    # print("%-26s %-20s"%(start+"-b num"+end, "展示 num 天前的记录"))
+    print("%-26s %-20s"%(start+"num"+end, "展示 num 天前的记录"))
 
-def main(action=None, days=None):
+def main(action=None):
     if action is None:
         show_day()
     if action == '-h':
         show_help()
-    if action == '-b' and days is not None:
-        show_day(days*-1)
+        return 
+    if type(action) == int:
+        show_day(action*-1)
+    else:
+        print('请输入正确的参数')
 
 fire.Fire(main)
