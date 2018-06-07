@@ -55,6 +55,7 @@ def show_help():
 def main(action=None):
     if action is None:
         show_day()
+        return
     if action == '-h':
         show_help()
         return 
