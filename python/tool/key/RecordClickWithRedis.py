@@ -10,13 +10,16 @@ file = '/main.conf'
 def detectInputKey(eventNum, conn):
     ''' 记录每个按键次数以及总按键数 '''
     dev = InputDevice('/dev/input/event'+str(eventNum))
-    while True:
-        today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
-        select([dev], [], [])
-        for event in dev.read():
-            if event.value == 1 and event.code != 0:
-                conn.zincrby(today, event.code)
-                conn.incr('all-'+today)
+    try:
+        while True:
+            today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+            select([dev], [], [])
+            for event in dev.read():
+                if event.value == 1 and event.code != 0:
+                    conn.zincrby(today, event.code)
+                    conn.incr('all-'+today)
+    except:
+        print('Error!! Device has been removed')
 
 def get_conf(file):
     # 加载配置文件
