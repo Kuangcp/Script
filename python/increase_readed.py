@@ -12,9 +12,7 @@ def read_blog(list_url):
         classType = readUrl.getelement(str(line), 'class')
         if classType == 'text-truncate':
             line = str(line)
-            # print(">>"+line);
-            temp = line.split('a href="')[1];
-            # print("<<"+temp)
+            temp = line.split('a href="')[1]
             url = temp.split('" target=')[0]
             readUrl.url = url
             readUrl.readhtml()
@@ -55,13 +53,11 @@ def show_help():
 
 def main(action=None):
     ''' 如果脚本后的参数为空就只执行一次, 否则死循环 '''
-    print(action)
-
+    # print(action)
     if action == '-l':
         while (1):
             loop()
             sleep(600)
-    
     if action == None:
         loop()  
     if action == '-h':

@@ -10,23 +10,29 @@ file = '/main.conf'
 def detectInputKey(eventNum, conn):
     ''' 记录每个按键次数以及总按键数 '''
     dev = InputDevice('/dev/input/event'+str(eventNum))
+    is_event_correct = False
     try:
+        print('Ready to listen ... ', end='')
         while True:
             today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+            # 如果 event错了, 下面直接阻塞掉
             select([dev], [], [])
+            if is_event_correct == False:
+                print('\033[0;32mSuccessful startup\033[0m')
+                is_event_correct = True
             for event in dev.read():
                 if event.value == 1 and event.code != 0:
                     conn.zincrby(today, event.code)
                     conn.incr('all-'+today)
     except:
-        print('Error!! Device has been removed')
+        print('\033[0;31mError!! Device has been removed Or Application has been interrupted\033[0m')
 
 def get_conf(file):
     # 加载配置文件
     path = os.path.split(os.path.realpath(__file__))[0]
     mainConf = path + file
     if not os.path.exists(mainConf) :
-        print('请参考readme 配置初始化文件')
+        print('Please refer to Readme.md initialization configuration')
         return 0 
     cf = ConfigParser()
     cf.read(mainConf)
