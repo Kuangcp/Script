@@ -9,7 +9,7 @@ help(){
     printf "运行：dash show_alias_help.sh $start <params> $end\n"
     printf "  $start%-16s$end%-20s\n" "-h|h|help" "帮助"
     printf "  $start%-16s$end%-20s\n" "1234.." "指定展示文件输出"
-    printf "  $start%-16s$end%-20s\n" "-e 1234.." "详细输出"
+    printf "  $start%-16s$end%-20s\n" "-a 1234.." "详细输出"
     printf "  $start%-16s$end%-20s\n" "-l" "输出配置文件"
     printf "  $start%-16s$end%-20s\n" "-e" "编辑配置文件"
 
