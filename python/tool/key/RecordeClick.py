@@ -1,6 +1,7 @@
 # 实现 每天的计数 需要 evdev
 from evdev import InputDevice
 from select import select
+import time
 
 def detectInputKey(count, eventNum):
     ''' 传入计数器, 事件号, 开始记录按键 '''
@@ -11,6 +12,7 @@ def detectInputKey(count, eventNum):
             if event.value == 1 and event.code != 0:
                 count+=1
                 print(count, event.code)
+                print(str(time.time()))
 
 print("please input listen event: ", end='')
 eventNum=input()

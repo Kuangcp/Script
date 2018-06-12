@@ -12,7 +12,7 @@ def detectInputKey(eventNum, conn):
     dev = InputDevice('/dev/input/event'+str(eventNum))
     is_event_correct = False
     try:
-        print('Ready to listen ... ', end='')
+        log('Ready to listen ... ', '')
         while True:
             today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
             # 如果 event错了, 下面直接阻塞掉
@@ -24,8 +24,9 @@ def detectInputKey(eventNum, conn):
                 if event.value == 1 and event.code != 0:
                     conn.zincrby(today, event.code)
                     conn.incr('all-'+today)
+                    conn.zadd('detail-'+today, str(time.time()), event.code)
     except:
-        print('\033[0;31mError!! Device has been removed Or Application has been interrupted\033[0m')
+        log('\033[0;31mError!! Device has been removed Or Application has been interrupted\033[0m')
 
 def get_conf(file):
     # 加载配置文件
@@ -49,6 +50,9 @@ def get_conn(file):
     else:
         conn = redis.Redis(host=host, port=port, db=db, password=password)
     return conn
+
+def log(origin=None, end=None):
+    print(time.strftime('%Y-%m-%d',time.localtime(time.time())), origin, end=end)
 
 def main():
     global redis
