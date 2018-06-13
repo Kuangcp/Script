@@ -234,12 +234,25 @@ pullRepos(){
         cd $path && git pull
     done
 }
+pushRemote(){
+    path=`pwd`
+    result=`git remote -v`
+    count=-1
+    for temp in $result; do
+        count=$(( $count + 1 ))
+        if [ $(($count % 6)) = 0 ]; then
+            echo $start"$temp"$end
+            git push $temp
+        fi
+    done
+}
 help(){
     echo "运行：sh check_repos.sh $start <params> $end"
     printf "  $start%-16s$end%-20s\n" "no param" "列出所有操作过的仓库"
     printf "  $start%-16s$end%-20s\n" "-h|h|help" "输出帮助信息"
     printf "  $start%-16s$end%-20s\n" "-l|l|list" "列出所有仓库"
     printf "  $start%-16s$end%-20s\n" "-p|p|push" "推送本地的提交"
+    printf "  $start%-16s$end%-20s\n" "-pa|pa" "推动到所有远程库"
     printf "  $start%-16s$end%-20s\n" "-pl|pull <repos...>" "下拉一些远程仓库的提交"
     printf "  $start%-16s$end%-20s\n" "-a/ac" "手动添加仓库以及注释信息或者/自动添加当前目录"
     printf "  $start%-16s$end%-20s\n" "-i <imagefile>" "仅是图片仓库：在当前目录方便得到图片URL"
@@ -256,6 +269,10 @@ case $1 in
     -p | push | p)
         pushAll "$configPath"
         echo "推送全部完成"
+        exit 0;;
+    -pa | pa)
+        echo "推送到所有远程库"
+        pushRemote
         exit 0;;
     -a | a)
         appendFile $configPath ''
