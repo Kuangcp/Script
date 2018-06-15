@@ -114,3 +114,4 @@ case $1 in
         (lazyDelete &)
     ;;
 esac
+# TODO 从回收站恢复文件
