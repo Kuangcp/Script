@@ -307,3 +307,5 @@ case $1 in
     *)
         readFile "$configPath";;
 esac
+
+# TODO 实现终端里的进度条

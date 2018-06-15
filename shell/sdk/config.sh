@@ -4,7 +4,7 @@
 # SDK之间只有一行空行分隔, sdk名字后不能有空格 sdk版本之间用空格分隔
 # 压缩包之间
 
-jsonUrl='https://raw.githubusercontent.com/Kuangcp/Script/master/shell/sdk/sdks.md'
+configUrl='https://raw.githubusercontent.com/Kuangcp/Script/master/shell/sdk/sdks.md'
 
 # githubUrl='https://raw.githubusercontent.com/kuangcp/Apps/master/zip/'
 userDir=`cd && pwd`
@@ -32,7 +32,7 @@ createDir(){
     fi
 }
 updateConfig(){
-    curl -o $configPath $jsonUrl
+    curl -o $configPath $configUrl
 }
 # 初始化目录结构, 加载配置文件, 如果本地没有就去默认URL下载
 loadConfig(){

@@ -16,7 +16,7 @@ http://
 # gradle
 现代化的构建工具  
 http://services.gradle.org/distributions/  
-3.5 4.0 4.1 4.2 4.2.1 4.3.1 4.4.1 4.5 4.6 4.7
+3.5 4.0 4.1 4.2 4.2.1 4.3.1 4.4.1 4.5 4.6 4.7 4.8
 
 # grails
 基于Groovy的类Rails框架  
@@ -24,9 +24,9 @@ http://
 3.3.0
 
 # groovy
-JVM上的一门脚本语言  
-http://  
-2.4.0 2.4.5 2.4.6 2.4.12
+JVM上的一门动态语言  
+http://www.groovy-lang.org/download.html
+2.4.0 2.4.5 2.4.6 2.4.12 2.4.15 2.5.0
 
 # java
 Java的JDK包  
