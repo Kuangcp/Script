@@ -9,7 +9,7 @@ runPath=$(cd `dirname $0`; pwd)
 help(){
     format="  $exist%-14s $yellow%-15s$end%-20s\n"
     printf "$format" "-h|h|help" "" "帮助"
-    printf "$format" "-up|up|update" "" "更新sdk的配置文件"
+    printf "$format" "-up|up|update" "<num>" "更新sdk的配置文件 num为配置文件镜像源"
     printf "$format" "-l|l|list" "<sdk>" "列出 所有sdk/指定的sdk"
     printf "$format" "-ls|ls|lists " "<sdk>" "列出 所有sdk/指定的sdk 的详细信息"
     printf "$format" "-i|i|install " "sdk <ver>" "下载安装指定sdk的 指定版本/最新版本"
@@ -22,7 +22,7 @@ case $1 in
         help
     ;;
     -up | up | update)
-        updateConfig
+        updateConfig $2
     ;;
     -l | l | list)
         loadConfig

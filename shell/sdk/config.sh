@@ -4,7 +4,8 @@
 # SDK之间只有一行空行分隔, sdk名字后不能有空格 sdk版本之间用空格分隔
 # 压缩包之间
 
-configUrl='https://raw.githubusercontent.com/Kuangcp/Script/master/shell/sdk/sdks.md'
+github='https://raw.githubusercontent.com/Kuangcp/Script/master/shell/sdk/sdks.md'
+gitee='https://gitee.com/kcp1104/script/raw/master/shell/sdk/sdks.md'
 
 # githubUrl='https://raw.githubusercontent.com/kuangcp/Apps/master/zip/'
 userDir=`cd && pwd`
@@ -32,7 +33,15 @@ createDir(){
     fi
 }
 updateConfig(){
-    curl -o $configPath $configUrl
+    temp=$1
+    if [ $temp'z' = 'z' ];then
+        temp=$github
+    else
+        temp=$gitee
+    fi
+    echo "ready to download "$temp
+    curl -o $configPath $temp
+
 }
 # 初始化目录结构, 加载配置文件, 如果本地没有就去默认URL下载
 loadConfig(){
@@ -77,7 +86,7 @@ showOneSdk(){
     short=`echo $sdkName | colrm 1 2`
     printf "\033[1;33m→\033[0;36m%-15s$end " " $short"
     if [ $1"z" = "0z" ];then
-        printf "\033[0;35m %-30s  \033[1;31m%-10s$end" "$sdkUrl" "$sdkInfo" 
+        printf "\033[0;35m %-30s\n  \033[1;31m→ %-10s$end" "$sdkUrl" "$sdkInfo" 
     fi
     printf "\n    "
     for version in $sdkVersion; do
