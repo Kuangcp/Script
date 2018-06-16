@@ -48,3 +48,18 @@ alias reco.redis='(python3 /path/to/RecordClickWithRedis.py &)'
 
 - [ ] 按时间段分析 所有敲击, 做出统计报表
 
+
+- [ ] 事件号变来变去, 要找到一个规律自动填充
+
+_event8_
+I: Bus=0003 Vendor=04d9 Product=0209 Version=0111
+N: Name="USB-HID Keyboard"
+P: Phys=usb-0000:00:14.0-3/input0
+S: Sysfs=/devices/pci0000:00/0000:00:14.0/usb2/2-3/2-3:1.0/0003:04D9:0209.0002/input/input9
+U: Uniq=
+H: Handlers=sysrq kbd event8 leds 
+B: PROP=0
+B: EV=120013
+B: KEY=1000000000007 ff800000000007ff febeffdfffefffff fffffffffffffffe
+B: MSC=10
+B: LED=7
