@@ -19,7 +19,11 @@ def show_timeline(days=None):
             timestamp = key.decode()
             timestamp = time.localtime(float(timestamp))
             day = time.strftime('%Y-%m-%d_%H:%M:%S', timestamp)
-            name = all.get(str(int(value)).encode()).decode()
+            name = all.get(str(int(value)).encode())
+            if name is not None:
+                name = name.decode()
+            else:
+                name = 'Code Not Found!!'
             # TODO 结果是按按键来排序的, 如果按时间排序呢
             print(day, name)
 

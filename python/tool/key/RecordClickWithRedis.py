@@ -12,7 +12,7 @@ def detectInputKey(eventNum, conn):
     dev = InputDevice('/dev/input/event'+str(eventNum))
     is_event_correct = False
     try:
-        log('Ready to listen ... ', '')
+        log('Ready to listen ... ')
         while True:
             today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
             # 如果 event错了, 下面直接阻塞掉

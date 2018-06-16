@@ -9,19 +9,19 @@
 4. `kh h` 查看帮助信息
 ```
 $ kh h
-  -h|h|help                   帮助
-  -up|up|update               更新sdk的配置文件
-  -l|l|list <sdk>             列出所有sdk或者指定的sdk
-  -ls|ls|lists <sdk>          列出所有sdk或者指定的sdk的详细信息
-  -i|i|install sdk ver        下载安装指定sdk的指定版本
-  -li|li sdk ver zipFile      从zip包中安装指定sdk的指定版本
-  -u|u|use sdk ver            更改指定sdk的指定版本
+  -h|h|help                     帮助              
+  -q             <domain>       配置七牛云域名
+  -up|up|update  <num>          更新sdk的配置文件 num为配置文件镜像源
+  -l|l|list      <sdk>          列出 所有sdk/指定的sdk
+  -ls|ls|lists   <sdk>          列出 所有sdk/指定的sdk 的详细信息
+  -i|i|install   sdk <ver>      下载安装指定sdk的 指定版本/最新版本
+  -li|li         sdk ver file   从zip包中安装指定sdk的指定版本
+  -u|u|use       sdk ver        使用指定sdk的指定版本
 ```
 ## Config
 > 所有的SDK的压缩包放在七牛云上, 当然可以放在任意云上, 只要配置好压缩包, 配置好URL就行了  
 > 先配置好压缩包sdk-version.zip(version/bin结构)，然后上传，更改配置文件然后提交仓库  
 > 然后客户端mk up 再mk l 就能看到新添加的sdk了。
-
 
 ## Local
 1. 本地用压缩包安装, 首先去官网下载好zip, 然后解压, 配置成 `版本/bin` 这样的目录结构, 然后压缩成 sdk-version.zip 

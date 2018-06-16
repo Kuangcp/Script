@@ -9,6 +9,7 @@ runPath=$(cd `dirname $0`; pwd)
 help(){
     format="  $exist%-14s $yellow%-15s$end%-20s\n"
     printf "$format" "-h|h|help" "" "帮助"
+    printf "$format" "-q " "<domain>" "配置七牛云域名"
     printf "$format" "-up|up|update" "<num>" "更新sdk的配置文件 num为配置文件镜像源"
     printf "$format" "-l|l|list" "<sdk>" "列出 所有sdk/指定的sdk"
     printf "$format" "-ls|ls|lists " "<sdk>" "列出 所有sdk/指定的sdk 的详细信息"
@@ -39,7 +40,7 @@ case $1 in
         handleZip $2 $3 $4
     ;;
     -q | q | qiNiu)
-        echo "domain="$2>$secretPath
+        echo "domain="$2"/">$secretPath
     ;;
     -u | u | use)
         changeVersion $2 $3 
