@@ -71,7 +71,7 @@ case $1 in
                     ignore=`cat $config_ignore_file`
                     ignore_file=`echo $map_result | grep "$ignore" `
                     if [ "$ignore_file"z = "z" ];then
-                        printf "\033[0;32m 修改 : "$map_result"\033[0m"
+                        printf "\033[0;32m 修改 : %-40s \033[0m" "$map_result"
                         result=`python3 $config_python_file -a n $config_target_repo/$map_result`
                         printf "$result\n"
                     fi

@@ -31,15 +31,6 @@ def openfile(first=True):
         return openfile(first=False)
     return file
 
-# 行首添加 - 
-def deal_line():
-    file = openfile()
-    file.write("\n")
-    for line in file:
-        print("- ", line)
-        file.write("- " + line)
-    file.close()
-    
 def line_prepender(filename, resultList):
     ''' 将集合追加到文件头部'''
     # 将读写分开,就没有那种诡异的bug了
@@ -121,14 +112,10 @@ def main():
     -h      帮助
     -t      测试
     -a      追加目录树索引 n 不转码
-    -l      行首追加 -
                 ''')
             break
         if op == '-t':
             test()
-            break
-        if op == '-l':
-            deal_line()
             break
         if op == '-a':
             filename = None
