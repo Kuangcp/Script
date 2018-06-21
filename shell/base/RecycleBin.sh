@@ -6,10 +6,10 @@ trashPath=$userDir'/.RecycleBin'
 # 日志
 logFile=$userDir'/.all.RecycleBin.log'
 
-timeOut=3600 # 存活时间 1小时
+liveTime=3600 # 存活时间 1小时
 checkTime='10m' # 轮询周期 10分钟
 
-# timeOut=5 # 存活时间 5s
+# liveTime=5 # 存活时间 5s
 # checkTime='1s' # 轮询周期 1s
 
 error='\033[0;31m'
@@ -40,14 +40,14 @@ lazyDelete(){
                 removeTime=${line##*\.}
                 ((result=$currentTime-$removeTime))
                 # echo "$line | $result"
-                if [ $result -ge $timeOut ];then
+                if [ $result -ge $liveTime ];then
                     log "■ rm -rf $trashPath/$line"
                     rm -rf "$trashPath/$line"
                 fi
             done
             fileNum=`ls -A $trashPath | wc -l`
         done
-        log "▶ trash is empty. exit..."
+        log "▶▶▶ trash is empty. script will exit ..."
     fi
 }
 moveFile(){
@@ -82,6 +82,19 @@ moveAll(){
         moveFile "$file"
     done
 }
+rollback(){
+    if [ "$1"1 = "1" ];then
+        printf $error"please select a specific rollback file\n"
+        exit 1
+    fi
+    if [ ! -f $trashPath/$1 ] && [ ! -d $trashPath/$1 ];then
+        printf $error"this file not exist \n"
+        exit 1
+    fi
+    file=${1%\.*}
+    mv $trashPath/$1 $file
+    printf $start"rollback [$file] complete \n"
+}
 log(){
     content=$1;
     echo `date +%y-%m-%d\ %H:%M:%S`" $content">>$logFile
@@ -91,6 +104,8 @@ help(){
     printf "  $start%-16s$end%-20s\n" "-h|help" "show help"
     printf "  $start%-16s$end%-20s\n" "file/dir" "move file/dir to trash dir"
     printf "  $start%-16s$end%-20s\n" "-a \"pattern\"" "all pattern file "
+    printf "  $start%-16s$end%-20s\n" "-l " "list file in trash "
+    printf "  $start%-16s$end%-20s\n" "-b file" "rollback file from trash "
     printf "  $start%-16s$end%-20s\n" "-log" "show log"
 }
 init
@@ -105,13 +120,19 @@ case $1 in
     -log)
         less $logFile
     ;;
+    -l)
+        ls -lFh $trashPath
+    ;;
+    -b)
+        rollback $2
+    ;;
     *)
         if [ "$1"1 = "1" ];then
-            printf $error"pelease select specific file\n" 
+            printf $error"pelease select specific file\n"$end 
+            help
             exit
         fi
         moveFile "$1"
         (lazyDelete &)
     ;;
 esac
-# TODO 从回收站恢复文件
