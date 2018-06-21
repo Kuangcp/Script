@@ -9,6 +9,7 @@ logFile=$userDir'/.all.RecycleBin.log'
 liveTime=3600 # 存活时间 1小时
 checkTime='10m' # 轮询周期 10分钟
 
+# DEBUG
 # liveTime=5 # 存活时间 5s
 # checkTime='1s' # 轮询周期 1s
 
@@ -34,33 +35,34 @@ lazyDelete(){
         fileNum=`ls -A $trashPath | wc -l`
         while [ ! $fileNum = 0 ]; do
             sleep $checkTime
-            log "→ check trash ..."
+            log "→ timing detection ▌ check trash ..."
             ls -A $trashPath | cat | while read line; do
                 currentTime=`date +%s`
                 removeTime=${line##*\.}
                 ((result=$currentTime-$removeTime))
                 # echo "$line | $result"
                 if [ $result -ge $liveTime ];then
-                    log "■ rm -rf $trashPath/$line"
+                    log "■ true detetoin ▌ rm -rf $trashPath/$line"
                     rm -rf "$trashPath/$line"
                 fi
             done
             fileNum=`ls -A $trashPath | wc -l`
         done
-        log "▶▶▶ trash is empty. script will exit ..."
+        log "▶▶▶ trash is empty ▌ script will exit ..."
     fi
 }
 moveFile(){
     fileName="$1";
     # echo "input file : $fileName"
     deleteTime=`date +%s`
-    log "◆ prepare to delete $currentPath/$fileName"
+    readable=`date +%Y-%m-%d_%H:%M:%S`
+    log "◆ prepare to delete ▌ $currentPath/$fileName"
     if [ ! -f "$currentPath/$fileName" ] && [ ! -d "$currentPath/$fileName" ] && [ ! -L "$currentPath/$fileName" ];then 
         printf $error"file not exist \n"
         exit
     fi
     # 全部加上双引号是因为文件名中有可能会有空格
-    mv "$currentPath/$fileName" "$trashPath/$fileName.$deleteTime"
+    mv "$currentPath/$fileName" "$trashPath/$fileName.$readable.$deleteTime"
 }
 # * 通配符删除
 moveAll(){
@@ -92,7 +94,9 @@ rollback(){
         exit 1
     fi
     file=${1%\.*}
+    file=${file%\.*}
     mv $trashPath/$1 $file
+    log "◀ rollback file ▌ $file"
     printf $start"rollback [$file] complete \n"
 }
 log(){
