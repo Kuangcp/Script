@@ -14,12 +14,14 @@ currentPath=`pwd`
 trashPath=$userDir'/.RecycleBin'
 logFile=$userDir'/.all.RecycleBin.log'
 
-liveTime=3600 # 存活时间 1小时
-checkTime='10m' # 轮询周期 10分钟
+liveTime=259200 # 存活时间 3天
+checkTime='1h' # 轮询周期 1小时 依赖 sleep实现 单位为: d h m s 
 
 # DEBUG
 # liveTime=5 # 存活时间 5s
 # checkTime='1s' # 轮询周期 1s
+
+# TODO  就差一个记录文件的原始目录的逻辑, 这样就能达到回收站的全部功能了
 
 init(){
     if [ ! -d $trashPath ];then
@@ -46,7 +48,7 @@ lazyDelete(){
                 ((result=$currentTime-$removeTime))
                 # echo "$line | $result"
                 if [ $result -ge $liveTime ];then
-                    log_warn "■ true detetoin     ▌ rm -rf $trashPath/$line"
+                    log_warn "▶ real delete       ▌ rm -rf $trashPath/$line"
                     rm -rf "$trashPath/$line"
                 fi
             done
@@ -69,17 +71,19 @@ moveFile(){
 }
 # * 通配符删除
 moveAll(){
-    if [ "$1"1 = "1" ];then
+    pattern=$1
+    if [ "$pattern"1 = "1" ];then
         printf "delete all file? [y/n] " 
         read answer
         if [ ! "$answer" = "y" ];then
             exit
         fi
+        pattern="."
     fi
-    list=`ls $1`
+    list=`ls | grep $pattern`
     num=${#list}
     if [ $num = 0 ];then
-        printf $red"no matches found $1 \n"
+        printf $red"no matches found $pattern \n"
         exit
     fi
     for file in $list; do
@@ -99,7 +103,7 @@ rollback(){
     file=${1%\.*}
     file=${file%\.*}
     mv $trashPath/$1 $file
-    log_info "◀ rollback file ▌ $file"
+    log_warn "◀ rollback file     ▌ $file"
     printf $green"rollback [$file] complete \n"
 }
 log(){
@@ -118,12 +122,34 @@ help(){
     printf "Run : ./RecycleBin.sh $green <params> $end\n"
     printf "  $green%-16s$end%-20s\n" "-h|help" "show help"
     printf "  $green%-16s$end%-20s\n" "file/dir" "move file/dir to trash dir"
-    printf "  $green%-16s$end%-20s\n" "-a \"pattern\"" "all pattern file "
+    printf "  $green%-16s$end%-20s\n" "-a \"pattern\"" "delete file (can't use *, actually command: 'ls | grep \$pattern')"
     printf "  $green%-16s$end%-20s\n" "-l " "list file in trash "
     printf "  $green%-16s$end%-20s\n" "-b file" "rollback file from trash "
     printf "  $green%-16s$end%-20s\n" "-log" "show log"
 }
-
+color_name(){
+    fileName=$1
+    timeStamp=${fileName##*\.}
+    fileName=${fileName%\.*}
+    time=${fileName##*\.}
+    name=${fileName%\.*}
+    printf " $green$time$end $name.$time.$red$timeStamp$end\n"
+    # printf " %-30s$green%s$end\n" $name "$time" 
+}
+list_file(){
+    file_list=`ls -lFh $trashPath | grep 'r'`
+    count=0
+    for line in $file_list;do
+        count=$(($count + 1))
+        if [ $(($count % 9)) = 0 ];then
+            color_name $line
+        elif [ $(($count % 9)) = 2 ];then
+            printf "%s" " $line "
+        else
+            printf "%-5s" "$line"
+        fi
+    done
+}
 # 初始化脚本的环境
 init
 case $1 in 
@@ -138,7 +164,7 @@ case $1 in
         less $logFile
     ;;
     -l)
-        ls -lFh $trashPath
+        list_file
     ;;
     -b)
         rollback $2
