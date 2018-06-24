@@ -134,7 +134,7 @@ color_name(){
     fileName=${fileName%\.*}
     time=${fileName##*\.}
     name=${fileName%\.*}
-    printf " $green$time$end $name.$time.$red$timeStamp$end\n"
+    printf " $green$time$end $yellow$name$end.$time.$red$timeStamp$end\n"
     # printf " %-30s$green%s$end\n" $name "$time" 
 }
 list_file(){

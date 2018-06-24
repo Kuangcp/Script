@@ -45,10 +45,10 @@ def line_prepender(filename, resultList):
         for single in origin_lines:
             # print("输出", single)
             if("`目录 start`" in single):
-                print("    目录开始  >>", end='')
+                print("  目录开始>>", end='')
                 start_flag=True
             if("`目录 end`" in single):
-                print("    目录结束  >>", end='')
+                print("  目录结束>>", end='')
                 start_flag=False
                 hr_line = hr_line + 1
                 continue
