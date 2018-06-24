@@ -57,10 +57,11 @@ lazyDelete(){
         log_error "▶ trash is empty    ▌ script will exit ..."
     fi
 }
+# move file to trash 
 moveFile(){
     fileName="$1";
     deleteTime=`date +%s`
-    readable=`date +%Y-%m-%d_%H:%M:%S`
+    readable=`date +%Y-%m-%d_%H-%M-%S`
     log_info "◆ prepare to delete ▌ $currentPath/$fileName"
     if [ ! -f "$currentPath/$fileName" ] && [ ! -d "$currentPath/$fileName" ] && [ ! -L "$currentPath/$fileName" ];then 
         printf $red"file not exist \n"
