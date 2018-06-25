@@ -22,6 +22,7 @@ checkTime='1h' # 轮询周期 1小时 依赖 sleep实现 单位为: d h m s
 # checkTime='1s' # 轮询周期 1s
 
 # TODO  就差一个记录文件的原始目录的逻辑, 这样就能达到回收站的全部功能了
+# TODO 文件名最大长度是255, 注意测试边界条件
 
 init(){
     if [ ! -d $trashPath ];then
@@ -74,21 +75,31 @@ moveFile(){
 moveAll(){
     pattern=$1
     if [ "$pattern"1 = "1" ];then
-        printf "delete all file? [y/n] " 
+        printf "delete [all file / exclude hidden file]? [a/y/n] :" 
         read answer
-        if [ ! "$answer" = "y" ];then
+        flag=0
+        if [ "$answer" = "a" ];then
+            list=`ls -A`
+            flag=1
+        fi
+        if [ "$answer" = "y" ];then
+            list=`ls -A | grep -v "^\."`
+            flag=1
+        fi
+        if [ $flag = 0 ];then
             exit
         fi
-        pattern="."
+    else
+        list=`ls -A | egrep $pattern`
     fi
-    list=`ls | grep $pattern`
+    # list=`ls -A | grep "$pattern"`
     num=${#list}
     if [ $num = 0 ];then
         printf $red"no matches found $pattern \n"
         exit
     fi
     for file in $list; do
-        # echo "$file"
+        # echo ">> $file"
         moveFile "$file"
     done
 }
