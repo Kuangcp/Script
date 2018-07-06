@@ -28,25 +28,34 @@ showLog(){
 }
 
 start='\033[0;32m'
-end='\033[0m'
 error='\033[0;31m'
+
+red='\033[0;31m'
+green='\033[0;32m'
+yellow='\033[0;33m'
+yarn='\033[0;34m'
+pulper='\033[0;35m'
+blue='\033[0;36m'
+white='\033[0;37m'
+end='\033[0m'
+
+help(){
+    printf "Run：$red sh manager.sh $green<verb> $yellow<args>$end\n"
+    format="  $green%-11s $yellow%-8s$end%-20s\n"
+    printf "$format" "-h|h|help" "" "帮助"
+    printf "$format" "-update" "" "更新此脚本"
+    printf "$format" "-up" "num" "更新对应num的ROOT.war"
+    printf "$format" "-re" "num" "重启Tomcat"
+    printf "$format" "-on" "num" "启动Tomcat"
+    printf "$format" "-off" "num" "关闭Tomcat"
+    printf "$format" "-l" "num" "显示项目日志"
+    printf "$format" "-t" "num" "显示Tomcat输出"
+    printf "$format" "-cnf" "num" "进入项目配置目录"
+}
 
 updateSelf(){
     curl https://raw.githubusercontent.com/Kuangcp/Script/master/shell/deploy/manager.sh -o manager.sh
     echo "脚本更新完成"
-}
-
-help(){
-    printf "运行：dash manager.sh $start <params> $end\n"
-    printf "  $start%-16s$end%-20s\n" "-h|h|help" "帮助"
-    printf "  $start%-16s$end%-20s\n" "-update" "更新此脚本"
-    printf "  $start%-16s$end%-20s\n" "-up num" "更新对应num的ROOT.war"
-    printf "  $start%-16s$end%-20s\n" "-re num" "重启Tomcat"
-    printf "  $start%-16s$end%-20s\n" "-on num" "启动Tomcat"
-    printf "  $start%-16s$end%-20s\n" "-off num" "关闭Tomcat"
-    printf "  $start%-16s$end%-20s\n" "-l num" "显示项目日志"
-    printf "  $start%-16s$end%-20s\n" "-t num" "显示Tomcat输出"
-    printf "  $start%-16s$end%-20s\n" "-cnf num" "进入项目配置目录"
 }
 
 case $1 in 
