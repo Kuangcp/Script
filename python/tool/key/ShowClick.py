@@ -1,4 +1,4 @@
-# 实现 每天的计数 需要 evdev
+#  展示按键 , 需要 evdev 模块
 from evdev import InputDevice
 from select import select
 import time
