@@ -59,32 +59,32 @@ updateSelf(){
 }
 
 case $1 in 
-    -h | h | help)
+    -h)
         help
     ;;
-    -re)
+    -re|re)
         restart $2
     ;;
-    -up)
+    -up|up)
         update $2
     ;;
-    -t)
+    -t|t)
         showOut $2
     ;;
-    -l)
+    -l|l)
         showLog $2
     ;;
-    -on)
+    -on|on)
         process$2/bin/startup.sh
     ;;
-    -off)
+    -off|off)
         process$2/bin/shutdown.sh
     ;;
-    -cnf)
+    -cnf|cnf)
         cd process$2/webapps/ROOT/WEB-INF/classes/config
         # sh 运行是在子shell中的, 所以要用 source 执行该脚本
     ;;
-    -update)
+    -update|update)
         updateSelf
     ;;
     *)
