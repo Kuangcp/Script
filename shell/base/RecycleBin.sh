@@ -43,7 +43,7 @@ lazyDelete(){
         fileNum=`ls -A $trashPath | wc -l`
         while [ ! $fileNum = 0 ]; do
             sleep $checkTime
-            log "→ timing detection  ▌ check trash ..."
+            log_info_white "→ timing detection  ▌ check trash ..."
             ls -A $trashPath | cat | while read line; do
                 currentTime=`date +%s`
                 removeTime=${line##*\.}
@@ -64,11 +64,11 @@ moveFile(){
     fileName="$1";
     deleteTime=`date +%s`
     readable=`date +%Y-%m-%d_%H-%M-%S`
-    log_info "◆ prepare to delete ▌ $currentPath/$fileName"
     if [ ! -f "$currentPath/$fileName" ] && [ ! -d "$currentPath/$fileName" ] && [ ! -L "$currentPath/$fileName" ];then 
         printf $red"file not exist \n"
         exit
     fi
+    log_info_green "◆ prepare to delete ▌ $currentPath/$fileName"
     # 全部加上双引号是因为文件名中有可能会有空格
     mv "$currentPath/$fileName" "$trashPath/$fileName.$readable.$deleteTime"
 }
@@ -76,7 +76,7 @@ moveFile(){
 moveAll(){
     pattern=$1
     if [ "$pattern"1 = "1" ];then
-        printf "delete [all file / exclude hidden file]? [a/y/n] :" 
+        printf "delete [all file]/[exclude hidden file]/[no]?  [a/y/n] : " 
         read answer
         flag=0
         if [ "$answer" = "a" ];then
@@ -116,18 +116,23 @@ rollback(){
     file=${1%\.*}
     file=${file%\.*}
     mv $trashPath/$1 $file
-    log_warn "◀ rollback file     ▌ $file"
+    log_info_cyan "◀ rollback file     ▌ $file"
     printf $green"rollback [$file] complete \n"
 }
-log(){
+log_info_white(){
     printf "`date +%y-%m-%d_%H:%M:%S` $1\n" >>$logFile
 }
+log_info_green(){
+    printf `date +%y-%m-%d_%H:%M:%S`"$green $1\n" >>$logFile
+}
+log_info_cyan(){
+    printf `date +%y-%m-%d_%H:%M:%S`"$cyan $1\n" >>$logFile
+}
+
 log_error(){
     printf `date +%y-%m-%d_%H:%M:%S`"$red $1\n" >>$logFile
 }
-log_info(){
-    printf `date +%y-%m-%d_%H:%M:%S`"$green $1\n" >>$logFile
-}
+
 log_warn(){
     printf `date +%y-%m-%d_%H:%M:%S`"$yellow $1\n" >>$logFile
 }
@@ -189,11 +194,12 @@ case $1 in
         rollback $2
     ;;
     -d)
-        id=`ps -ef | grep "RecycleBin.sh" | grep -v "grep" | grep -v "\-down" | awk '{print $2}'`
-        if [ $id"1" = "1" ];then
+        id=`ps -ef | grep "RecycleBin.sh" | grep -v "grep" | grep -v "\-d" | awk '{print $2}'`
+        if [ "$id"1 = "1" ];then
             printf $red"not exist background running script\n"$end
         else
-            log_warn "user killed  script ▌ $id"
+            # printf "$id"
+            log_warn "user killed  script ▌ pid: $id"
             kill -9 $id
         fi
     ;;

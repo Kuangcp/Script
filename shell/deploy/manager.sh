@@ -55,7 +55,7 @@ help(){
 
 updateSelf(){
     curl https://raw.githubusercontent.com/Kuangcp/Script/master/shell/deploy/manager.sh -o manager.sh
-    echo "脚本更新完成"
+    printf $green"脚本更新完成\n"$end
 }
 
 case $1 in 
