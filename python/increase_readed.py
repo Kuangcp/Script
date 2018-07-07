@@ -28,8 +28,8 @@ def show_info(info_url):
         if classType == 'asideProfile':
             first_temp = str(line).split('class="count"')
             print('原创\033[0;32m', first_temp[1].split('</')[0][1:], '\033[0m')
-            print('喜欢\033[0;32m', first_temp[2].split('</')[0][10:], '\033[0m')
-            print('粉丝\033[0;32m', first_temp[3].split('</')[0][1:], '\033[0m')
+            print('粉丝\033[0;32m', first_temp[2].split('</')[0][10:], '\033[0m')
+            print('喜欢\033[0;32m', first_temp[3].split('</')[0][1:], '\033[0m')
             print('评论\033[0;32m', first_temp[4].split('</')[0][1:], '\033[0m')
             print('等级\033[0;32m', str(line).split(',点击查看等级说明')[0].split('target="_blank" title="')[1], '\033[0m')
             print('访问\033[0;32m', str(line).split('<dd title="')[1].split('">')[0], '\033[0m')

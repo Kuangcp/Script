@@ -49,7 +49,12 @@ def get_conn(file):
         conn = redis.Redis(host=host, port=port, db=db)
     else:
         conn = redis.Redis(host=host, port=port, db=db, password=password)
-    return conn
+    try:
+        conn.ping()
+        return conn
+    except:
+        print('Redis connection failed')
+        exit(1)
 
 def log(origin=None, end=None):
     print(time.strftime('%Y-%m-%d',time.localtime(time.time())), origin, end=end)

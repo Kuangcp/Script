@@ -25,9 +25,10 @@ startup(){
     eventNum=$1
     path=$(cd `dirname $0`; pwd)
     if [ $eventNum'z' = 'z' ];then
-        printf "${red}Please specific event num${end}\n"
+        printf "$green use default config to start $end \n"
     else
         sed -i "s/key\s=.*/key = $eventNum/g" $path/main.conf
+        printf "$green use event $eventNum to start $end \n"
     fi
     (python3 $path/RecordClickWithRedis.py &)
 }
