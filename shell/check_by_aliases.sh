@@ -5,6 +5,13 @@ configPath="/home/kcp/.repos"
 # 进行目录迭代的最大深度
 maxDeep=10
 
+red='\033[0;31m'
+green='\033[0;32m'
+yellow='\033[0;33m'
+blue='\033[0;34m'
+purple='\033[0;35m'
+cyan='\033[0;36m'
+white='\033[0;37m'
 start='\033[0;32m'
 end='\033[0m'
 # 读取配置文件,分析每一行,分析仓库状态 并输出
@@ -13,12 +20,10 @@ readConfigAnalysisRepos(){
     # 对比之下,expr比grep更快
     clean=`expr match "$1" ".*干净"`
     # cleans=`echo $1|grep "干净"`
-    # echo "["$clean"]|["$cleans"]"
     # 过滤掉没有修改的仓库
     if [ "$clean" != "0" ]; then 
         break
     fi
-    # echo $1
     crud=`expr match "$1" '.*[新修跟踪删除领]'`
     ignore=`expr match "$1" '.*<文件>'`
     if [ "$crud" != "0" ] && [ "$ignore" = '0' ];then
@@ -247,22 +252,23 @@ pushRemote(){
     done
 }
 help(){
-    echo "运行：sh check_repos.sh $start <params> $end"
-    printf "  $start%-16s$end%-20s\n" "no param" "列出所有操作过的仓库"
-    printf "  $start%-16s$end%-20s\n" "-h|h|help" "输出帮助信息"
-    printf "  $start%-16s$end%-20s\n" "-l|l|list" "列出所有仓库"
-    printf "  $start%-16s$end%-20s\n" "-p|p|push" "推送本地的提交"
-    printf "  $start%-16s$end%-20s\n" "-pa|pa" "推动到所有远程库"
-    printf "  $start%-16s$end%-20s\n" "-pl|pull <repos...>" "下拉一些远程仓库的提交"
-    printf "  $start%-16s$end%-20s\n" "-a/ac" "手动添加仓库以及注释信息或者/自动添加当前目录"
-    printf "  $start%-16s$end%-20s\n" "-i <imagefile>" "仅是图片仓库：在当前目录方便得到图片URL"
-    printf "  $start%-16s$end%-20s\n" "-f <file>" "github上文本文件URL"
-    printf "  $start%-16s$end%-20s\n" "-c" "打开配置文件"
-    exit 0
+    printf "Run：$red sh check_by_aliases.sh.sh $green<verb> $yellow<args>$end\n"
+    format="  $green%-10s $yellow%-12s$end%-20s\n"
+    printf "$format" "-h" "" "show help"
+    printf "$format" "" "" "show all modify local repo"
+    printf "$format" "-l|l|list" "" "list all local repo"
+    printf "$format" "-p|p|push" "" "push all modify local repo to remote "
+    printf "$format" "-pa|pa" "" "push current local repo to all remote"
+    printf "$format" "-pl|pull" "repo..." "batch pull repo from remote "
+    printf "$format" "-i|i" "imgFile" "show image url "
+    printf "$format" "-f|f" "file" "show file raw content url "
+    printf "$format" "-a|a" "" "add a local repo to alias config"
+    printf "$format" "-ac|ac" "" "add current local repo to alias config"
+    printf "$format" "-c" "" "open alias config file "
 }
 # 入口 读取脚本参数调用对应 函数
 case $1 in 
-    -h | h | help)
+    -h)
         help;;
     -pl|pull)
         pullRepos $@;;

@@ -23,6 +23,7 @@ checkTime='1h' # 轮询周期 1小时 依赖 sleep实现 单位为: d h m s
 
 # TODO  就差一个记录文件的原始目录的逻辑, 这样就能达到回收站的全部功能了
 # TODO 文件名最大长度是255, 注意测试边界条件
+# TODO -l 时 显示链接文件时太长
 
 init(){
     if [ ! -d $trashPath ];then
@@ -130,15 +131,19 @@ log_info(){
 log_warn(){
     printf `date +%y-%m-%d_%H:%M:%S`"$yellow $1\n" >>$logFile
 }
+
 help(){
-    printf "Run : ./RecycleBin.sh $green <params> $end\n"
-    printf "  $green%-16s$end%-20s\n" "-h|help" "show help"
-    printf "  $green%-16s$end%-20s\n" "file/dir" "move file/dir to trash dir"
-    printf "  $green%-16s$end%-20s\n" "-a \"pattern\"" "delete file (can't use *, actually command: 'ls | grep \$pattern')"
-    printf "  $green%-16s$end%-20s\n" "-l " "list file in trash "
-    printf "  $green%-16s$end%-20s\n" "-b file" "rollback file from trash "
-    printf "  $green%-16s$end%-20s\n" "-log" "show log"
+    printf "Run：$red sh RecycleBin.sh$green <verb> $yellow<args>$end\n"
+    format="  $green%-4s $yellow%-15s$end%-20s\n"
+    printf "$format" "" "file/dir" "move file/dir to trash"
+    printf "$format" "-h" "" "show help"
+    printf "$format" "-a" "\"pattern\"" "delete file (can't use *, actually command: 'ls | grep \"pattern\"')"
+    printf "$format" "-l" "" "list all file in trash"
+    printf "$format" "-b" "file" "rollback file from trash"
+    printf "$format" "-lo" "file" "show log"
+    printf "$format" "-d" "" "shutdown this script"
 }
+
 color_name(){
     fileName=$1
     timeStamp=${fileName##*\.}
@@ -151,6 +156,8 @@ color_name(){
 list_file(){
     file_list=`ls -lFh $trashPath | grep 'r'`
     count=0
+    printf "$blue%-8s %-2s %-5s %-5s %-5s %-5s %-5s %-5s %-19s %-5s$end\n" "mode" "num" "user" "group" "size" "month" "day" "time " "datetime" "filename "
+    printf "${blue}---------------------------------------------------------------------------------------- $end\n"
     for line in $file_list;do
         count=$(($count + 1))
         if [ $(($count % 9)) = 0 ];then
@@ -158,21 +165,21 @@ list_file(){
         elif [ $(($count % 9)) = 2 ];then
             printf "%s" " $line "
         else
-            printf "%-5s" "$line"
+            printf "%-6s" "$line"
         fi
     done
 }
 # 初始化脚本的环境
 init
 case $1 in 
-    -h | help)
+    -h)
         help
     ;;
     -a)
         moveAll "$2"
         (lazyDelete &)  
     ;;
-    -log)
+    -lo)
         less $logFile
     ;;
     -l)
@@ -181,7 +188,7 @@ case $1 in
     -b)
         rollback $2
     ;;
-    -down)
+    -d)
         id=`ps -ef | grep "RecycleBin.sh" | grep -v "grep" | grep -v "\-down" | awk '{print $2}'`
         if [ $id"1" = "1" ];then
             printf $red"not exist background running script\n"$end

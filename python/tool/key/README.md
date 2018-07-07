@@ -48,7 +48,6 @@ alias reco.redis='(python3 /path/to/RecordClickWithRedis.py &)'
 
 - [ ] 按时间段分析 所有敲击, 做出统计报表
 
-
 - [ ] 事件号变来变去, 要找到一个规律自动填充
 
 _event8_
