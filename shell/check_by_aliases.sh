@@ -37,17 +37,17 @@ readConfigAnalysisRepos(){
         if [ "$3"x = "0"x -a "$4"x = "0"x ];then
             # 输出有颜色的仓库标题
             aliasName=${2%=*}
-            aliasName=${aliasName#*Kg.}
+            aliasName=${aliasName#*kg.}
             line=${2#*cd }
             path=${line%%#*}
             path=${path%\'*}
             name=${line#*#}
 
-            # printf "\033[0;35mKg.%-10s" $aliasName
+            # printf "\033[0;35mkg.%-10s" $aliasName
             # printf "\033[0;32m%-60s" $path
             # printf "\033[1;34m《%s》\n" $name
 
-            printf "\033[1;32mKg.%-10s" $aliasName
+            printf "\033[1;32mkg.%-10s" $aliasName
             printf "\033[0;32m%-50s" $path
             printf "\033[1;32m%-20s\33[0m\n" "《$name 》"
             title=1
@@ -66,7 +66,7 @@ readConfigAnalysisRepos(){
 LinePath=''
 splitLine(){
     # 函数是不能返回字符串的 只能返回整型得知运行结果，用一个变量进行存取来达到目的
-    vars=`expr match "$1" "alias.Kg.*"`
+    vars=`expr match "$1" "alias.kg.*"`
     if [ "$vars" = "0" ]; then 
         return 0;
     fi 
@@ -79,7 +79,7 @@ splitLine(){
 # 列出仓库 加上颜色
 listRepos(){
     cat $1 | while read line ; do 
-        vars=`expr match "$line" "alias.Kg.*"`
+        vars=`expr match "$line" "alias.kg.*"`
         if [ "$vars" = "0" ]; then 
             continue
         fi
@@ -138,9 +138,9 @@ appendFile(){
     fi
     echo "请输入仓库注释/说明"
     read comment
-    echo "请输入别名,当输入 a 得到 Kg.a"
+    echo "请输入别名,当输入 a 得到 kg.a"
     read aliasName
-    echo "alias Kg."$aliasName"='cd $repo_path' # $comment" >> $1
+    echo "alias kg."$aliasName"='cd $repo_path' # $comment" >> $1
     echo "添加完成, 请更新 .bashrc或其他别名配置文件"
 }
 
@@ -232,7 +232,7 @@ pullRepos(){
             continue
         fi
         # printf " $repo \n"
-        path="`alias Kg.$repo`" 
+        path="`alias kg.$repo`" 
         path=${path##*cd}
         path=${path%\'*}
         printf " $start$path$end \n"

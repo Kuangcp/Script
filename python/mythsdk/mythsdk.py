@@ -117,11 +117,6 @@ def download(url, sdk, version):
         print(sdk+" "+version+" 已经安装 !")
         sys.exit(0)
 
-def download_fromgit(sdk, version):
-    ''' 使用github 作为存储 '''
-    url = github_url+sdk+"/"+sdk+"-"+version+".zip"
-    download(url, sdk, version)
-
 def down_fromqiniu(sdk, version):
     ''' 使用七牛云作为存储 '''
     config_md = init()+"/.mythsdk/config.md"

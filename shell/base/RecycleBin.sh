@@ -161,14 +161,14 @@ color_name(){
 list_file(){
     file_list=`ls -lFh $trashPath | grep 'r'`
     count=0
-    printf "$blue%-8s %-2s %-5s %-5s %-5s %-5s %-5s %-5s %-19s %-5s$end\n" "mode" "num" "user" "group" "size" "month" "day" "time " "datetime" "filename "
+    printf "$blue%-8s %-3s %-5s %-5s %-5s %-5s %-5s %-5s %-19s %-5s$end\n" "mode" "num" "user" "group" "size" "month" "day" "time " "datetime" "filename "
     printf "${blue}---------------------------------------------------------------------------------------- $end\n"
     for line in $file_list;do
         count=$(($count + 1))
         if [ $(($count % 9)) = 0 ];then
             color_name $line
         elif [ $(($count % 9)) = 2 ];then
-            printf "%s" " $line "
+            printf "%-4s" " $line"
         else
             printf "%-6s" "$line"
         fi
