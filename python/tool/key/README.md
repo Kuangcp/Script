@@ -46,11 +46,8 @@ alias reco.redis='(python3 /path/to/RecordClickWithRedis.py &)'
 ```
 之后只需登录root, 执行reco.redis即可在后台记录了
 
-- [ ] 按时间段分析 所有敲击, 做出统计报表
-
-- [ ] 事件号变来变去, 要找到一个规律自动填充
-
 _event8_
+```
 I: Bus=0003 Vendor=04d9 Product=0209 Version=0111
 N: Name="USB-HID Keyboard"
 P: Phys=usb-0000:00:14.0-3/input0
@@ -62,3 +59,8 @@ B: EV=120013
 B: KEY=1000000000007 ff800000000007ff febeffdfffefffff fffffffffffffffe
 B: MSC=10
 B: LED=7
+```
+## List
+
+- [ ] 按时间段分析 所有敲击, 做出统计报表
+- [X] 事件号变来变去, 要找到一个规律自动填充

@@ -43,17 +43,17 @@ help(){
     printf "Run：$red sh manager.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-11s $yellow%-8s$end%-20s\n"
     printf "$format" "-h|h|help" "" "帮助"
-    printf "$format" "-update" "" "更新此脚本"
-    printf "$format" "-up" "num" "更新对应num的ROOT.war"
-    printf "$format" "-re" "num" "重启Tomcat"
-    printf "$format" "-on" "num" "启动Tomcat"
-    printf "$format" "-off" "num" "关闭Tomcat"
-    printf "$format" "-l" "num" "显示项目日志"
-    printf "$format" "-t" "num" "显示Tomcat输出"
-    printf "$format" "-cnf" "num" "进入项目配置目录"
+    printf "$format" "-upgrade" "" "更新此脚本"
+    printf "$format" "-up|up" "num" "更新对应num的ROOT.war"
+    printf "$format" "-re|re" "num" "重启Tomcat"
+    printf "$format" "-on|on" "num" "启动Tomcat"
+    printf "$format" "-off|off" "num" "关闭Tomcat"
+    printf "$format" "-l|l" "num" "显示项目日志"
+    printf "$format" "-t|t" "num" "显示Tomcat输出"
+    printf "$format" "-cnf|cnf" "num" "进入项目配置目录"
 }
 
-updateSelf(){
+upgrade(){
     curl https://raw.githubusercontent.com/Kuangcp/Script/master/shell/deploy/manager.sh -o manager.sh
     printf $green"脚本更新完成\n"$end
 }
@@ -84,8 +84,8 @@ case $1 in
         cd process$2/webapps/ROOT/WEB-INF/classes/config
         # sh 运行是在子shell中的, 所以要用 source 执行该脚本
     ;;
-    -update|update)
-        updateSelf
+    -upgrade|upgrade)
+        upgrade
     ;;
     *)
         help

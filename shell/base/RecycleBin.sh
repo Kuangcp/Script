@@ -23,7 +23,7 @@ checkTime='1h' # 轮询周期 1小时 依赖 sleep实现 单位为: d h m s
 
 # TODO  就差一个记录文件的原始目录的逻辑, 这样就能达到回收站的全部功能了
 # TODO 文件名最大长度是255, 注意测试边界条件
-# TODO -l 时 显示链接文件时太长
+# TODO -l 时 显示链接文件时 格式全混乱了
 
 init(){
     if [ ! -d $trashPath ];then
@@ -159,7 +159,8 @@ color_name(){
     # printf " %-30s$green%s$end\n" $name "$time" 
 }
 list_file(){
-    file_list=`ls -lFh $trashPath | grep 'r'`
+    # grep r 是为了将一行结果变成多行
+    file_list=`ls -lAFh $trashPath | grep 'r'`
     count=0
     printf "$blue%-8s %-3s %-5s %-5s %-5s %-5s %-5s %-5s %-19s %-5s$end\n" "mode" "num" "user" "group" "size" "month" "day" "time " "datetime" "filename "
     printf "${blue}---------------------------------------------------------------------------------------- $end\n"
@@ -172,6 +173,14 @@ list_file(){
         else
             printf "%-6s" "$line"
         fi
+    done
+}
+#TODO  解决link 问题
+list_file_in_trash(){
+    file_list=`ls -lAFh /home/kcp/test/bin | grep 'r'`
+    count=0
+    for line in $file_list; do
+        echo $line
     done
 }
 # 初始化脚本的环境
@@ -188,7 +197,7 @@ case $1 in
         less $logFile
     ;;
     -l)
-        list_file
+        list_file_in_trash
     ;;
     -b)
         rollback $2
