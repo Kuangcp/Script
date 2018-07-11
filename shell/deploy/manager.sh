@@ -41,7 +41,7 @@ end='\033[0m'
 
 help(){
     printf "Run：$red sh manager.sh $green<verb> $yellow<args>$end\n"
-    format="  $green%-11s $yellow%-8s$end%-20s\n"
+    format="  $green%-11s $yellow%-5s$end%-20s\n"
     printf "$format" "-h|h|help" "" "帮助"
     printf "$format" "-upgrade" "" "更新此脚本"
     printf "$format" "-up|up" "num" "更新对应num的ROOT.war"
