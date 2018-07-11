@@ -8,12 +8,13 @@
 
 ## Git仓库有关
 - [快速查看改动的git仓库](/python/nouse/check_repos.py) 
-  - [Shell实现版](https://github.com/kuangcp/Script/blob/master/shell/check_by_aliases.sh)
+  - [Shell实现版](/shell/check_by_aliases.sh)
+
 ## Github和Gitbook
 > [Python脚本](/python/create_tree.py) 实现了将一个md的仓库, 生成一个GitBook所特有的目录文件 SUMMARY.md
 然后就能方便的在线阅读了, 而且几乎没有修改自己笔记的仓库
 
-[实例](https://github.com/Kuangcp/Notes)
+[笔记 实例](https://github.com/Kuangcp/Notes)
 
 ## 文件处理
 - [批量重命名文件](/python/rename_image.py)
@@ -23,7 +24,7 @@
 > [Shell脚本](/shell/create_commit.sh)
 
 ## 记录并统计敲击键盘的数据
-> [Python实现](https://github.com/Kuangcp/Script/tree/master/python/tool/key)
+> [Python实现](/python/tool/key)
 
 *********
 # 相关的脚本库
@@ -34,4 +35,4 @@
 > 个人备忘: 所有本地化隐私化配置放在 local.conf 文件中
 
 - 管理服务器发布脚本
-  -  `curl https://raw.githubusercontent.com/Kuangcp/Script/master/shell/deploy/manager.sh -o manager.sh`
+  -  `curl https://gitee.com/gin9/script/raw/master/shell/deploy/manager.sh -o manager.sh`

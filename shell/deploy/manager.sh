@@ -54,7 +54,7 @@ help(){
 }
 
 upgrade(){
-    curl https://raw.githubusercontent.com/Kuangcp/Script/master/shell/deploy/manager.sh -o manager.sh
+    curl https://gitee.com/gin9/script/raw/master/shell/deploy/manager.sh -o manager.sh
     printf $green"脚本更新完成\n"$end
 }
 
