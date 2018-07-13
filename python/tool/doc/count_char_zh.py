@@ -11,8 +11,8 @@ def count_file_zh(file_name):
     原理是直接按字节读取文件, 三个连着的 大于 127 的就是汉字 和 中文标点(还不能确定是准确的判断)
     """
     ignore_char=[]
-    ignore_char.append([227, 128, 144]) # 【 
-    ignore_char.append([227, 128, 145]) # 】
+    # ignore_char.append([227, 128, 144]) # 【 
+    # ignore_char.append([227, 128, 145]) # 】
 
     f = open(file_name, 'rb')
     count = 0
@@ -23,7 +23,9 @@ def count_file_zh(file_name):
             if(c > 127):
                 temp.append(c)
             if(len(temp) == 3):
+                # TODO 如何将 数字数组 看做byte 数组 从而转变为字符串
                 # print('char : ', temp)
+                
                 if temp not in ignore_char:
                     count += 1
                 temp = []
@@ -72,7 +74,7 @@ def main(verb=None):
     global all_files
 
     dict_file = {}
-    print('total file : ', count_file)
+    # print('total file : ', count_file)
     total = 0
     for file in all_files:
         temp = count_file_zh(file)
