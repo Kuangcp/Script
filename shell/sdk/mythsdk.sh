@@ -9,12 +9,13 @@ runPath=$(cd `dirname $0`; pwd)
 help(){
     format="  $exist%-14s $yellow%-15s$end%-20s\n"
     printf "$format" "-h|h|help" "" "帮助"
-    printf "$format" "-q " "<domain>" "配置七牛云域名"
+    printf "$format" "q" "<domain>" "配置七牛云域名"
+    printf "$format" "cnf" "" "进入sdk主目录"
     printf "$format" "-up|up|update" "<num>" "更新sdk的配置文件 num为配置文件镜像源"
     printf "$format" "-l|l|list" "<sdk>" "列出 所有sdk/指定的sdk"
     printf "$format" "-ls|ls|lists " "<sdk>" "列出 所有sdk/指定的sdk 的详细信息"
     printf "$format" "-i|i|install " "sdk <ver>" "下载安装指定sdk的 指定版本/最新版本"
-    printf "$format" "-li|li " "sdk ver file" "从zip包中安装指定sdk的指定版本"
+    printf "$format" "-iz|iz " "sdk ver file" "从zip包中安装指定sdk的指定版本"
     printf "$format" "-u|u|use " "sdk ver" "使用指定sdk的指定版本"
 }
 
@@ -36,7 +37,7 @@ case $1 in
     -i | i | install)
         downByQiNiu $2 $3
     ;;
-    -li | li | localInstall)
+    -iz | iz | installZip)
         handleZip $2 $3 $4
     ;;
     -q | q | qiNiu)
@@ -45,8 +46,15 @@ case $1 in
     -u | u | use)
         changeVersion $2 $3 
     ;;
+    cnf)
+        cd $basePath
+    ;;
     *)
         printf $yellow"请输入参数:\n"
         help
     ;;
 esac
+
+# TODO 进入主目录
+# TODO 简化 新添加一个sdk的zip时的流程 现在是直接 li, 然后解压正确, 但是要修改配置文件才可以 u  
+# 设想是 sed 自动修改配置文件
