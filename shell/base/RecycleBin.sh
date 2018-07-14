@@ -140,10 +140,10 @@ log_warn(){
 help(){
     printf "Run：$red sh RecycleBin.sh$green <verb> $yellow<args>$end\n"
     format="  $green%-4s $yellow%-15s$end%-20s\n"
-    printf "$format" "" "file/dir" "move file/dir to trash"
+    printf "$format" "any" "" "move file/dir to trash"
     printf "$format" "-h" "" "show help"
     printf "$format" "-a" "\"pattern\"" "delete file (can't use *, actually command: 'ls | grep \"pattern\"')"
-    printf "$format" "-l" "" "list all file in trash"
+    printf "$format" "-l" "" "list all file in trash(exclude link file)"
     printf "$format" "-b" "file" "rollback file from trash"
     printf "$format" "-lo" "file" "show log"
     printf "$format" "-d" "" "shutdown this script"
@@ -159,8 +159,8 @@ color_name(){
     # printf " %-30s$green%s$end\n" $name "$time" 
 }
 list_file(){
-    # grep r 是为了将一行结果变成多行
-    file_list=`ls -lAFh $trashPath | grep 'r'`
+    # grep r 是为了将一行结果变成多行, 目前不展示link文件
+    file_list=`ls -lAFh $trashPath | egrep -v '^lr' | grep 'r'`
     count=0
     printf "$blue%-8s %-3s %-5s %-5s %-5s %-5s %-5s %-5s %-19s %-5s$end\n" "mode" "num" "user" "group" "size" "month" "day" "time " "datetime" "filename "
     printf "${blue}---------------------------------------------------------------------------------------- $end\n"
@@ -175,14 +175,12 @@ list_file(){
         fi
     done
 }
-#TODO  解决link 问题
-list_file_in_trash(){
-    file_list=`ls -lAFh /home/kcp/test/bin | grep 'r'`
-    count=0
-    for line in $file_list; do
-        echo $line
-    done
+
+upgrade(){
+    curl https://gitee.com/gin9/script/raw/master/shell/base/RecycleBin.sh -o manager.sh
+    printf $green"脚本更新完成\n"$end
 }
+
 # 初始化脚本的环境
 init
 case $1 in 
@@ -197,7 +195,7 @@ case $1 in
         less $logFile
     ;;
     -l)
-        list_file_in_trash
+        list_file
     ;;
     -b)
         rollback $2
@@ -211,6 +209,9 @@ case $1 in
             log_warn "user killed  script ▌ pid: $id"
             kill -9 $id
         fi
+    ;;
+    -upgrade|upgrade)
+        upgrade
     ;;
     *)
         if [ "$1"1 = "1" ];then
