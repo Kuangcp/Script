@@ -177,8 +177,8 @@ list_file(){
 }
 
 upgrade(){
-    curl https://gitee.com/gin9/script/raw/master/shell/base/RecycleBin.sh -o manager.sh
-    printf $green"脚本更新完成\n"$end
+    curl https://gitee.com/gin9/script/raw/master/shell/base/RecycleBin.sh -o RecycleBin.sh
+    printf $green"upgrade script success\n"$end
 }
 
 # 初始化脚本的环境
