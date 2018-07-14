@@ -10,6 +10,7 @@ white='\033[0;37m'
 end='\033[0m'
 
 userDir=(`cd && pwd`)
+realPath=$(cd `dirname $0`; pwd)
 currentPath=`pwd`
 trashPath=$userDir'/.RecycleBin'
 logFile=$userDir'/.all.RecycleBin.log'
@@ -177,7 +178,7 @@ listTrashFiles(){
 }
 
 upgrade(){
-    curl https://gitee.com/gin9/script/raw/master/shell/base/RecycleBin.sh -o RecycleBin.sh
+    curl https://gitee.com/gin9/script/raw/master/shell/base/RecycleBin.sh -o $realPath/RecycleBin.sh
     printf $green"upgrade script success\n"$end
 }
 
