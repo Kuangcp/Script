@@ -43,20 +43,20 @@ lazyDelete(){
         fileNum=`ls -A $trashPath | wc -l`
         while [ ! $fileNum = 0 ]; do
             sleep $checkTime
-            log_info_white "→ timing detection  ▌ check trash ..."
+            logInfoWithWhite "→ timing detection  ▌ check trash ..."
             ls -A $trashPath | cat | while read line; do
                 currentTime=`date +%s`
                 removeTime=${line##*\.}
                 ((result=$currentTime-$removeTime))
                 # echo "$line | $result"
                 if [ $result -ge $liveTime ];then
-                    log_warn "▶ real delete       ▌ rm -rf $trashPath/$line"
+                    logWarn "▶ real delete       ▌ rm -rf $trashPath/$line"
                     rm -rf "$trashPath/$line"
                 fi
             done
             fileNum=`ls -A $trashPath | wc -l`
         done
-        log_error "▶ trash is empty    ▌ script will exit ..."
+        logError "▶ trash is empty    ▌ script will exit ..."
     fi
 }
 # move file to trash 
@@ -68,7 +68,7 @@ moveFile(){
         printf $red"file not exist \n"
         exit
     fi
-    log_info_green "◆ prepare to delete ▌ $currentPath/$fileName"
+    logInfoWithGreen "◆ prepare to delete ▌ $currentPath/$fileName"
     # 全部加上双引号是因为文件名中有可能会有空格
     mv "$currentPath/$fileName" "$trashPath/$fileName.$readable.$deleteTime"
 }
@@ -116,24 +116,24 @@ rollback(){
     file=${1%\.*}
     file=${file%\.*}
     mv $trashPath/$1 $file
-    log_info_cyan "◀ rollback file     ▌ $file"
+    logInfoWithCyan "◀ rollback file     ▌ $file"
     printf $green"rollback [$file] complete \n"
 }
-log_info_white(){
+logInfoWithWhite(){
     printf "`date +%y-%m-%d_%H:%M:%S` $1\n" >>$logFile
 }
-log_info_green(){
+logInfoWithGreen(){
     printf `date +%y-%m-%d_%H:%M:%S`"$green $1\n" >>$logFile
 }
-log_info_cyan(){
+logInfoWithCyan(){
     printf `date +%y-%m-%d_%H:%M:%S`"$cyan $1\n" >>$logFile
 }
 
-log_error(){
+logError(){
     printf `date +%y-%m-%d_%H:%M:%S`"$red $1\n" >>$logFile
 }
 
-log_warn(){
+logWarn(){
     printf `date +%y-%m-%d_%H:%M:%S`"$yellow $1\n" >>$logFile
 }
 
@@ -149,7 +149,7 @@ help(){
     printf "$format" "-d" "" "shutdown this script"
 }
 
-color_name(){
+showNameColorful(){
     fileName=$1
     timeStamp=${fileName##*\.}
     fileName=${fileName%\.*}
@@ -158,16 +158,16 @@ color_name(){
     printf " $green$time$end $yellow$name$end.$time.$red$timeStamp$end\n"
     # printf " %-30s$green%s$end\n" $name "$time" 
 }
-list_file(){
+listTrashFiles(){
     # grep r 是为了将一行结果变成多行, 目前不展示link文件
     file_list=`ls -lAFh $trashPath | egrep -v '^lr' | grep 'r'`
     count=0
-    printf "$blue%-8s %-3s %-5s %-5s %-5s %-5s %-5s %-5s %-19s %-5s$end\n" "mode" "num" "user" "group" "size" "month" "day" "time " "datetime" "filename "
+    printf "$blue%-9s %-3s %-5s %-5s %-5s%-5s %-5s %-5s %-19s %-5s$end\n" "mode" "num" "user" "group" "size" "month" "day" "time " "datetime" "filename "
     printf "${blue}---------------------------------------------------------------------------------------- $end\n"
     for line in $file_list;do
         count=$(($count + 1))
         if [ $(($count % 9)) = 0 ];then
-            color_name $line
+            showNameColorful $line
         elif [ $(($count % 9)) = 2 ];then
             printf "%-4s" " $line"
         else
@@ -195,7 +195,7 @@ case $1 in
         less $logFile
     ;;
     -l)
-        list_file
+        listTrashFiles
     ;;
     -b)
         rollback $2
@@ -206,11 +206,11 @@ case $1 in
             printf $red"not exist background running script\n"$end
         else
             # printf "$id"
-            log_warn "user killed  script ▌ pid: $id"
+            logWarn "user killed  script ▌ pid: $id"
             kill -9 $id
         fi
     ;;
-    -upgrade|upgrade)
+    -upgrade)
         upgrade
     ;;
     *)
