@@ -12,8 +12,9 @@ end='\033[0m'
 userDir=(`cd && pwd`)
 realPath=$(cd `dirname $0`; pwd)
 currentPath=`pwd`
-trashPath=$userDir'/.RecycleBin'
-logFile=$userDir'/.all.RecycleBin.log'
+trashPath=$userDir'/.config/kuangcp/RecycleBin'
+logDir=$userDir'/.config/kuangcp/log'
+logFile=$logDir'/.all.RecycleBin.log'
 
 liveTime=259200 # 存活时间 3天
 checkTime='1h' # 轮询周期 1小时 依赖 sleep实现 单位为: d h m s 
@@ -29,8 +30,12 @@ checkTime='1h' # 轮询周期 1小时 依赖 sleep实现 单位为: d h m s
 init(){
     if [ ! -d $trashPath ];then
         mkdir -p $trashPath
-        touch $logFile
     fi
+    if [ ! -d $logDir ];then
+        mkdir -p $logDir
+    fi
+    touch $logFile
+
     printf "TrashPath : \033[0;32m"$trashPath"\n\033[0m"
 }
 # 延迟删除, 并隐藏屏蔽了信号, 不阻塞当前终端
@@ -206,7 +211,7 @@ case $1 in
         if [ "$id"1 = "1" ];then
             printf $red"not exist background running script\n"$end
         else
-            # printf "$id"
+            printf $red"pid : $id killed\n"$end
             logWarn "user killed  script ▌ pid: $id"
             kill -9 $id
         fi

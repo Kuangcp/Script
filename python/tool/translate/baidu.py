@@ -79,7 +79,7 @@ def printParam(verb, args, comment):
     print("  %s%-5s %s%-6s %s%s"%(green, verb, yellow, args, end, comment))
 
 def help():
-    print('run: %s  %s <verb> %s <args>%s'%('main.py', green, yellow, end))
+    print('run: %s  %s <verb> %s <args>%s'%('python baidu.py', green, yellow, end))
     printParam("-h", "", "help")
     printParam("word", "", "Translating Chinese into English")
     printParam("ez", "word", "Translating English into Chinese")
