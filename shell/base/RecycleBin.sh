@@ -65,6 +65,7 @@ lazyDelete(){
         logError "▶ trash is empty    ▌ script will exit ..."
     fi
 }
+# TODO move a dir/file
 # move file to trash 
 moveFile(){
     fileName="$1";
@@ -212,7 +213,7 @@ case $1 in
             printf $red"not exist background running script\n"$end
         else
             printf $red"pid : $id killed\n"$end
-            logWarn "user killed  script ▌ pid: $id"
+            logWarn "♢ killed script     ▌ pid: $id"
             kill -9 $id
         fi
     ;;
