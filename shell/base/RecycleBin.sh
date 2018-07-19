@@ -12,16 +12,19 @@ end='\033[0m'
 userDir=(`cd && pwd`)
 realPath=$(cd `dirname $0`; pwd)
 currentPath=`pwd`
-trashPath=$userDir'/.config/kuangcp/RecycleBin'
-logDir=$userDir'/.config/kuangcp/log'
-logFile=$logDir'/.all.RecycleBin.log'
 
-liveTime=259200 # 存活时间 3天
-checkTime='1h' # 轮询周期 1小时 依赖 sleep实现 单位为: d h m s 
+mainPath=$userDir'/.config/kuangcp/RecycleBin'
+trashPath=$mainPath'/trash'
+logDir=$mainPath'/log'
+cnfDir=$mainPath'/conf'
 
-# DEBUG
-# liveTime=5 # 存活时间 5s
-# checkTime='1s' # 轮询周期 1s
+logFile=$logDir'/RecycleBin.log'
+configFile=$cnfDir'/main.ini'
+
+# 默认配置
+liveTime=86400 # 单位:s 存活时间 3天 86400=1天,  
+checkTime='10m' # 轮询周期 1小时 依赖 sleep实现 单位为: d h m s 
+
 
 # TODO  就差一个记录文件的原始目录的逻辑, 这样就能达到回收站的全部功能了
 # TODO 文件名最大长度是255, 注意测试边界条件
@@ -35,8 +38,12 @@ init(){
         mkdir -p $logDir
     fi
     touch $logFile
+    touch $configFile
 
-    printf "TrashPath : \033[0;32m"$trashPath"\n\033[0m"
+    printf "TrashPath : \033[0;32m"$mainPath"\n\033[0m"
+    
+    # 配置文件覆盖默认配置
+    . $configFile
 }
 # 延迟删除, 并隐藏屏蔽了信号, 不阻塞当前终端
 lazyDelete(){
@@ -153,6 +160,7 @@ help(){
     printf "$format" "-l" "" "list all file in trash(exclude link file)"
     printf "$format" "-b" "file" "rollback file from trash"
     printf "$format" "-lo" "file" "show log"
+    printf "$format" "-cnf" "" "edit main config file "
     printf "$format" "-d" "" "shutdown this script"
 }
 
@@ -216,6 +224,9 @@ case $1 in
             logWarn "♢ killed script     ▌ pid: $id"
             kill -9 $id
         fi
+    ;;
+    -cnf)
+        less $configFile
     ;;
     -upgrade)
         upgrade

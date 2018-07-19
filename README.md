@@ -1,11 +1,12 @@
 # 实用性脚本
 > 给自己Linux使用的脚本
 
-- 定一下规范:
+- 定一下自己的目录结构规范:
   1. 所有的本地化配置文件放在 `$HOME/.config/kuangcp/$APP` 目录下
-  1. 模板配置文件 采用 ini 后缀
+  1. 仓库中模板配置文件 采用 ini 后缀
 
-- [ ] 践行这个规范 
+- [ ] 践行这个规范
+
 ## sdk管理
 > `比sdkman 更简洁的sdk管理工具 因为采用的七牛云是免费版。请自行使用自己的七牛云进行使用`
 
@@ -38,7 +39,7 @@
 - [wizard-script](https://github.com/robertleepeak/wizard-scripts)`有关Java的各种实用性脚本`
 - [iScript](https://github.com/PeterDing/iScript)`影音有关的脚本`
 
-> 个人备忘: 所有本地化隐私化配置放在 local.conf 文件中
 
-- 管理服务器发布脚本
+- 管理服务器发布脚本 Tomcat 相关
   -  `curl https://gitee.com/gin9/script/raw/master/shell/deploy/manager.sh -o manager.sh`
+
