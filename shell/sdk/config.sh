@@ -4,8 +4,7 @@
 # SDK之间只有一行空行分隔, sdk名字后不能有空格 sdk版本之间用空格分隔
 # 压缩包之间
 
-github='https://raw.githubusercontent.com/Kuangcp/Script/master/shell/sdk/sdks.md'
-gitee='https://gitee.com/kcp1104/script/raw/master/shell/sdk/sdks.md'
+gitee='https://gitee.com/gin9/script/raw/master/shell/sdk/sdks.md'
 
 # githubUrl='https://raw.githubusercontent.com/kuangcp/Apps/master/zip/'
 userDir=`cd && pwd`
@@ -33,14 +32,8 @@ createDir(){
     fi
 }
 updateConfig(){
-    temp=$1
-    if [ $temp'z' = 'z' ];then
-        temp=$github
-    else
-        temp=$gitee
-    fi
-    echo "ready to download "$temp
-    curl -o $configPath $temp
+    echo "ready to download "$gitee
+    curl -o $configPath $gitee
 
 }
 # 初始化目录结构, 加载配置文件, 如果本地没有就去默认URL下载
