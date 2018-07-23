@@ -21,7 +21,7 @@ end='\033[0m'
 
 shellType='zsh' # shell类别
 trueFile=$userDir'/.path' # 如果为空则放在 shell的 .rc 文件中, 不为空就是实际的位置
-head(){
+showTitle(){
     printf $exist"★ ................................... ★ ................................... ★\n"$end
     printf $error"    used is red   $exist installed is green   $end installable is white\n"
     printf $exist"★ ................................... ★ ................................... ★\n"$end
@@ -89,7 +89,15 @@ showOneSdk(){
 }
 # 列出所有可安装的sdk以及状态
 listAllSdk(){
-    head
+    if [ ! "$2"z = "z" ];then 
+        isExist=`cat $configPath | grep $2 | wc -l`
+        if [ $isExist = 0 ];then
+            printf $error"SDK: $2 不存在"
+            exit 0
+        fi
+    fi 
+
+    showTitle
     lineNum=`cat $configPath | wc -l ` # 比真实行数少一行
     # nl 然后grep 进行指定的list
     # 目前就是按行号来进行确实配置的, 但是这样就导致了文件过长,拖慢了速度

@@ -4,7 +4,7 @@
 initQiNiu(){
     if [ ! -f $secretPath ]; then
         printf $error"    请配置七牛云的域名!!\n"$end
-        exit
+        exit 0
     fi
     . $secretPath
 }
@@ -20,24 +20,24 @@ checkExist(){
             fi 
         done 
         printf $error"配置文件中没有该版本\n"$end
-        exit
+        exit 0
     done
     printf $error"配置文件中没有该sdk\n"$end
-    exit
+    exit 0
 }
 # 解压文件
 decompression(){
     sdk=$1;version=$2;
     if [ ! -f $basePath/zip/$sdk/$version.zip ];then
         printf $error"压缩包不存在, 请进行下载\n"$end
-        exit
+        exit 0
     fi
     size=`du $basePath/zip/$sdk/$version.zip | colrm 8`
     # 小于1000kb的就认为是不完整的zip
     if [ $size -lt 500 ];then
         printf $error"压缩包不完整\n"$end
         rm $basePath/zip/$sdk/$version.zip
-        exit
+        exit 0
     fi
     unzip -q $basePath/zip/$sdk/$version.zip -d $basePath/sdk/$sdk
     # 表明第一次安装, 需要配置一些东西
@@ -47,7 +47,7 @@ decompression(){
         touch $basePath/sdk/$sdk/$version/bin/current
         appendPath $sdk
     else
-        printf "需要将该 "$sdk" "$version" 设置为默认版本吗? [y/n] " 
+        printf "需要将"$sdk"-"$version" 设置为 "$sdk" 的默认版本吗? [y/n] " 
         read answer
         if [ "$answer"z = "yz" ]; then 
             changeVersion $sdk $version
@@ -65,7 +65,7 @@ handleZip(){
         decompression $sdk $version
     elif [ -d $basePath/sdk/$sdk/$version ];then
         printf $error"已经安装该SDK的该版本\n"$end
-        exit
+        exit 0
     else
         printf "压缩包已存在\n"
         decompression $sdk $version
@@ -85,7 +85,7 @@ downloadZip(){
         decompression $sdk $version
     elif [ -d $basePath/sdk/$sdk/$version ];then
         printf $error"已经安装该SDK的该版本\n"$end
-        exit
+        exit 0
     else
         # 当删除了sdk下的目录 然后执行安装就会出现这种情况
         printf "压缩包已存在\n"

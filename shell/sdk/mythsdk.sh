@@ -47,7 +47,7 @@ case $1 in
         changeVersion $2 $3 
     ;;
     cnf)
-        cd $basePath
+        echo $basePath
     ;;
     *)
         printf $yellow"请输入参数:\n"
