@@ -9,8 +9,8 @@ def read_blog(list_url):
     soup = readUrl.readhtml()
     titleList = soup.find_all('h4')
     for line in titleList:
-        classType = readUrl.getelement(str(line), 'class')
-        if classType == 'text-truncate':
+        tag = readUrl.getelement(str(line), 'target')
+        if tag == '_blank':
             line = str(line)
             temp = line.split('a href="')[1]
             url = temp.split('" target=')[0]
@@ -39,6 +39,7 @@ def show_info(info_url):
 
                 
 def loop():
+    # read_blog('http://blog.csdn.net/kcp606/article/list/1')
     for i in range(1, 3, 1):
         list_url = 'http://blog.csdn.net/kcp606/article/list/'+str(i)
         print(list_url)
