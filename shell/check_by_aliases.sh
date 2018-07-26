@@ -287,7 +287,7 @@ case $1 in
         appendFile $configPath 'currentPath'
         exit 0;;
     -l | l | list)
-        listRepos $configPath
+        listRepos $configPath | sort
         exit 0;;
     -i | i)
         # 配置图片仓库地址即可
