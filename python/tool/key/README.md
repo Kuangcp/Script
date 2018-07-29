@@ -1,14 +1,16 @@
 # 记录并分析键盘敲击数据
 
 ## 1.脚本旁新建文件 main.conf
+> 等号左右必须要有空格
+
 ```conf
     [event]
-    key=5
+    key = 5
 
     [redis]
-    host=127.0.0.1
-    port=6666
-    db=2
+    host = 127.0.0.1
+    port = 6666
+    db = 2
     password=
 ```
 
