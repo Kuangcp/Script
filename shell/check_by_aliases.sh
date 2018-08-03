@@ -2,8 +2,8 @@
 # 根据aliase文件来检查git仓库, 只适用于使用中文语言的Linux系统
 
 configPath="/home/kcp/.repos"
-# 进行目录迭代的最大深度
-maxDeep=10
+# 向上迭代目录的最大深度
+maxDeepth=10
 
 red='\033[0;31m'
 green='\033[0;32m'
@@ -19,7 +19,7 @@ readConfigAnalysisRepos(){
     temp="";flag=1;title=0;
     # 对比之下,expr比grep更快
     clean=`expr match "$1" ".*干净"`
-    # cleans=`echo $1|grep "干净"`
+    # clean=`echo "$1"|grep "干净"`
     # 过滤掉没有修改的仓库
     if [ "$clean" != "0" ]; then 
         break
@@ -199,7 +199,7 @@ show_link(){
 # 获取仓库中文件的远程URL,目前实现了Github和Gitee
 getFileLocateUrl(){
     current_path=`pwd`
-    for i in `seq $maxDeep`; do # 限制最多往上找10级目录
+    for i in `seq $maxDeepth`; do # 限制最多往上找10级目录
         result=`ls -al | grep d.*git` # 搜索d开头的结果,也就是文件夹
         if [ "$result"z = "z" ]; then 
             cd ..
@@ -211,7 +211,7 @@ getFileLocateUrl(){
             exit
         fi
     done
-    if [ $i = $maxDeep ]; then
+    if [ $i = $maxDeepth ]; then
         echo "目录太深了, 请检查当前目录是否正确, 或者进脚本配置最大迭代深度"
         exit
     fi
