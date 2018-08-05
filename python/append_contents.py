@@ -87,7 +87,7 @@ def append_title(CodeFlag, filename=None):
             result = line.lower()
             # files.write(tab + "- [" + temp + "](#" + result + ")\n")
             results.append(tab + "- [" + temp + "](#" + result + ")\n")
-    results.append("\n`目录 end` |_"+nowTime+"_| [码云](https://gitee.com/gin9) | [CSDN](http://blog.csdn.net/kcp606) | [OSChina](https://my.oschina.net/kcp1104)")
+    results.append("\n`目录 end` |_"+nowTime+"_| [码云](https://gitee.com/gin9) | [CSDN](http://blog.csdn.net/kcp606) | [OSChina](https://my.oschina.net/kcp1104) | [cnblogs](http://www.cnblogs.com/kuangcp)")
     results.append("*"*40)
     line_prepender(filename, results)
 

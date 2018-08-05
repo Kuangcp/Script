@@ -1,6 +1,9 @@
 # Shell版mythsdk工具
-
 > SDK的zip格式是 `sdk-version.zip` 内容是 `version/bin` 这样的目录结构
+
+> 类似工具
+1. [sdkman](https://github.com/sdkman/sdkman-cli)
+1. [asdf](https://github.com/asdf-vm/asdf)`包更全`
 
 ## install 
 1. `git clone --depth 1 https://github.com/kuangcp/script.git`
@@ -33,3 +36,5 @@ $ kh h
 
 - [ ] 重构, 并支持 英文和中文
 
+https://github.com/asdf-vm/asdf/blob/master/completions/asdf.bash 
+参考并实现提示功能

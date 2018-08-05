@@ -14,12 +14,14 @@ cyan='\033[0;36m'
 white='\033[0;37m'
 start='\033[0;32m'
 end='\033[0m'
+
 # 读取配置文件,分析每一行,分析仓库状态 并输出
 readConfigAnalysisRepos(){
     temp="";flag=1;title=0;
     # 对比之下,expr比grep更快
     clean=`expr match "$1" ".*干净"`
-    # clean=`echo "$1"|grep "干净"`
+    # clean=`echo "$1"| awk "/干净/"`
+    # echo ">>$clean<<"
     # 过滤掉没有修改的仓库
     if [ "$clean" != "0" ]; then 
         break
@@ -43,18 +45,11 @@ readConfigAnalysisRepos(){
             path=${path%\'*}
             name=${line#*#}
 
-            # printf "\033[0;35mkg.%-10s" $aliasName
-            # printf "\033[0;32m%-60s" $path
-            # printf "\033[1;34m《%s》\n" $name
-
-            printf "\033[1;32mkg.%-10s" $aliasName
-            printf "\033[0;32m%-50s" $path
-            printf "\033[1;32m%-20s\33[0m\n" "《$name 》"
+            printf $green"kg.%-10s %-50s %-20s $end\n" $aliasName $path "《$name 》"
             title=1
         fi
         # 输出git命令运行结果 即文件名
         other=`expr match "$1" ".*尚未加入"`
-        # echo $1$other
         if [ $other = 0 ]; then
             printf "  \033[0;36m%s\033[0m\n" "$1"
         fi
@@ -83,18 +78,15 @@ listRepos(){
         if [ "$vars" = "0" ]; then 
             continue
         fi
-        temp=${line%%#*}
-        end='\033[0m'
         #裁剪字符串
+        temp=${line%%#*}
         str_alias=${line%=*}
         str_alias=${str_alias#*alias}
         str_path=${temp#*cd}
         str_path=${str_path%\'*}
         str_comment=${line#*#}
-        # 格式化输出
-        printf "\033[0;33m%-20s" $str_alias
-        printf "\033[0;36m%-56s" $str_path
-        printf "\033[0;32m%-20s\n" $str_comment
+        
+        printf "$yellow%-20s $cyan%-56s $green%-20s $end\n" $str_alias $str_path $str_comment
     done
 }
 
@@ -138,7 +130,7 @@ appendFile(){
     fi
     echo "请输入仓库注释/说明"
     read comment
-    echo "请输入别名,当输入 a 得到 kg.a"
+    echo "请输入别名, 例如 输入 a 得到 kg.a"
     read aliasName
     echo "alias kg."$aliasName"='cd $repo_path' # $comment" >> $1
     echo "添加完成, 请更新 .bashrc或其他别名配置文件"
@@ -168,7 +160,7 @@ pushAll(){
 }
 
 # 根据平台的不同输出不同的URL Github Gitee Gitlab URL构造是一样的 有关联对应的仓库才输出
-show_link(){
+showLink(){
     for line in $1; do 
         isGithub=`expr match "$line" ".*"$2`
         if [ $isGithub != 0 ]; then 
@@ -212,16 +204,16 @@ getFileLocateUrl(){
         fi
     done
     if [ $i = $maxDeepth ]; then
-        echo "目录太深了, 请检查当前目录是否正确, 或者进脚本配置最大迭代深度"
+        echo "目录太深了, 请检查当前目录是否正确, 或者修改脚本最大迭代深度的配置项"
         exit
     fi
     if [ "$result"z != "z" ]; then 
         remote_link=`git remote -v`
         project_path=`pwd`
     fi 
-    show_link "$remote_link" "github" $2
-    show_link "$remote_link" "gitee" $2
-    # show_link "$remote_link" "gitlab" $2
+    showLink "$remote_link" "github" $2
+    showLink "$remote_link" "gitee" $2
+    # showLink "$remote_link" "gitlab" $2
 }
 pullRepos(){
     . /home/kcp/.repos
