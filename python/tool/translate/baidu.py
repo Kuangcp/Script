@@ -83,7 +83,7 @@ def help():
     printParam("-h", "", "help")
     printParam("ze","word", "Translating Chinese into English")
     printParam("ez", "word", "Translating English into Chinese")
-    logInfo("\nA space must be followed by a comma.")
+    logInfo("\nA space must be followed by a comma.\nStatements containing special characters need to be wrapped with double quotes.")
 
 def normalizationData(word):
     if word is None:
@@ -92,6 +92,7 @@ def normalizationData(word):
     word = word.replace(',', '')
     word = word.replace('(', '')
     word = word.replace(')', ',')
+    
     return word
 
 def main(*args):
@@ -108,12 +109,14 @@ def main(*args):
     # print('verb:', verb)
     paramList = ['ez', 'ze']
     if verb in paramList:
+        if len(word) <= 2:
+            logError("Please input the sentence that needs to be translated.")
+            return
+        word = normalizationData(word)
         if verb == "ez":
-            word = normalizationData(word)
             # print('en:', word)
             sendRequest(word[2:], 'en', 'zh')
         if verb == "ze":
-            word = normalizationData(word)
             # print('zn:', word)
             sendRequest(word[2:], 'zh', 'en')  
     else:  
