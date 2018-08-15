@@ -81,24 +81,45 @@ def printParam(verb, args, comment):
 def help():
     print('run: %s  %s <verb> %s <args>%s'%('python baidu.py', green, yellow, end))
     printParam("-h", "", "help")
-    printParam("word", "", "Translating Chinese into English")
+    printParam("ze","word", "Translating Chinese into English")
     printParam("ez", "word", "Translating English into Chinese")
+    logInfo("\nA space must be followed by a comma.")
 
-def main(verb=None, args=None):
-    if verb is None:
-        logError("Please select a parameter")
+def normalizationData(word):
+    if word is None:
+        logError('Please input what you want to translation')
         sys.exit(1)
-    if verb == "-h":
+    word = word.replace(',', '')
+    word = word.replace('(', '')
+    word = word.replace(')', ',')
+    return word
+
+def main(*args):
+    # print('origin param: ', args)
+    if args == ():
+        logError("Please select a parameter atleast")
+        sys.exit(1)
+    verb = args[0]
+    if verb == '-h':
         help()
         sys.exit(0)
+    word=str(list(args))[1:-1].replace('\'', '')
+
+    # print('verb:', verb)
     paramList = ['ez', 'ze']
     if verb in paramList:
         if verb == "ez":
-            sendRequest(args, 'en', 'zh')
+            word = normalizationData(word)
+            # print('en:', word)
+            sendRequest(word[2:], 'en', 'zh')
         if verb == "ze":
-            sendRequest(args, 'zh', 'en')  
-    else:        
-        sendRequest(verb)
+            word = normalizationData(word)
+            # print('zn:', word)
+            sendRequest(word[2:], 'zh', 'en')  
+    else:  
+        word = normalizationData(word)      
+        # print('default ze:', word)
+        sendRequest(word)
 
 fire.Fire(main)
 

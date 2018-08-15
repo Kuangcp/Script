@@ -40,7 +40,8 @@ def show_info(info_url):
                 
 def loop():
     # read_blog('http://blog.csdn.net/kcp606/article/list/1')
-    for i in range(1, 3, 1):
+    # 三个参数: [n,m) delta
+    for i in range(1, 4, 1):
         list_url = 'http://blog.csdn.net/kcp606/article/list/'+str(i)
         print(list_url)
         read_blog(list_url)
