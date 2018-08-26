@@ -38,7 +38,7 @@
 - [useful-script](https://github.com/oldratlee/useful-scripts)
 - [wizard-script](https://github.com/robertleepeak/wizard-scripts)`有关Java的各种实用性脚本`
 - [iScript](https://github.com/PeterDing/iScript)`影音有关的脚本`
-
+- [across](https://github.com/teddysun/across) `bench等有用的脚本`
 
 - 管理服务器发布脚本 Tomcat 相关
   -  `curl https://gitee.com/gin9/script/raw/master/shell/deploy/manager.sh -o manager.sh`
