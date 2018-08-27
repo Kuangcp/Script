@@ -23,12 +23,15 @@ help(){
 }
 
 case $1 in 
-    -h)
+    -h | h)
         help ;;
     -p | p)
         currentPath=`pwd`
         echo $currentPath/$2
     ;;
+	-cf | cf)
+		cat $2 | xclip -sel clip
+	;;
     -f | f)
         find . -iname "*$2*" 
     ;;
