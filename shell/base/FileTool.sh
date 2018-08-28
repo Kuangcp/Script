@@ -1,9 +1,6 @@
-help(){
-    start='\033[0;32m'
-    end='\033[0m'
-    printf "运行：dash FileTool.sh $start <params> $end\n"
-    printf "  $start%-16s$end%-20s\n" "-h|h|help" "帮助"
-}
+#!/bin/bash
+
+# simplify some about file and path action 
 
 red='\033[0;31m'
 green='\033[0;32m'
@@ -15,11 +12,12 @@ white='\033[0;37m'
 end='\033[0m'
 
 help(){
-    printf "Run：$red sh FileTool.sh $green<verb> $yellow<args>$end\n"
+    printf "Run：$red bash FileTool.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-6s $yellow%-8s$end%-20s\n"
     printf "$format" "-h" "" "帮助"
     printf "$format" "" "" "复制当前路径到粘贴板"
-    printf "$format" "-p|p" "dir" "输出文件或目录的绝对路径"
+    printf "$format" "-p|p" "relative path" "输出相对路径的绝对路径并复制到粘贴板"
+    printf "$format" "-cf|cf" "relative path" "复制文件内容到粘贴板"
 }
 
 case $1 in 
@@ -28,15 +26,20 @@ case $1 in
     -p | p)
         currentPath=`pwd`
         echo $currentPath/$2
+        printf $currentPath/$2 | xclip -sel clip
     ;;
 	-cf | cf)
 		cat $2 | xclip -sel clip
 	;;
     -f | f)
+        if [ "$2"z = "z" ];then
+            echo "please specific fileName"
+            exit 1
+        fi
         find . -iname "*$2*" 
     ;;
     *)
         currentPath=`pwd`
-        echo $currentPath/$1 | xsel -b
+        printf $currentPath/$1 | xclip -sel clip
     ;;
 esac
