@@ -25,7 +25,7 @@ showProcessByName(){
         echo "please specific process name"
         exit 1
     fi
-    ps aux | grep RSS | grep -v "grep" && ps aux | egrep -v "grep" | grep -i $1 --color
+    ps aux | grep RSS | grep -v "grep" && ps aux | egrep -v "grep" | egrep -v "Performance.sh" | grep -i $1 --color
 }
 
 showAllProcess(){
@@ -39,7 +39,7 @@ case $1 in
         showAllProcess
     ;;
     -p | p)
-        showProcessByName $2
+        showProcessByName $2 
     ;;
     -pm | pm)
         ps aux | grep RSS | grep -v "grep" && ps aux | egrep -v "grep" | grep -i $2 | awk '{sum+=$6};END {print sum "K " sum/1024"M "}'
