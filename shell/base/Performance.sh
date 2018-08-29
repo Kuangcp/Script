@@ -29,14 +29,14 @@ showProcessByName(){
 }
 
 showAllProcess(){
-    ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r | less
+    ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
 }
 
 case $1 in 
     -h|h)
         help ;;
     -s | s)
-        showAllProcess
+        showAllProcess | less
     ;;
     -p | p)
         showProcessByName $2 
@@ -44,7 +44,14 @@ case $1 in
     -pm | pm)
         ps aux | grep RSS | grep -v "grep" && ps aux | egrep -v "grep" | grep -i $2 | awk '{sum+=$6};END {print sum "K " sum/1024"M "}'
     ;;
+    -ss|ss)
+        while true;do
+            showAllProcess | head -n 40
+            sleep 3
+            clear
+        done
+    ;;
     *)
-        showAllProcess
+        showAllProcess | less
     ;;
 esac
