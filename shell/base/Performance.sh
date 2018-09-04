@@ -44,9 +44,14 @@ case $1 in
     -pm | pm)
         ps aux | grep RSS | grep -v "grep" && ps aux | egrep -v "grep" | grep -i $2 | awk '{sum+=$6};END {print sum "K " sum/1024"M "}'
     ;;
-    -ss|ss)
-        while true;do
-            showAllProcess | head -n 40
+    -ss | ss)
+        displayCount=40
+        if [ ! "$2"z = "z" ];then 
+            # validate number
+            displayCount=$2
+        fi
+        while true; do
+            showAllProcess | head -n $displayCount
             sleep 3
             clear
         done
