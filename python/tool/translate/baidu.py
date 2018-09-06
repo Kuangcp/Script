@@ -124,5 +124,9 @@ def main(*args):
         # print('default ze:', word)
         sendRequest(word)
 
-fire.Fire(main)
-
+try:
+    fire.Fire(main)
+except requests.exceptions.ConnectionError:
+    logError("Please check the network connection.")
+except e:
+    logError("other error")
