@@ -46,9 +46,17 @@ case $1 in
     ;;
     -ss | ss)
         displayCount=40
+        echo "pid  |  memory(M)  |  memory(K)  |  Command"
         if [ ! "$2"z = "z" ];then 
             # validate number
             displayCount=$2
+            if [ $2 -lt 5 ];then
+                while true; do
+                    showAllProcess | head -n $2
+                    echo "..."
+                    sleep 3
+                done
+            fi
         fi
         while true; do
             showAllProcess | head -n $displayCount
