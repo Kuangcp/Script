@@ -128,5 +128,5 @@ try:
     fire.Fire(main)
 except requests.exceptions.ConnectionError:
     logError("Please check the network connection.")
-except e:
+except:
     logError("other error")
