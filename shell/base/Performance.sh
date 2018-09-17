@@ -50,7 +50,7 @@ case $1 in
         if [ ! "$2"z = "z" ];then 
             # validate number
             displayCount=$2
-            if [ $2 -lt 5 ];then
+            if [ $2 -lt 10 ];then
                 while true; do
                     showAllProcess | head -n $2
                     echo "..."
