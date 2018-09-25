@@ -91,6 +91,10 @@ moveFile(){
     # 全部加上双引号是因为文件名中有可能会有空格
     mv "$currentPath/$fileName" "$trashDir/$fileName.$readable.$deleteTime"
 }
+moveBySuffix(){
+    name=$1
+    moveAll ".*[^\.][\.]{1}$name"
+}
 # * 通配符删除
 moveAll(){
     pattern=$1
@@ -161,7 +165,8 @@ help(){
     format="  $green%-5s $yellow%-15s$end%-20s\n"
     printf "$format" "any" "" "move file/dir to trash"
     printf "$format" "-h" "" "show help"
-    printf "$format" "-a" "\"pattern\"" "delete file (can't use *, actually command: 'ls | grep \"pattern\"')"
+    printf "$format" "-a" "\"pattern\"" "delete file (can't use *, prefer to use +, actually command: 'ls | egrep \"pattern\"')"
+    printf "$format" "-as" "suffix" "delete *.suffix"
     printf "$format" "-l" "" "list all file in trash(exclude link file)"
     printf "$format" "-roll" "file" "rollback file from trash"
     printf "$format" "-lo" "file" "show log"
@@ -211,6 +216,10 @@ case $1 in
     ;;
     -a)
         moveAll "$2"
+        (lazyDelete &)  
+    ;;
+    -as)
+        moveBySuffix "$2"
         (lazyDelete &)  
     ;;
     -lo)

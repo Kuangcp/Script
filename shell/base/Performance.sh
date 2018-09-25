@@ -39,7 +39,15 @@ case $1 in
         showAllProcess | less
     ;;
     -p | p)
-        showProcessByName $2 
+		if [ "$3"z = "z" ];then
+            showProcessByName $2 
+		else
+			while true; do
+				showProcessByName $2 
+				echo ...................................................................
+				sleep $3
+			done
+		fi
     ;;
     -pm | pm)
         ps aux | grep RSS | grep -v "grep" && ps aux | egrep -v "grep" | grep -i $2 | awk '{sum+=$6};END {print sum "K " sum/1024"M "}'
