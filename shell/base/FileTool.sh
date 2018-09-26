@@ -13,9 +13,10 @@ end='\033[0m'
 
 help(){
     printf "Run：$red bash FileTool.sh $green<verb> $yellow<args>$end\n"
-    format="  $green%-6s $yellow%-8s$end%-20s\n"
+    format="  $green%-6s $yellow%-16s$end%-20s\n"
     printf "$format" "-h" "" "帮助"
     printf "$format" "" "" "复制当前路径到粘贴板"
+    printf "$format" "-f|f" "filename" "当前路径递归搜索文件"
     printf "$format" "-p|p" "relative path" "输出相对路径的绝对路径并复制到粘贴板"
     printf "$format" "-cf|cf" "relative path" "复制文件内容到粘贴板"
 }
