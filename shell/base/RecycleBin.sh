@@ -181,21 +181,29 @@ showNameColorful(){
     fileName=${fileName%\.*}
     time=${fileName##*\.}
     name=${fileName%\.*}
-    printf " $green$time$end $yellow$name$end.$time.$red$timeStamp$end\n"
+    
+    datetime=`echo $time | sed 's/_/ /' | sed 's/-/:/3' | sed 's/-/:/3'`
+
+    # format: datetime filename
+    printf " \033[1;32m$datetime$end $yellow$name$end.$time.$red$timeStamp$end\n"
     # printf " %-30s$green%s$end\n" $name "$time" 
 }
 listTrashFiles(){
     # grep r 是为了将一行结果变成多行, 目前不展示link文件
     file_list=`ls -lAFh $trashDir | egrep -v '^lr' | grep 'r'`
     count=0
-    printf "$blue%-9s %-3s %-5s %-5s %-5s%-5s %-5s %-5s %-19s %-5s$end\n" "mode" "num" "user" "group" "size" "month" "day" "time " "datetime" "filename "
+    # mode num user group size month day time 
+    printf "$blue%-9s %-3s %-5s %-5s %-5s %-19s %-5s$end\n" "   mode  " "num" "user" "group" "size" "      datetime" "        filename "
     printf "${blue}---------------------------------------------------------------------------------------- $end\n"
     for line in $file_list;do
         count=$(($count + 1))
         if [ $(($count % 9)) = 0 ];then
+            # actual filename with colorful
             showNameColorful $line
         elif [ $(($count % 9)) = 2 ];then
             printf "%-4s" " $line"
+        elif [ $(($count % 9)) -gt 5 ] && [ $(($count % 9)) -lt 9 ];then
+            continue
         else
             printf "%-6s" "$line"
         fi
