@@ -2,7 +2,7 @@
 > 给自己Linux使用的脚本
 
 - 定一下自己的目录结构规范:
-  1. 所有的本地化配置文件放在 `$HOME/.config/kuangcp/$APP` 目录下
+  1. 所有的本地化配置文件放在 `$HOME/.config/application-config/$APP` 目录下
   1. 仓库中模板配置文件 采用 ini 后缀
 
 - [ ] 践行这个规范
@@ -10,8 +10,7 @@
 ## sdk管理
 > `比sdkman 更简洁的sdk管理工具 因为采用的七牛云是免费版。请自行使用自己的七牛云进行使用`
 
-- [Python版](/python/mythsdk/) 
-  - [Shell版](/shell/sdk)
+- [Shell版](/shell/sdk) | [Python版](/python/mythsdk/)`Python是最初版,现已放弃,但是基本功能能用` 
 
 ## Git仓库有关
 - [快速查看改动的git仓库](/python/nouse/check_repos.py) 
@@ -33,6 +32,11 @@
 ## 记录并统计敲击键盘的数据
 > [Python实现](/python/tool/key)
 
+## 刷CSDN浏览量
+> CSDN浏览量应该和IP有关系, 所以一天也就刷一次, 权当玩玩
+> [Python实现](/python/increase_readed.py)
+
+有心思折腾的话, 就放在手机上跑(借助tmux), 跑一次就开启关闭下飞行模式, 重新分配ip 
 *********
 # 相关的脚本库
 - [useful-script](https://github.com/oldratlee/useful-scripts)

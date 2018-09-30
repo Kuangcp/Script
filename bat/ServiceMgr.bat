@@ -1,6 +1,6 @@
 @echo off
 REM REM 设定dos窗口的编码
-chcp 936
+REM chcp 936
 cls
 :redo
 set /a con=1 
