@@ -38,7 +38,7 @@ case $1 in
         downByQiNiu $2 $3
     ;;
     -iz | iz | installZip)
-        handleZip $2 $3 $4
+        handleLocalZip $2 $3 $4
     ;;
     -q | q | qiNiu)
         echo "domain="$2"/">$secretPath

@@ -25,6 +25,46 @@ checkExist(){
     printf $error"配置文件中没有该sdk\n"$end
     exit 0
 }
+
+# 根据压缩文件进行配置, 不依赖网络
+handleLocalZip(){
+    sdk=$1;version=$2;zipFile=$3;
+    createDir $basePath"/zip/"$sdk
+    createDir $basePath"/sdk/"$sdk
+    if [ ! -f $basePath"/zip/"$sdk"/"$version".zip" ]; then
+        cp `pwd`/$zipFile $basePath"/zip/"$sdk"/"$version".zip" 
+    fi
+    normalizeLinkFile $sdk $version
+}
+# 只是根据URL下载文件到对应位置
+downloadZip(){
+    url=$1;sdk=$2;version=$3;
+
+    checkExist $sdk  $version
+    createDir $basePath"/zip/"$sdk
+    createDir $basePath"/sdk/"$sdk
+    echo "准备下载 "$basePath"/zip/"$sdk"/"$version".zip"
+    if [ ! -f $basePath"/zip/"$sdk"/"$version".zip" ]; then
+        wget $url -O $basePath"/zip/"$sdk"/"$version".zip" 
+        # curl -o $basePath"zip/"$sdk"/"$version".zip "$url
+    fi
+    normalizeLinkFile $sdk $version
+}
+normalizeLinkFile(){
+    sdk=$1;version=$2;
+    if [ -d $basePath/sdk/$sdk/$version ];then
+        printf $error"已经解压配置好 $sdk  $version\n"$end
+        if [ ! -L $basePath/sdk/$sdk/current ];then 
+        printf $green"修复软链接\n"$end
+            ln -s $basePath/sdk/$sdk/$version $basePath/sdk/$sdk/current
+        fi
+        exit 0
+    else
+        printf "压缩包已存在\n"
+        decompression $sdk $version
+    fi
+}
+
 # 解压文件
 decompression(){
     sdk=$1;version=$2;
@@ -55,43 +95,7 @@ decompression(){
     fi
     printf "解压完成\n"
 }
-# 根据亚索文件进行配置, 不依赖网络
-handleZip(){
-    sdk=$1;version=$2;zipFile=$3;
-    createDir $basePath"/zip/"$sdk
-    createDir $basePath"/sdk/"$sdk
-    if [ ! -f $basePath"/zip/"$sdk"/"$version".zip" ]; then
-        cp `pwd`/$zipFile $basePath"/zip/"$sdk"/"$version".zip" 
-        decompression $sdk $version
-    elif [ -d $basePath/sdk/$sdk/$version ];then
-        printf $error"已经安装该SDK的该版本\n"$end
-        exit 0
-    else
-        printf "压缩包已存在\n"
-        decompression $sdk $version
-    fi 
-}
-# 只是根据URL下载文件到对应位置
-downloadZip(){
-    url=$1;sdk=$2;version=$3;
 
-    checkExist $sdk  $version
-    createDir $basePath"/zip/"$sdk
-    createDir $basePath"/sdk/"$sdk
-    echo "准备下载 "$basePath"/zip/"$sdk"/"$version".zip"
-    if [ ! -f $basePath"/zip/"$sdk"/"$version".zip" ]; then
-        wget $url -O $basePath"/zip/"$sdk"/"$version".zip" 
-        # curl -o $basePath"zip/"$sdk"/"$version".zip "$url
-        decompression $sdk $version
-    elif [ -d $basePath/sdk/$sdk/$version ];then
-        printf $error"已经安装该SDK的该版本\n"$end
-        exit 0
-    else
-        # 当删除了sdk下的目录 然后执行安装就会出现这种情况
-        printf "压缩包已存在\n"
-        decompression $sdk $version
-    fi 
-}
 # 更改sdk使用的版本
 changeVersion(){
     sdk=$1;version=$2;

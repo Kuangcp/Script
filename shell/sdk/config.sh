@@ -8,7 +8,7 @@ gitee='https://gitee.com/gin9/script/raw/master/shell/sdk/sdks.md'
 
 # githubUrl='https://raw.githubusercontent.com/kuangcp/Apps/master/zip/'
 userDir=`cd && pwd`
-basePath=$userDir'/app-conf/myth-sdk'
+basePath=$userDir'/.config/app-conf/myth-sdk'
 # basePath='/home/kcp/test/mythsdk'
 configPath=$basePath'/sdks.md'
 secretPath=$basePath'/secret.conf'
@@ -85,7 +85,7 @@ showOneSdk(){
     for version in $sdkVersion; do
         querySDKExist $sdkName $version
     done
-    printf "\n"
+    printf "\n$exist.........\n"$end
 }
 # 列出所有可安装的sdk以及状态
 listAllSdk(){
