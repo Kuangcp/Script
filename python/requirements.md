@@ -1,5 +1,4 @@
 beautifulsoup4==4.6.3
-bs4==0.0.1
 catfish==1.4.4
 evdev==1.0.0
 fire==0.1.3

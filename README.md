@@ -2,7 +2,7 @@
 > 给自己Linux使用的脚本
 
 - 定一下自己的目录结构规范:
-  1. 所有的本地化配置文件放在 `$HOME/.config/application-config/$APP` 目录下
+  1. 所有的本地化配置文件放在 `$HOME/.config/app-conf/$APP` 目录下
   1. 仓库中模板配置文件 采用 ini 后缀
 
 - [ ] 践行这个规范
