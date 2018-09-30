@@ -13,7 +13,7 @@ userDir=(`cd && pwd`)
 realPath=$(cd `dirname $0`; pwd)
 currentPath=`pwd`
 
-mainDir=$userDir'/.config/kuangcp/RecycleBin'
+mainDir=$userDir'/.config/app-conf/RecycleBin'
 trashDir=$mainDir'/trash'
 logDir=$mainDir'/log'
 cnfDir=$mainDir'/conf'
