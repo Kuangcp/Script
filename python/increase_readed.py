@@ -14,6 +14,8 @@ def read_blog(list_url):
             line = str(line)
             temp = line.split('a href="')[1]
             url = temp.split('" target=')[0]
+            if not "kcp606" in url:
+                continue
             readUrl.url = url
             readUrl.readhtml()
             
