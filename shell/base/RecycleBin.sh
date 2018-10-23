@@ -21,13 +21,7 @@ cnfDir=$mainDir'/conf'
 logFile=$logDir'/RecycleBin.log'
 configFile=$cnfDir'/main.ini'
 
-# 默认配置
-# liveTime=86400 # 单位:s 存活时间 3天 86400=1天,  
-# checkTime='10m' # 轮询周期 1小时 依赖 sleep实现 单位为: d h m s 
-
-# TODO  就差一个记录文件的原始目录的逻辑, 这样就能达到回收站的全部功能了
 # TODO 文件名最大长度是255, 注意测试边界条件
-# TODO -l 时 显示链接文件时 格式全混乱了
 
 init(){
     if [ ! -d $trashDir ];then
@@ -50,12 +44,13 @@ init(){
     printf "TrashPath : \033[0;32m"$mainDir"\n\033[0m"
     . $configFile
 }
-# 延迟删除, 并隐藏屏蔽了信号, 不阻塞当前终端
-lazyDelete(){
-    result=`ps -ef | grep RecycleBin.sh | wc -l`
-    # echo "$result"
-    # 限制只开一个进程, 3 是因为第一次运行才是3
-    if [ "$result" != "3" ];then
+
+# Delay delete file and shielded signal, Not blocking the current terminal 
+delayDelete(){
+    result=`ps -ef | grep RecycleBin.sh | grep -v grep | wc -l`
+    # Restrict running only one process. But the first run will be 2. 
+    # because this function is run by a fork process ?
+    if [ "$result" != "2" ];then
         exit
     else
         fileNum=`ls -A $trashDir | wc -l`
@@ -77,7 +72,7 @@ lazyDelete(){
         logError "▶ trash is empty    ▌ script will exit ..."
     fi
 }
-# TODO move a dir/file
+
 # move file to trash 
 moveFile(){
     fileName="$1";
@@ -88,6 +83,16 @@ moveFile(){
         exit
     fi
     logInfoWithGreen "◆ prepare to delete ▌ $currentPath/$fileName"
+    # 多级目录时, 需要先创建好
+    hasDir=`expr match "$fileName" ".*/"`
+    if [ ! $hasDir = 0 ]; then 
+        #  two way: keep the same dir structure(easy move) or keep deepest dir or file (easy delete)
+        # fileDir=${fileName%/*}
+        # mkdir -p $trashDir/$fileDir
+        simpleFile=${fileName#*/}
+        mv "$currentPath/$fileName" "$trashDir/$simpleFile.$readable.$deleteTime"
+        return 0
+    fi 
     # 全部加上双引号是因为文件名中有可能会有空格
     mv "$currentPath/$fileName" "$trashDir/$fileName.$readable.$deleteTime"
 }
@@ -95,6 +100,7 @@ moveBySuffix(){
     name=$1
     moveAll ".*[^\.][\.]{1}$name"
 }
+
 # * 通配符删除
 moveAll(){
     pattern=$1
@@ -127,6 +133,7 @@ moveAll(){
         moveFile "$file"
     done
 }
+
 rollback(){
     if [ "$1"1 = "1" ];then
         printf $red"please select a specific rollback file\n"
@@ -142,6 +149,7 @@ rollback(){
     logInfoWithCyan "◀ rollback file     ▌ $file"
     printf $green"rollback [$file] complete \n"
 }
+
 logInfoWithWhite(){
     printf "`date +%y-%m-%d_%H:%M:%S` $1\n" >>$logFile
 }
@@ -151,11 +159,9 @@ logInfoWithGreen(){
 logInfoWithCyan(){
     printf `date +%y-%m-%d_%H:%M:%S`"$cyan $1\n" >>$logFile
 }
-
 logError(){
     printf `date +%y-%m-%d_%H:%M:%S`"$red $1\n" >>$logFile
 }
-
 logWarn(){
     printf `date +%y-%m-%d_%H:%M:%S`"$yellow $1\n" >>$logFile
 }
@@ -173,6 +179,8 @@ help(){
     printf "$format" "-cnf" "" "edit main config file "
     printf "$format" "-b" "" "show background running script"
     printf "$format" "-d" "" "shutdown this script"
+    printf "$format" "-upgrade" "" "upgrade this script when not in git repo"
+    printf "$format" "-clean" "" "start check trash dir"
 }
 
 showNameColorful(){
@@ -188,6 +196,7 @@ showNameColorful(){
     printf " \033[1;32m$datetime$end $yellow$name$end.$time.$red$timeStamp$end\n"
     # printf " %-30s$green%s$end\n" $name "$time" 
 }
+
 listTrashFiles(){
     # grep r 是为了将一行结果变成多行, 目前不展示link文件
     file_list=`ls -lAFh $trashDir | egrep -v '^lr' | grep 'r'`
@@ -215,20 +224,21 @@ upgrade(){
     printf $green"upgrade script success\n"$end
 }
 
-# 初始化脚本的环境
+# main entrance: init enviroment for this shell script 
 init
 
+# read script params 
 case $1 in 
     -h)
         help
     ;;
     -a)
         moveAll "$2"
-        (lazyDelete &)  
+        (delayDelete &)  
     ;;
     -as)
         moveBySuffix "$2"
-        (lazyDelete &)  
+        (delayDelete &)  
     ;;
     -lo)
         less $logFile
@@ -258,6 +268,9 @@ case $1 in
     -upgrade)
         upgrade
     ;;
+    -clean)
+        (delayDelete &)
+    ;;
     *)
         if [ "$1"1 = "1" ];then
             printf $red"pelease select specific file\n"$end 
@@ -265,6 +278,6 @@ case $1 in
             exit
         fi
         moveFile "$1"
-        (lazyDelete &)
+        (delayDelete &)
     ;;
 esac

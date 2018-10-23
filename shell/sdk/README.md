@@ -12,15 +12,15 @@
 4. `kh h` 查看帮助信息
 
 ```sh
-$ kh h
-  -h|h|help                     帮助
-  -q             <domain>       配置七牛云域名
-  -up|up|update  <num>          更新sdk的配置文件 num为配置文件镜像源
-  -l|l|list      <sdk>          列出 所有sdk/指定的sdk
-  -ls|ls|lists   <sdk>          列出 所有sdk/指定的sdk 的详细信息
-  -i|i|install   sdk <ver>      下载安装指定sdk的 指定版本/最新版本
-  -li|li         sdk ver file   从zip包中安装指定sdk的指定版本
-  -u|u|use       sdk ver        使用指定sdk的指定版本
+    $ kh h
+    -h|h|help                     帮助
+    -q             <domain>       配置七牛云域名
+    -up|up|update  <num>          更新sdk的配置文件 num为配置文件镜像源
+    -l|l|list      <sdk>          列出 所有sdk/指定的sdk
+    -ls|ls|lists   <sdk>          列出 所有sdk/指定的sdk 的详细信息
+    -i|i|install   sdk <ver>      下载安装指定sdk的 指定版本/最新版本
+    -li|li         sdk ver file   从zip包中安装指定sdk的指定版本
+    -u|u|use       sdk ver        使用指定sdk的指定版本
 ```
 
 ## Config
