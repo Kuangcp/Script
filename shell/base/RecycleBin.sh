@@ -89,8 +89,8 @@ moveFile(){
         #  two way: keep the same dir structure(easy move) or keep deepest dir or file (easy delete)
         # fileDir=${fileName%/*}
         # mkdir -p $trashDir/$fileDir
-        simpleFile=${fileName#*/}
-        mv "$currentPath/$fileName" "$trashDir/$simpleFile.$readable.$deleteTime"
+        simpleFile=${fileName##*/}
+        mv "$currentPath                        /$fileName" "$trashDir/$simpleFile.$readable.$deleteTime"
         return 0
     fi 
     # 全部加上双引号是因为文件名中有可能会有空格
