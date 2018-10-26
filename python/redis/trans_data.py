@@ -50,9 +50,9 @@ class RedisConfig:
 def main():
     
     # origin = RedisConfig('120.78.154.52', 9898, '', 1)
-    originConfig = RedisConfig('localhost', 6666, '', 2)
+    originConfig = RedisConfig('localhost', 6379, 'myth', 2)
     targetConfig = RedisConfig('localhost', 6379, 'myth', 3)
-    # originConfig.transTo(target)
-    originConfig.transByKey(originConfig.getConnection(), targetConfig.getConnection(), "detail-2018-07-30")
+    # originConfig.transTo(targetConfig)
+    originConfig.transByKey(originConfig.getConnection(), targetConfig.getConnection(), "all-2018-10-26")
 
 main()

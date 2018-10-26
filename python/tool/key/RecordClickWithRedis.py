@@ -28,7 +28,8 @@ def detectInputKey(eventNum, conn):
     except:
         log('\033[0;31mError!! Device has been removed Or Application has been interrupted\033[0m')
 
-def get_conf(file):
+def get_conf():
+    global file
     # 加载配置文件
     path = os.path.split(os.path.realpath(__file__))[0]
     mainConf = path + file
@@ -39,8 +40,8 @@ def get_conf(file):
     cf.read(mainConf)
     return cf
 
-def get_conn(file):
-    cf = get_conf(file)
+def get_conn():
+    cf = get_conf()
     host = cf.get('redis', 'host')
     port = cf.get('redis', 'port')
     db = cf.get('redis', 'db')
@@ -61,8 +62,8 @@ def log(origin=None, end=None):
 
 def main():
     global redis
-    eventNum = get_conf(file).get('event', 'key')
-    detectInputKey(eventNum, get_conn(file))
+    eventNum = get_conf().get('event', 'key')
+    detectInputKey(eventNum, get_conn())
 
 if __name__=="__main__":
     main()

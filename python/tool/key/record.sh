@@ -74,6 +74,10 @@ case $1 in
     -b) # background
         ps -ef | grep "WithRedis.py" | grep -v "grep"
     ;;
+    -cnf)
+        path=$(cd `dirname $0`; pwd)
+        vim $path/main.conf
+    ;;
     *)
         help
     ;; 

@@ -4,11 +4,10 @@ import time
 from RecordClickWithRedis import get_conf
 from RecordClickWithRedis import get_conn
 
-file = '/main.conf'
 def show_timeline(days=None):
     date = caculate_day(days)
     global file
-    conn = get_conn(file)
+    conn = get_conn()
     result = conn.zrange('detail-'+date, 0, -1, withscores=True)
     if result is None or result == []:
         print('没有记录')
@@ -29,7 +28,7 @@ def show_timeline(days=None):
 
 def count_num(days=None):
     global file
-    conn = get_conn(file)
+    conn = get_conn()
     date = caculate_day(days)
     total_num = conn.get('all-'+date)
     if total_num is None:
@@ -48,7 +47,7 @@ def count_num(days=None):
 
 def get_key_map():
     global file
-    conn = get_conn(file)
+    conn = get_conn()
     all = conn.hgetall('key_map')
     return all
 
