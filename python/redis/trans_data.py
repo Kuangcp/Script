@@ -22,7 +22,7 @@ class RedisConfig:
         for key in origin_data:
             self.transByKey(origin, target, key)
             count = count+1
-        print("总共迁移key：", count)
+        print("total trans key: ", count)
 
     def transByKey(self, origin, target, key):
         """ 两个Redis连接, 根据key转移数据 """
@@ -45,14 +45,14 @@ class RedisConfig:
             for element in keys:
                 target.hset(key, element, origin.hget(key, element))
         else:
-            print("未知数据类型")
+            print("unknow data type with key: ", key)
 
 def main():
-    
+    # improve performance
     # origin = RedisConfig('120.78.154.52', 9898, '', 1)
-    originConfig = RedisConfig('localhost', 6379, 'myth', 2)
-    targetConfig = RedisConfig('localhost', 6379, 'myth', 3)
-    # originConfig.transTo(targetConfig)
-    originConfig.transByKey(originConfig.getConnection(), targetConfig.getConnection(), "all-2018-10-26")
+    originConfig = RedisConfig('localhost', 6380, 'myth', 3)
+    targetConfig = RedisConfig('localhost', 6666, '', 3)
+    originConfig.transTo(targetConfig)
+    # originConfig.transByKey(originConfig.getConnection(), targetConfig.getConnection(), "all-2018-10-26")
 
 main()
