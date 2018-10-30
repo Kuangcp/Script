@@ -9,7 +9,10 @@ file = '/main.conf'
 
 def detectInputKey(eventNum, conn):
     ''' 记录每个按键次数以及总按键数 '''
-    dev = InputDevice('/dev/input/event'+str(eventNum))
+    try:
+        dev = InputDevice('/dev/input/event'+str(eventNum))
+    except:
+        logError('event config error')
     is_event_correct = False
     try:
         log('Ready to listen ... ')
@@ -18,7 +21,7 @@ def detectInputKey(eventNum, conn):
             # 如果 event错了, 下面直接阻塞掉
             select([dev], [], [])
             if is_event_correct == False:
-                print('\033[0;32mSuccessful startup\033[0m')
+                log('\033[0;32mSuccessful startup\033[0m')
                 is_event_correct = True
             for event in dev.read():
                 if event.value == 1 and event.code != 0:
@@ -26,7 +29,7 @@ def detectInputKey(eventNum, conn):
                     conn.incr('all-'+today)
                     conn.zadd('detail-'+today, str(time.time()), event.code)
     except:
-        log('\033[0;31mError!! Device has been removed Or Application has been interrupted\033[0m')
+        logError('Error!! Device has been removed Or Application has been interrupted')
 
 def get_conf():
     global file
@@ -34,7 +37,7 @@ def get_conf():
     path = os.path.split(os.path.realpath(__file__))[0]
     mainConf = path + file
     if not os.path.exists(mainConf) :
-        print('Please refer to Readme.md initialization configuration')
+        logError('Please refer to Readme.md initialization configuration')
         return 0 
     cf = ConfigParser()
     cf.read(mainConf)
@@ -54,8 +57,11 @@ def get_conn():
         conn.ping()
         return conn
     except:
-        print('Redis connection failed')
+        logError('Redis connection failed')
         exit(1)
+
+def logError(origin='', end=None):
+    log('\033[0;31m'+origin+'\033[0m', end=end)
 
 def log(origin=None, end=None):
     print(time.strftime('%Y-%m-%d',time.localtime(time.time())), origin, end=end)
