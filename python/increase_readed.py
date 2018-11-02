@@ -2,6 +2,7 @@
 import fire
 from base.ReadURL import ReadURL
 from time import sleep
+import time
 # 增加某用户的CSDN阅读量, 发现是每天都能去增加一次
 
 def read_blog(list_url):
@@ -29,17 +30,15 @@ def show_info(info_url):
         classType = readUrl.getelement(str(line), 'id')
         if classType == 'asideProfile':
             first_temp = str(line).split('class="count"')
-            print('原创\033[0;32m', first_temp[1].split('</')[0][1:], '\033[0m')
-            print('粉丝\033[0;32m', first_temp[2].split('</')[0][10:], '\033[0m')
-            print('喜欢\033[0;32m', first_temp[3].split('</')[0][1:], '\033[0m')
-            print('评论\033[0;32m', first_temp[4].split('</')[0][1:], '\033[0m')
-            print('等级\033[0;32m', str(line).split(',点击查看等级说明')[0].split('target="_blank" title="')[1], '\033[0m')
-            print('访问\033[0;32m', str(line).split('<dd title="')[1].split('">')[0], '\033[0m')
-            print('积分\033[0;32m', str(line).split('<dd title="')[2].split('">')[0], '\033[0m')
+            print('    原创\033[0;32m', first_temp[1].split('</')[0][1:], '\033[0m', end='')
+            print('粉丝\033[0;32m', first_temp[2].split('</')[0][10:], '\033[0m', end='')
+            print('喜欢\033[0;32m', first_temp[3].split('</')[0][1:], '\033[0m', end='')
+            print('评论\033[0;32m', first_temp[4].split('</')[0][1:], '\033[0m', end='')
+            print('等级\033[0;32m', str(line).split(',点击查看等级说明')[0].split('target="_blank" title="')[1], '\033[0m', end='')
+            print('访问\033[0;32m', str(line).split('<dd title="')[1].split('">')[0], '\033[0m', end='')
+            print('积分\033[0;32m', str(line).split('<dd title="')[2].split('">')[0], '\033[0m', end='')
             print('排名\033[0;32m', str(line).split('<dl title="')[1].split('">')[0], '\033[0m')
-            
 
-                
 def loop():
     # read_blog('http://blog.csdn.net/kcp606/article/list/1')
     # 三个参数: [n,m) delta

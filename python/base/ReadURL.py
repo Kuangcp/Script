@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import sys, os
-from time import sleep
+import time
 
 # 需要安装 requests bs4 lxml 模块
 class ReadURL:
@@ -17,7 +17,8 @@ class ReadURL:
 
     def readhtml(self):
         ''' 将url解析成soup对象 '''
-        print('Read → \033[0;34m', self.url, '\033[0m', end='')
+        now = '\033[0;33m'+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())+'\033[0m'
+        print(now, 'Read → \033[0;34m', self.url, '\033[0m', end='')
         result = self.read_url()
         print(" → Result : ", end='')
         if str(result) == '<Response [200]>':
@@ -53,7 +54,7 @@ class ReadURL:
         except:
             self.error('\n Request timed out, Wait 5s to try again : '+ self.url)
             try:    
-                sleep(5)
+                time.sleep(5)
                 result = self.get(5)
             except:
                 self.error('Retry failed')
