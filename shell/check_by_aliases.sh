@@ -200,7 +200,7 @@ getFileLocateUrl(){
         fi
         if [ `pwd` = "/" ]; then
             echo "查找Git仓库失败! 已经到系统根目录了!"
-            exit
+            exit 1
         fi
     done
     if [ $i = $maxDeepth ]; then
@@ -216,7 +216,7 @@ getFileLocateUrl(){
     # showLink "$remote_link" "gitlab" $2
 }
 pullRepos(){
-    . /home/kcp/.repos
+    . $configPath
     flag=0
     for repo in "$@" ; do
         if [ $flag = 0 ];then
@@ -254,7 +254,7 @@ help(){
     printf "$format" "-pl|pull" "repo..." "batch pull repo from remote "
     printf "$format" "-i|i" "imgFile" "show image url "
     printf "$format" "-f|f" "file" "show file raw content url "
-    printf "$format" "-a|a" "" "add a local repo to alias config"
+    # printf "$format" "-a|a" "" "add a local repo to alias config"
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
     printf "$format" "-c" "" "open alias config file "
 }
@@ -266,15 +266,15 @@ case $1 in
         pullRepos $@;;
     -p | push | p)
         pushAll "$configPath"
-        echo "推送全部完成"
+        echo "complete publish all repos"
         exit 0;;
     -pa | pa)
-        echo "推送到所有远程库"
+        echo "complate push current repo to all remote repo"
         pushRemote
         exit 0;;
-    -a | a)
-        appendFile $configPath ''
-        exit 0;;
+    # -a | a)
+    #     appendFile $configPath ''
+    #     exit 0;;
     -ac | ac)
         appendFile $configPath 'currentPath'
         exit 0;;
@@ -300,8 +300,7 @@ case $1 in
         # 思路: 循环 往上找10级目录,找到了.git文件夹就执行 git remote -v 命令,然后github的拼接出来
         getFileLocateUrl $1 $2;;
     -c | c)
-        vim $configPath
-        exit 0;;
+        vim $configPath;;
     *)
         readFile "$configPath";;
 esac
