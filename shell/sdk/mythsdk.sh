@@ -15,7 +15,7 @@ help(){
     printf "$format" "-l|l|list" "<sdk>" "列出 所有sdk/指定的sdk"
     printf "$format" "-ls|ls|lists " "<sdk>" "列出 所有sdk/指定的sdk 的详细信息"
     printf "$format" "-i|i|install " "sdk <ver>" "下载安装指定sdk的 指定版本/最新版本"
-    printf "$format" "-iz|iz " "sdk ver file" "从zip包中安装指定sdk的指定版本"
+    printf "$format" "-iz|iz " "sdk ver file" "从zip包中安装指定sdk的指定版本 包名:sdk-version.zip  内容:version/bin"
     printf "$format" "-u|u|use " "sdk ver" "使用指定sdk的指定版本"
 }
 
