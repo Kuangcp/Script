@@ -74,6 +74,10 @@ case $1 in
         done
     ;;
     *)
-        showAllProcess | less
+        if [ "$1"z = "z" ];then
+            showAllProcess | less
+        else
+            showProcessByName $1 
+        fi
     ;;
 esac
