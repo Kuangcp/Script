@@ -269,7 +269,7 @@ case $1 in
         echo "complete publish all repos"
         exit 0;;
     -pa | pa)
-        echo "complate push current repo to all remote repo"
+        echo "ready to push to all remote repo"
         pushRemote
         exit 0;;
     # -a | a)
