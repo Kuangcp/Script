@@ -57,7 +57,7 @@ readConfigAnalysisRepos(){
     return $title #返回是否输出过标题
 }
 
-# 用来切分一行内容
+# 用来切分一行内容, 函数运行后 全局变量就被更改了
 LinePath=''
 splitLine(){
     # 函数是不能返回字符串的 只能返回整型得知运行结果，用一个变量进行存取来达到目的
@@ -155,6 +155,20 @@ pushAll(){
         if [ $haveCommit != 0 ]; then 
             cd $LinePath && git push
         fi
+        LinePath=''
+    done
+}
+pullAll(){
+    cat $configPath | while read line;do
+        start_char= splitLine "$line"
+        if [ "$start_char" = "0" ]; then 
+            continue
+        fi
+        if [ "$LinePath"x = "x" ]; then 
+            continue
+        fi
+        echo $LinePath
+        cd $LinePath && git pull
         LinePath=''
     done
 }
@@ -262,7 +276,7 @@ help(){
 case $1 in 
     -h)
         help;;
-    -pl|pull)
+    -pl | pull)
         pullRepos $@;;
     -p | push | p)
         pushAll "$configPath"
@@ -272,6 +286,10 @@ case $1 in
         echo "ready to push to all remote repo"
         pushRemote
         exit 0;;
+    -pla | pla)
+        echo "ready pull all"
+        pullAll 
+    ;;
     # -a | a)
     #     appendFile $configPath ''
     #     exit 0;;
