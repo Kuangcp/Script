@@ -1,7 +1,7 @@
 #!/bin/dash
 # 根据aliase文件来检查git仓库, 只适用于使用中文语言的Linux系统
 
-configPath="/home/kcp/.repos.ini"
+configPath="/home/kcp/.repos.sh"
 # 向上迭代目录的最大深度
 maxDeepth=10
 
