@@ -90,7 +90,7 @@ moveFile(){
         # fileDir=${fileName%/*}
         # mkdir -p $trashDir/$fileDir
         simpleFile=${fileName##*/}
-        mv "$currentPath                        /$fileName" "$trashDir/$simpleFile.$readable.$deleteTime"
+        mv "$currentPath/$fileName" "$trashDir/$simpleFile.$readable.$deleteTime"
         return 0
     fi 
     # 全部加上双引号是因为文件名中有可能会有空格
