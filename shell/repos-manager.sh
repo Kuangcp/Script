@@ -60,7 +60,7 @@ pullAllRepos(){
         fi
         
         showLine "$line" $purple
-        cd $repo_path && git pull
+        cd $repo_path && git pull & 
     done
 }
 
@@ -80,7 +80,7 @@ pushToAllRepos(){
         result=`cd $repo_path && git status`
         haveCommit=`expr match "$result" ".*领先"`
         if [ $haveCommit != 0 ]; then 
-            cd $repo_path && git push
+            cd $repo_path && git push & 
         fi
     done
 }
@@ -165,9 +165,9 @@ help(){
     printf "$format" "-p|p|push" "" "push all modify local repo to remote "
     printf "$format" "-pa|pa" "" "push current local repo to all remote"
     printf "$format" "-pl|pull" "repo ..." "batch pull repo from remote "
+    printf "$format" "-pla|pla" "" "pull all repo from remote"
     printf "$format" "-i|i" "imgFile" "show image url "
     printf "$format" "-f|f" "file" "show file raw content url "
-    # printf "$format" "-a|a" "" "add a local repo to alias config"
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
     printf "$format" "-c" "" "open alias config file "
 }
