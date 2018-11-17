@@ -60,7 +60,7 @@ pullAllRepos(){
         fi
         
         showLine "$line" $purple
-        cd $repo_path && git pull & 
+        cd $repo_path && git pull
     done
 }
 
@@ -80,7 +80,7 @@ pushToAllRepos(){
         result=`cd $repo_path && git status`
         haveCommit=`expr match "$result" ".*领先"`
         if [ $haveCommit != 0 ]; then 
-            cd $repo_path && git push & 
+            cd $repo_path && git push
         fi
     done
 }
