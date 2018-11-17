@@ -3,9 +3,6 @@ path=$(cd `dirname $0`; pwd)
 
 # main repos alias config
 configPath="/home/kcp/.repos.sh"
-# finding the maximum deepth of repos
-maxDeepth=10
-
 
 getPath(){
     line=$1
@@ -114,7 +111,7 @@ checkRepos(){
                     temp=''
                 fi
             done
-            echo ''
+            echo ''$end
         fi
     done
 }
