@@ -47,6 +47,7 @@ pushToAllRemote(){
 }
 
 pullAllRepos(){
+    # 并行 最后有序合并输出
     cat $configPath | while read line; do
         # ignore that comment contain + character
         ignore=`echo "$line" | grep "+"`
@@ -166,10 +167,8 @@ help(){
     printf "$format" "-pa|pa" "" "push current local repo to all remote"
     printf "$format" "-pl|pull" "repo ..." "batch pull repo from remote "
     printf "$format" "-pla|pla" "" "pull all repo from remote"
-    printf "$format" "-i|i" "imgFile" "show image url "
-    printf "$format" "-f|f" "file" "show file raw content url "
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
-    printf "$format" "-c" "" "open alias config file "
+    printf "$format" "-c|c" "" "open alias config file "
 }
 
 # 入口 读取脚本参数调用对应 函数
