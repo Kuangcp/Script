@@ -171,7 +171,7 @@ help(){
     format="  $green%-5s $yellow%-15s$end%-20s\n"
     printf "$format" "any" "" "move file/dir to trash"
     printf "$format" "-h" "" "show help"
-    printf "$format" "-a" "\"pattern\"" "delete file (can't use *, prefer to use +, actually command: 'ls | egrep \"pattern\"')"
+    printf "$format" "-a" "\"pattern\"" "delete file (can't use *, prefer to use +, actually command: ls | egrep \"pattern\")"
     printf "$format" "-as" "suffix" "delete *.suffix"
     printf "$format" "-l" "" "list all file in trash(exclude link file)"
     printf "$format" "-roll" "file" "rollback file from trash"
@@ -179,8 +179,8 @@ help(){
     printf "$format" "-cnf" "" "edit main config file "
     printf "$format" "-b" "" "show background running script"
     printf "$format" "-d" "" "shutdown this script"
-    printf "$format" "-upgrade" "" "upgrade this script when not in git repo"
-    printf "$format" "-clean" "" "start check trash dir"
+    printf "$format" "-upd" "" "upgrade this script when not in git repo"
+    printf "$format" "-cl" "" "start check trash dir"
 }
 
 showNameColorful(){
@@ -265,10 +265,10 @@ case $1 in
     -cnf)
         less $configFile
     ;;
-    -upgrade)
+    -upd)
         upgrade
     ;;
-    -clean)
+    -cl)
         (delayDelete &)
     ;;
     *)
