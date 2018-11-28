@@ -197,9 +197,10 @@ showNameColorful(){
     # printf " %-30s$green%s$end\n" $name "$time" 
 }
 
+# 按删除的日期排序 列出
 listTrashFiles(){
     # grep r 是为了将一行结果变成多行, 目前不展示link文件
-    file_list=`ls -lAFh $trashDir | egrep -v '^lr' | grep 'r'`
+    file_list=`ls --sort=t --time=status -lrAFh $trashDir | egrep -v '^lr' | grep 'r'`
     count=0
     # mode num user group size month day time 
     printf "$blue%-9s %-3s %-5s %-5s %-5s %-19s %-5s$end\n" "   mode  " "num" "user" "group" "size" "      datetime" "        filename "
@@ -272,12 +273,16 @@ case $1 in
         (delayDelete &)
     ;;
     *)
-        if [ "$1"1 = "1" ];then
-            printf $red"pelease select specific file\n"$end 
+        if [ $# = 0 ];then
+            printf $red"pelease select specific file\n\n"$end 
             help
             exit
         fi
-        moveFile "$1"
+
+        for file in $@ ;do
+            moveFile "$file"
+        done
+        
         (delayDelete &)
     ;;
 esac
