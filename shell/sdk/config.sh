@@ -20,7 +20,7 @@ yellow='\033[1;33m'
 end='\033[0m'
 
 shellType='zsh' # shell类别
-trueFile=$userDir'/.path' # 如果为空则放在 shell的 .rc 文件中, 不为空就是实际的位置
+trueFile=$userDir'/.path.sh' # 如果为空则放在 shell的 .rc 文件中, 不为空就是实际的位置
 showTitle(){
     printf $exist"★ ................................... ★ ................................... ★\n"$end
     printf $error"    used is red   $exist installed is green   $end installable is white\n"
@@ -47,7 +47,7 @@ loadConfig(){
 # .bashrc/.zshrc 文件追加 环境变量 信息
 appendPath(){
     sdk=$1
-    if [ "$trueFile"z = "z" ];then
+    if [ -f $trueFile ];then
         trueFile=$userDir"/."$shellType"rc"
     fi
     echo "\n"$sdk"_HOME="$basePath"/sdk/"$sdk"/current" >> $trueFile

@@ -16,7 +16,7 @@ http://
 # gradle
 现代化的构建工具  
 http://services.gradle.org/distributions/  
-3.5 4.0 4.1 4.2 4.2.1 4.3.1 4.4.1 4.5 4.6 4.7 4.8 4.9 4.10
+3.5 4.0 4.1 4.2 4.5 4.6 4.7 4.8 4.9 4.10 5.0 
 
 # grails
 基于Groovy的类Rails框架  
@@ -56,7 +56,7 @@ http://maven.apache.org/
 # sbt
 Scala的构建工具  
 http://  
-1.1.0
+1.1.0 1.2.7 
 
 # scala
 Scala语言,大数据处理  
