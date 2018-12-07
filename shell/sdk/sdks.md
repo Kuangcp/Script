@@ -61,7 +61,7 @@ http://
 # scala
 Scala语言,大数据处理  
 http://www.scala-lang.org/  
-2.12.0 2.12.3
+2.12.0 2.12.3 2.12.8 
 
 # springboot
 Spring的快速开发框架  
