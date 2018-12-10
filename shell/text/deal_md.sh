@@ -5,7 +5,9 @@ path=$(cd `dirname $0`; pwd)
 # 忽略文件目录
 config_ignore_file=$path'/ignore.ini'
 # 脚本文件目录
-config_python_file=${path%%shell*}'python/append_contents.py'
+
+# markdown_handle_script=${path%%shell*}'python/append_contents.py'
+markdown_handle_script=$path'/append_catalog.sh'
 
 # 读取本地配置文件 初始化 config_target_repo
 while read line;do  
@@ -25,7 +27,7 @@ read_dir(){
             # 不是忽略文件并且文件名符合要求
             if [ "$ignore_file"z = "z" ] && [ "$type"z != "z" ]; then 
                 printf ">>>>>> \033[0;32m%s\033[0m" $file
-                result=`python3 $config_python_file  -a n $1'/'$file`
+                result=`sh $markdown_handle_script $1'/'$file`
                 printf "$result\n"
             fi 
         fi
@@ -48,7 +50,7 @@ case $1 in
         for file in $files;do 
             if test -f $file; then
                 printf "[%s]" $file
-                result=`python3 $config_python_file -a n $file`
+                result=`sh $markdown_handle_script  $file`
                 printf "%s\n" "$result"
             fi
         done;;
@@ -72,7 +74,7 @@ case $1 in
                     ignore_file=`echo $map_result | grep "$ignore" `
                     if [ "$ignore_file"z = "z" ];then
                         printf "\033[0;32m 修改 : %-40s \033[0m" "$map_result"
-                        result=`python3 $config_python_file -a n $config_target_repo/$map_result`
+                        result=`sh $markdown_handle_script  $config_target_repo/$map_result`
                         printf "$result\n"
                     fi
                 fi
@@ -83,6 +85,6 @@ case $1 in
         # 没有参数的时候, 就是单文件的更新
         printf "[%s]" $1
         # 过滤掉 - 的字符串 , 将Python脚本的输出存放到变量中
-        result=`python3 $config_python_file -a n $1`
+        result=`sh $markdown_handle_script $1`
         printf "$result\n";;
 esac
