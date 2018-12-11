@@ -58,7 +58,7 @@ upgrade(){
     printf $green"脚本更新完成\n"$end
 }
 
-case $1 in 
+case $1 in
     -h)
         help
     ;;

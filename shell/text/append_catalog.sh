@@ -69,8 +69,8 @@ generate_catalog(){
 
 replace_catalog(){
     file=$1
-    start_num=$(cat -n $file | grep "\`目录 start\`" | awk '{print $1}')
-    end_num=$(cat -n $file | grep "\`目录 end\`" | awk '{print $1}')
+    start_num=$(cat -n $file | grep "**目录 start**" | awk '{print $1}')
+    end_num=$(cat -n $file | grep "**目录 end**" | awk '{print $1}')
 
     if [ "$start_num"z = 'z' ] || [ "$end_num"z = 'z' ];then
         log_warn "not exist catalog"
@@ -87,7 +87,7 @@ append_catalog(){
     now=$(date "+%Y-%m-%d %H:%M")
     banner='[码云](https://gitee.com/gin9) | [CSDN](http://blog.csdn.net/kcp606) | [OSChina](https://my.oschina.net/kcp1104) | [cnblogs](http://www.cnblogs.com/kuangcp)'
     # input file can't be output file
-    echo -e "\`目录 start\`\n\n${catalog}\n\n\`目录 end\`|_${now}_|${banner}" | cat - "$file" >> "${file}.bak"
+    echo -e "**目录 start**\n\n${catalog}\n\n**目录 end**|_${now}_|${banner}" | cat - "$file" >> "${file}.bak"
     mv "${file}.bak" "$file"
 }
 

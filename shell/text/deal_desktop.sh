@@ -11,15 +11,6 @@ case $1 in
     -h | h | help)
         help
     ;;
-    -a | a | add)
-        if [ $2'z' = 'z' ];then
-            echo '请输入文件名'
-            exit
-        fi
-        path=`pwd`
-        echo '#!/usr/bin/env xdg-open\n[Desktop Entry]\nCategories=Development;'>>$2'.desktop'
-        echo 'Exec='$path'\nIcon='$path'\nName='$2'\nTerminal=false\nType=Application\n'>>$2'.desktop'
-    ;;
     -c | c | cp)
         if [ $2'z' = 'z' ];then
             echo '请输入文件名'
@@ -29,6 +20,12 @@ case $1 in
         sudo cp $path'/'$2'.desktop' '/usr/share/applications/'$2'.desktop'
     ;;
     *)
-        help
+        if [ $1'z' = 'z' ];then
+            echo '请输入文件名'
+            exit
+        fi
+        path=`pwd`
+        echo '#!/usr/bin/env xdg-open\n[Desktop Entry]\nCategories=Development;'>>$1'.desktop'
+        echo 'Exec='$path'\nIcon='$path'\nName='$1'\nTerminal=false\nType=Application\n'>>$1'.desktop'
     ;;
 esac
