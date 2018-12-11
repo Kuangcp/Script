@@ -27,7 +27,7 @@ read_dir(){
             # 不是忽略文件并且文件名符合要求
             if [ "$ignore_file"z = "z" ] && [ "$type"z != "z" ]; then 
                 printf ">>>>>> \033[0;32m%s\033[0m" $file
-                result=`sh $markdown_handle_script $1'/'$file`
+                result=`bash $markdown_handle_script $1'/'$file`
                 printf "$result\n"
             fi 
         fi
@@ -38,7 +38,7 @@ case $1 in
     -h | h | help)
         start='\033[0;32m'
         end='\033[0m'
-        printf "%-20s$start%-20s$end\n" "运行：bash deal_md.sh " "<options>"
+        printf "%-20s$start%-20s$end\n" "运行：bash $0 " "<options>"
         printf "  $start%-20s$end%-20s\n" "-h|h|help" "输出帮助信息"
         printf "  $start%-20s$end%-20s\n" "<file>" "更新指定文件索引目录 "
         printf "  $start%-20s$end%-20s\n" "-c|c|current" "更新当前目录所有md文件的索引目录"
@@ -50,7 +50,7 @@ case $1 in
         for file in $files;do 
             if test -f $file; then
                 printf "[%s]" $file
-                result=`sh $markdown_handle_script  $file`
+                result=`bash $markdown_handle_script  $file`
                 printf "%s\n" "$result"
             fi
         done;;
@@ -74,7 +74,7 @@ case $1 in
                     ignore_file=`echo $map_result | grep "$ignore" `
                     if [ "$ignore_file"z = "z" ];then
                         printf "\033[0;32m 修改 : %-40s \033[0m" "$map_result"
-                        result=`sh $markdown_handle_script  $config_target_repo/$map_result`
+                        result=`bash $markdown_handle_script  $config_target_repo/$map_result`
                         printf "$result\n"
                     fi
                 fi
@@ -83,8 +83,8 @@ case $1 in
         done;;
     *)
         # 没有参数的时候, 就是单文件的更新
-        printf "[%s]" $1
+        # printf "[%s]" $1
         # 过滤掉 - 的字符串 , 将Python脚本的输出存放到变量中
-        result=`sh $markdown_handle_script $1`
+        result=`bash $markdown_handle_script $1`
         printf "$result\n";;
 esac
