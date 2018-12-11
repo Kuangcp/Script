@@ -48,6 +48,7 @@ generate_catalog(){
     titles=$(echo "$origin_catalog"| awk '{print $2}')
     catalog=$(echo "$origin_catalog"| awk '{print $1"1.["$2"]"}')
 
+    # echo "$catalog" > test.log
     i=0
     for line in $catalog ; do
         # echo "$line" 
@@ -58,7 +59,7 @@ generate_catalog(){
             if [ $i = $j ];then 
                 link=$(transfer_link $link)
                 line=${line#*#}
-                pre=$(echo "$line" | sed 's/#/    /g' | sed 's/1./1. /g')
+                pre=$(echo "$line" | sed 's/#/    /g' | sed 's/1./1. /1')
                 echo -e "$pre($link)"
                 break
             fi
@@ -99,7 +100,7 @@ case $1 in
             log_error "empty param"
             exit 1
         fi
-        log_info "handling file: "$1
+        log_warn $1" \033[0mcomplete"
         replace_catalog $1
         ;;
 esac

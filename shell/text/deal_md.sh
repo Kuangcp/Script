@@ -49,7 +49,7 @@ case $1 in
         files=`ls *.md`
         for file in $files;do 
             if test -f $file; then
-                printf "[%s]" $file
+                printf "current dir:" 
                 result=`bash $markdown_handle_script  $file`
                 printf "%s\n" "$result"
             fi
@@ -73,7 +73,7 @@ case $1 in
                     ignore=`cat $config_ignore_file`
                     ignore_file=`echo $map_result | grep "$ignore" `
                     if [ "$ignore_file"z = "z" ];then
-                        printf "\033[0;32m 修改 : %-40s \033[0m" "$map_result"
+                        printf "\033[0;32m modify: \033[0m" 
                         result=`bash $markdown_handle_script  $config_target_repo/$map_result`
                         printf "$result\n"
                     fi
