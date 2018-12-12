@@ -7,12 +7,16 @@ config_ignore_file=$path'/ignore.ini'
 # 脚本文件目录
 
 # markdown_handle_script=${path%%shell*}'python/append_contents.py'
-markdown_handle_script=$path'/append_catalog.sh'
+# markdown_handle_script=$path'/append_catalog.sh'
 
 # 读取本地配置文件 初始化 config_target_repo
 while read line;do  
     eval "$line"  
 done < "$path"/local.conf
+
+generate_catalog(){
+    bash $path'/append_catalog.sh' "$1"
+}
 
 read_dir(){
     # 递归阅读文件, 然后更新md文件的目录
@@ -27,7 +31,8 @@ read_dir(){
             # 不是忽略文件并且文件名符合要求
             if [ "$ignore_file"z = "z" ] && [ "$type"z != "z" ]; then 
                 printf ">>>>>> \033[0;32m%s\033[0m" $file
-                result=`bash $markdown_handle_script $1'/'$file`
+                # result=`bash $markdown_handle_script $1'/'$file`
+                result=$(generate_catalog $1'/'$file)
                 printf "$result\n"
             fi 
         fi
@@ -50,7 +55,8 @@ case $1 in
         for file in $files;do 
             if test -f $file; then
                 printf "current dir:" 
-                result=`bash $markdown_handle_script  $file`
+                # result=`bash $markdown_handle_script  $file`
+                result=$(generate_catalog $file)
                 printf "%s\n" "$result"
             fi
         done;;
@@ -74,7 +80,8 @@ case $1 in
                     ignore_file=`echo $map_result | grep "$ignore" `
                     if [ "$ignore_file"z = "z" ];then
                         printf "\033[0;32m modify: \033[0m" 
-                        result=`bash $markdown_handle_script  $config_target_repo/$map_result`
+                        # result=`bash $markdown_handle_script  $config_target_repo/$map_result`
+                        result=$(generate_catalog $config_target_repo/$map_result)
                         printf "$result\n"
                     fi
                 fi
@@ -85,6 +92,7 @@ case $1 in
         # 没有参数的时候, 就是单文件的更新
         # printf "[%s]" $1
         # 过滤掉 - 的字符串 , 将Python脚本的输出存放到变量中
-        result=`bash $markdown_handle_script $1`
+        # result=`bash $markdown_handle_script $1`
+        result=$(generate_catalog $1)
         printf "$result\n";;
 esac
