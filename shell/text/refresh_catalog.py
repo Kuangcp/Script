@@ -14,6 +14,15 @@ end='\033[0m'
 
 ignore_list=[".", "【", "】", ":", "：", ",", "，", "/", "(", ")","《" ,"》", "*", "。", "?", "？"]
 
+title='''---
+title: %s
+date: 
+tags: 
+categories: 
+---
+
+'''
+
 def logError(msg):
     print('%s%s%s'%(red, msg, end))
 
@@ -27,7 +36,7 @@ def help():
     print('run: %s  %s <verb> %s <args>%s'%('generate_catalog.py', green, yellow, end))
     printParam('-h', '', 'help')
     printParam('filename', '', 'refresh catalog')
-    printParam('-i', '', 'show title info')
+    printParam('-at', 'filename', 'append title and catalog')
 
 def delete_char(strs, lists):
     ''' 删除指定的字符 '''
@@ -35,7 +44,7 @@ def delete_char(strs, lists):
         strs = strs.replace(char, "")
     return strs
 
-def generate_catalog(filename):
+def generate_catalog(filename) -> []:
     files = open(os.path.abspath(filename), 'r+')
     lines = files.readlines()
     catalogs = ["**目录 start**\n \n"]
@@ -67,7 +76,7 @@ def replace_catalog(filename, catalogs):
         end_flag = False
         hr_line = False
 
-        print(filename,' ', end='')
+        print(green, filename, end, ' ', end='')
         for line in origin_lines:
             if not end_flag:
                 if "**目录 end**" in line:
@@ -93,20 +102,38 @@ def replace_catalog(filename, catalogs):
                 file.write(line.rstrip('\r\n') + '\n')
         print('complete.')
 
+def refresh_catalog(filename):
+    catalogs = generate_catalog(filename)
+    replace_catalog(filename, catalogs)
+
+def append_title_and_catalog(filename):
+    if filename is None:
+        logError('filename is empty')
+        return 
+    files = open(os.path.abspath(filename), 'r')
+    lines = files.readlines()
+
+    with open(filename, 'r+') as file:
+        if '---' != lines[0].strip() or len(lines) == 0:
+            file.write(title%(filename.split('/')[-1]))
+        for line in lines:
+            file.write(line)
+    
+    refresh_catalog(filename)
+    
 def main(verb=None, args=None):
     if verb == '-h':
         help()
         sys.exit(0)
-
-    if verb == '-i':
-        print('**目录 start**\n**目录 end**')
-        sys.exit(0)
         
+    if verb == '-at':
+        append_title_and_catalog(args)
+        sys.exit(0)
+
     if verb is None:
         logError('please input filename')
         sys.exit(1)
     
-    catalogs = generate_catalog(verb)
-    replace_catalog(verb, catalogs)
+    refresh_catalog(verb)
 
 fire.Fire(main)
