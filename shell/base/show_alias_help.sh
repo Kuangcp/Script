@@ -7,7 +7,7 @@ end='\033[0m'
 
 init(){
     if [ ! -f $aliasFile ];then
-        printf ".customized.ini\n.path.ini\n.repos.ini\n.system.ini" >> $aliasFile
+        printf ".customized.sh\n.path.sh\n.repos.sh\n.system.sh" >> $aliasFile
     fi
 }
 
