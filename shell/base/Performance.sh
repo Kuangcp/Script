@@ -104,7 +104,7 @@ case $1 in
         result=$(showAllProcess | head -n $displayCount)
         echo "$result"
         echo "....sum...."
-        printf "$result" | egrep "^[0-9]" | awk '{sum += $1};END {print sum/1024 " MiB"}'
+        printf "$result" | egrep "^[0-9]" | awk '{sum += $1};END {print sum/1024 " MiB " sum/1024/1024 " GiB"}'
     ;;
     -watch | watch)
         while true; do
