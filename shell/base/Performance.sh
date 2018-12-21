@@ -27,7 +27,8 @@ help(){
     printf "$format" "" "[processName]" "所有或指定进程状态 按内存降序"
     printf "$format" "-p|p" "process interval" "按名称查看相关进程 或者按时间间隔一直查看进程信息"
     printf "$format" "-pm|pm" "processName" "按名称查看相关进程的使用内存统计"
-    printf "$format" "-ss|ss" "[count]" "查看内存占用最多的几个进程 count默认40"
+    printf "$format" "-ss|ss" "[count]" "查看内存占用最多的几个进程 count默认40个 3s刷新一次"
+    printf "$format" "-sum|sum" "[count]" "查看内存占用最多的几个进程 并统计这几个进程内存总占用量"
     printf "$format" "watch" "processName" "10s统计进程总内存 输出到 $logDir"
 }
 
@@ -40,7 +41,7 @@ showProcessByName(){
 }
 
 showAllProcess(){
-    printf "${cyan}KiB\tMiB\tPID\tCommand\n${end}"
+    printf "${cyan}KiB\tMiB\tPID\tCommand${end}\n"
     ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
 }
 
@@ -77,13 +78,13 @@ case $1 in
     ;;
     -ss | ss)
         displayCount=40
-        echo "pid  |  memory(M)  |  memory(K)  |  Command"
         if [ ! "$2"z = "z" ];then 
             # validate number
             displayCount=$2
             if [ $2 -lt 10 ];then
+                displayCount=$(($2 + 1 ))
                 while true; do
-                    showAllProcess | head -n $2
+                    showAllProcess | head -n $displayCount
                     echo "..."
                     sleep 3
                 done
@@ -94,6 +95,16 @@ case $1 in
             sleep 3
             clear
         done
+    ;;
+    -sum|sum)
+        displayCount=40
+        if [ ! "$2"z = "z" ];then 
+            displayCount=$(($2 + 1))
+        fi
+        result=$(showAllProcess | head -n $displayCount)
+        echo "$result"
+        echo "....sum...."
+        printf "$result" | egrep "^[0-9]" | awk '{sum += $1};END {print sum/1024 " MiB"}'
     ;;
     -watch | watch)
         while true; do
