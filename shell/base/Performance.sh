@@ -24,7 +24,7 @@ help(){
     printf "Run：$red bash Performance.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-8s $yellow%-20s$end%-20s\n"
     printf "$format" "-h" "" "帮助"
-    printf "$format" "" "[processName]" "所有或指定进程状态 按内存降序"
+    printf "$format" "" "[processName][m]" "所有或指定进程状态 按内存降序,m 标记是否统计内存"
     printf "$format" "-p|p" "process interval" "按名称查看相关进程 或者按时间间隔一直查看进程信息"
     printf "$format" "-pm|pm" "processName" "按名称查看相关进程的使用内存统计"
     printf "$format" "-ss|ss" "[count]" "查看内存占用最多的几个进程 count默认40个 3s刷新一次"
@@ -32,20 +32,31 @@ help(){
     printf "$format" "watch" "processName" "10s统计进程总内存 输出到 $logDir/ {processName}.process.log"
 }
 
+existProcess(){
+    result=$(ps aux | egrep -v "grep" | egrep -v "Performance\.sh.*$1" | grep -i $1 --color)
+    if [ ${#result} = 0 ];then
+        printf "no process info about $red $1 $end \n"
+        exit 0
+    fi
+}
+
 showProcessByName(){
-    if [ "$1"z = "z" ];then
-        echo "please specific process name"
+    if [ $# = 0 ];then
+        printf "$red please specific process name $end \n"
         exit 1
     fi
-    echo "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"  && ps aux | egrep -v "grep" | egrep -v "Performance.sh" | grep -i $1 --color
+    existProcess $1
+    echo "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
+    ps aux | egrep -v "grep" | egrep -v "Performance\.sh.*$1" | grep -i $1 --color
 }
 
 showAllProcess(){
-    printf "${cyan}KiB\tMiB\tPID\tCommand${end}\n"
+    printf "${cyan}KiB\tMiB\tPID\tCommand ${end} \n"
     ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
 }
 
 statisticsMemory(){
+    existProcess $1
     ps aux | egrep -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;print sum "K " sum/1024"M "}'
 }
 
@@ -56,6 +67,12 @@ watchProcess(){
     sleep 10
 }
 
+backgroundWatch(){
+    while true; do
+        watchProcess $1 >> $logDir/$1.process.log
+    done
+}
+
 init 
 
 case $1 in 
@@ -63,18 +80,15 @@ case $1 in
         help ;;
     -p | p)
 		if [ "$3"z = "z" ];then
-            echo 'the second param invalid'
+            printf "$red the third param is missing $end \n"
             exit 1
 		else
 			while true; do
 				showProcessByName $2 
-				echo ...................................................................
+				printf "$green...................................................................$end\n"
 				sleep $3
 			done
 		fi
-    ;;
-    -pm | pm)
-        statisticsMemory $2
     ;;
     -ss | ss)
         displayCount=40
@@ -85,7 +99,7 @@ case $1 in
                 displayCount=$(($2 + 1 ))
                 while true; do
                     showAllProcess | head -n $displayCount
-                    echo "..."
+                    printf "$green ... $end \n"
                     sleep 3
                 done
             fi
@@ -103,19 +117,19 @@ case $1 in
         fi
         result=$(showAllProcess | head -n $displayCount)
         echo "$result"
-        echo "....sum...."
-        printf "$result" | egrep "^[0-9]" | awk '{sum += $1};END {print sum/1024 " MiB " sum/1024/1024 " GiB"}'
+        printf "\n${green}sum: $end"
+        printf "$result" | egrep "^[0-9]" | awk '{sum += $1};END {print sum/1024 " MiB | " sum/1024/1024 " GiB"}'
     ;;
     -watch | watch)
-        while true; do
-            watchProcess $2 >> $logDir/$2.process.log
-        done
+      (backgroundWatch $2 &)  
     ;;
     *)
-        if [ "$1"z = "z" ];then
+        if [ $# = 0 ];then
             showAllProcess | less
-        else
+        elif [ $# = 1 ]; then
             showProcessByName $1 
+        elif [ $2 = "m" ];then 
+            statisticsMemory $1
         fi
     ;;
 esac
