@@ -26,13 +26,15 @@ help(){
     printf "$format" "-h" "" "帮助"
     printf "$format" "" "[processName][m]" "所有或指定进程状态 按内存降序,m 标记是否统计内存"
     printf "$format" "-p|p" "process interval" "按名称查看相关进程 或者按时间间隔一直查看进程信息"
+    printf "$format" "-b" "" "查看该脚本后台进程"
+    printf "$format" "-stop" "" "kill 该脚本所有后台进程"
     printf "$format" "-pm|pm" "processName" "按名称查看相关进程的使用内存统计"
     printf "$format" "-ss|ss" "[count]" "查看内存占用最多的几个进程 count默认40个 3s刷新一次"
     printf "$format" "-sum|sum" "[count]" "查看内存占用最多的几个进程 并统计这几个进程内存总占用量"
     printf "$format" "watch" "processName" "10s统计进程总内存 输出到 $logDir/ {processName}.process.log"
 }
 
-existProcess(){
+checkExistProcess(){
     result=$(ps aux | egrep -v "grep" | egrep -v "Performance\.sh.*$1" | grep -i $1 --color)
     if [ ${#result} = 0 ];then
         printf "no process info about $red $1 $end \n"
@@ -45,7 +47,7 @@ showProcessByName(){
         printf "$red please specific process name $end \n"
         exit 1
     fi
-    existProcess $1
+    checkExistProcess $1
     echo "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
     ps aux | egrep -v "grep" | egrep -v "Performance\.sh.*$1" | grep -i $1 --color
 }
@@ -56,7 +58,6 @@ showAllProcess(){
 }
 
 statisticsMemory(){
-    existProcess $1
     ps aux | egrep -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;print sum "K " sum/1024"M "}'
 }
 
@@ -68,6 +69,7 @@ watchProcess(){
 }
 
 backgroundWatch(){
+    checkExistProcess $1
     while true; do
         watchProcess $1 >> $logDir/$1.process.log
     done
@@ -110,6 +112,20 @@ case $1 in
             clear
         done
     ;;
+    -b)
+        ps aux | egrep -v "grep" | egrep -v "Performance\.sh -b" | grep -i "Performance.sh" --color
+    ;;
+    -stop)
+        ids=`ps aux | grep "Performance.sh" | egrep -v "grep" | egrep -v "Performance\.sh -d"| awk '{print $2}'`
+        if [ "$ids"1 = "1" ];then
+            printf $red"not exist background running script $end \n"
+        else
+            for id in $ids; do
+                printf $red"pid : $id killed $end \n"
+                kill -9 $id
+            done
+        fi
+    ;;
     -sum|sum)
         displayCount=40
         if [ ! "$2"z = "z" ];then 
@@ -129,6 +145,7 @@ case $1 in
         elif [ $# = 1 ]; then
             showProcessByName $1 
         elif [ $2 = "m" ];then 
+            checkExistProcess $1
             statisticsMemory $1
         fi
     ;;
