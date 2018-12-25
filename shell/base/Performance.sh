@@ -29,7 +29,7 @@ help(){
     printf "$format" "-pm|pm" "processName" "按名称查看相关进程的使用内存统计"
     printf "$format" "-ss|ss" "[count]" "查看内存占用最多的几个进程 count默认40个 3s刷新一次"
     printf "$format" "-sum|sum" "[count]" "查看内存占用最多的几个进程 并统计这几个进程内存总占用量"
-    printf "$format" "watch" "processName" "10s统计进程总内存 输出到 $logDir"
+    printf "$format" "watch" "processName" "10s统计进程总内存 输出到 $logDir/ {processName}.process.log"
 }
 
 showProcessByName(){

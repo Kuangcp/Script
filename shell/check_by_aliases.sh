@@ -193,7 +193,7 @@ showLink(){
             else
                 isRepo=${line#*:} # 截取:右边
                 isRepo=${isRepo%%\.*} # 截取.左边
-                echo "https://$2.com/$isRepo/blob/$isBranch$relative_path/$3\n"
+                echo "https://$2.com/$isRepo/raw/$isBranch$relative_path/$3\n"
             fi
             if [ $2 = 'github' ];then
                 echo "https://raw.githubusercontent.com/$isRepo/$isBranch$relative_path/$3\n"
