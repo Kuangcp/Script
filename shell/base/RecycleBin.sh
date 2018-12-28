@@ -151,19 +151,19 @@ rollback(){
 }
 
 logInfoWithWhite(){
-    printf "`date +%y-%m-%d_%H:%M:%S` $1\n" >>$logFile
+    printf "`date +%F_%T` $1\n" >>$logFile
 }
 logInfoWithGreen(){
-    printf `date +%y-%m-%d_%H:%M:%S`"$green $1\n" >>$logFile
+    printf `date +%F_%T`"$green $1\n" >>$logFile
 }
 logInfoWithCyan(){
-    printf `date +%y-%m-%d_%H:%M:%S`"$cyan $1\n" >>$logFile
+    printf `date +%F_%T`"$cyan $1\n" >>$logFile
 }
 logError(){
-    printf `date +%y-%m-%d_%H:%M:%S`"$red $1\n" >>$logFile
+    printf `date +%F_%T`"$red $1\n" >>$logFile
 }
 logWarn(){
-    printf `date +%y-%m-%d_%H:%M:%S`"$yellow $1\n" >>$logFile
+    printf `date +%F_%T`"$yellow $1\n" >>$logFile
 }
 
 help(){

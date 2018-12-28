@@ -8,16 +8,16 @@ white='\033[0;37m'
 end='\033[0m'
 
 log(){
-    printf "`date +%y-%m-%d_%H:%M:%S`: $1 $end\n"
+    printf "`date +%F_%T`: $1 $end\n"
 }
 log_error(){
-    printf "`date +%y-%m-%d_%H:%M:%S`: $red $1 $end\n" 
+    printf "`date +%F_%T`: $red $1 $end\n" 
 }
 log_info(){
-    printf "`date +%y-%m-%d_%H:%M:%S`: $green $1 $end\n" 
+    printf "`date +%F_%T`: $green $1 $end\n" 
 }
 log_warn(){
-    printf "`date +%y-%m-%d_%H:%M:%S`: $yellow $1 $end\n" 
+    printf "`date +%F_%T`: $yellow $1 $end\n" 
 }
 
 help(){
