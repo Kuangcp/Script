@@ -174,6 +174,7 @@ help(){
     printf "$format" "-a" "\"pattern\"" "delete file (can't use *, prefer to use +, actually command: ls | egrep \"pattern\")"
     printf "$format" "-as" "suffix" "delete *.suffix"
     printf "$format" "-l" "" "list all file in trash(exclude link file)"
+    printf "$format" "-s" "" "search file from trash"
     printf "$format" "-roll" "file" "rollback file from trash"
     printf "$format" "-lo" "file" "show log"
     printf "$format" "-cnf" "" "edit main config file "
@@ -193,7 +194,7 @@ showNameColorful(){
     datetime=`echo $time | sed 's/_/ /' | sed 's/-/:/3' | sed 's/-/:/3'`
 
     # format: datetime filename
-    printf " \033[1;32m$datetime$end $yellow$name$end.$time.$red$timeStamp$end\n"
+    printf "$green $datetime$end $yellow$name$end.$time.$red$timeStamp$end\n"
     # printf " %-30s$green%s$end\n" $name "$time" 
 }
 
@@ -247,6 +248,23 @@ case $1 in
     -l)
         listTrashFiles
     ;;
+    -s) 
+        if [ $# -lt 2 ]; then 
+            printf "$red Please input what you search $end \n"
+            exit 1
+        fi
+
+        listTrashFiles | grep "$2"
+    ;;
+    # -cd)
+    #     if [ -d $trashDir/$2 ]; then 
+    #         cd $trashDir/$2
+    #     elif [ -f $trashDir/$2 ]; then
+    #         cd $trashDir
+    #     else
+    #         printf "$red no this dir or file: $2 $end \n"
+    #     fi
+    # ;;
     -roll)
         rollback $2
     ;;
