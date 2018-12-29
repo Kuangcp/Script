@@ -70,5 +70,10 @@ case $1 in
             exit
         fi
         show $2 1 | less;;
-    *) show $1 | less ;;
+    *) 
+        if [ $# = 0 ]; then
+            help 
+            exit 0
+        fi
+        show $1 | less ;;
 esac

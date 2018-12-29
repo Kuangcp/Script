@@ -24,7 +24,7 @@ help(){
     printf "Run：$red bash Performance.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-8s $yellow%-20s$end%-20s\n"
     printf "$format" "-h" "" "帮助"
-    printf "$format" "" "[processName][m]" "所有或指定进程状态 按内存降序,m 标记是否统计内存"
+    printf "$format" "" "[processName][m|s]" "所有或指定进程状态 按内存降序,m 标记是否统计内存 s 标记进程单行显示"
     printf "$format" "-p|p" "process interval" "按名称查看相关进程 或者按时间间隔一直查看进程信息"
     printf "$format" "-b" "" "查看该脚本后台进程"
     printf "$format" "-stop" "" "kill 该脚本所有后台进程"
