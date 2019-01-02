@@ -39,6 +39,7 @@ def help():
     print('run: %s  %s <verb> %s <args>%s'%('generate_catalog.py', green, yellow, end))
     printParam('-h', '', 'help')
     printParam('filename', '', 'refresh catalog')
+    printParam('-a', 'filename', 'append catalog')
     printParam('-at', 'filename', 'append title and catalog')
 
 def delete_char(strs, lists):
@@ -123,7 +124,19 @@ def append_title_and_catalog(filename):
             file.write(line)
     
     refresh_catalog(filename)
-    
+
+def append_catalog(filename):
+    if filename is None:
+        logError('filename is empty')
+        return 
+    files = open(os.path.abspath(filename), 'r')
+    lines = files.readlines()
+    with open(filename, 'r+') as file:
+        file.write('**目录 start**\n**目录 end**\n\n')
+        for line in lines:
+            file.write(line)
+    refresh_catalog(filename)
+
 def main(verb=None, args=None):
     if verb == '-h':
         help()
@@ -133,7 +146,11 @@ def main(verb=None, args=None):
         # TODO 添加头信息 不完美
         append_title_and_catalog(args)
         sys.exit(0)
-
+    
+    if verb == '-a':
+        append_catalog(args)
+        sys.exit(0)
+    
     if verb is None:
         logError('please input filename')
         sys.exit(1)
