@@ -94,6 +94,20 @@ case $1 in
 			done
 		fi
     ;;
+    -s)
+        if [ $# = 1 ];then
+            printf "$red At least one parameter is needed $end\n"
+            exit 
+        fi
+        count=-1
+        for str in $@; do
+            count=$((count+1))
+            if [ $count = 0 ];then
+                continue
+            fi
+            echo $count $str
+        done
+    ;;
     -ss | ss)
         displayCount=40
         if [ ! "$2"z = "z" ];then 
