@@ -273,6 +273,9 @@ help(){
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
     printf "$format" "-c" "" "open alias config file "
 }
+
+printf "$red depreated script $end \n"
+
 # 入口 读取脚本参数调用对应 函数
 case $1 in 
     -h)

@@ -5,7 +5,7 @@ import getopt
 import sys
 
 
-# 配置实用脚本
+# 配置实用脚本 TODO 重构优化
 
 url='![](/'
 list = []
