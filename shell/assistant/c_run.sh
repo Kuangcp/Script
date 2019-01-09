@@ -9,33 +9,48 @@ end='\033[0m'
 
 path=`pwd`
 
+log_error(){
+	printf "$red $1 $end\n"
+}
+
 help(){
 	printf "Run：$red sh c_run.sh $green<verb> $yellow<args>$end\n\n"
-	format="  $green%-3s $yellow%-10s$end%-20s\n"
-	printf "$format" "" "cpp file" "编译并运行"
-	printf "$format" "-c" "" "清除当前目录所有可执行文件"
-	printf "$format" "-h" "" "帮助"
+	format="  $green%-3s $yellow%-6s$end%-20s\n"
+	printf "$format" "" "file" "compile then run(cpp/c)"
+	printf "$format" "-c" "" "clean *run file in current dir"
+	printf "$format" "-h" "" "help"
 }
 
 compileThenRun(){
 	sourceFile=$1
-	if [ $sourceFile"z" = "z" ];then
-		printf "Please select a spcific file.\n"
+	if [ "$sourceFile" = "" ];then
+		log_error "please specific c/cpp file"
+		exit 1
+	fi
+	if [ ! -f $path/$sourceFile ];then
+		log_error "file not exist "
 		exit 1
 	fi
 
 	# 编译
 	g++ $path/$sourceFile -o $path/run.${sourceFile%.*}.run
-	# 执行
-	$path/run.${sourceFile%.*}.run
+	if [ -f $path/run.${sourceFile%.*}.run ];then
+		# 执行
+		$path/run.${sourceFile%.*}.run
+	else
+		log_error "compile occur error"
+		exit 1
+	fi
 }
 
 case $1 in
 	-h)
-		help ;;
+		help 
+	;;
 	-c)
 		ls -A | egrep ".*[^\.][\.]{1}run" | xargs rm
 	;;
 	*)
-		compileThenRun $1 ;;
+		compileThenRun $1 
+	;;
 esac
