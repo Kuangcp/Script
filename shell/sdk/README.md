@@ -73,6 +73,7 @@
 - [ ] 将官方下载的SDK压缩包处理为脚本使用的压缩包 脚本实现自动转换
 
 - [ ] 重构, 并支持 英文和中文
+- [ ] 实现zsh插件, 从而能够自动提示
 
 https://github.com/asdf-vm/asdf/blob/master/completions/asdf.bash 
 参考并实现提示功能
