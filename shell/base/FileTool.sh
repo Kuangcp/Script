@@ -26,7 +26,7 @@ checkParamCount(){
     actual=$1
     expect=$2
     if [ ! $1 = $2 ]; then
-        printf "$red please specific fileName $end \n"
+        printf "$red please input correct param count: $2 $end \n"
         exit 1
     fi
 }
@@ -42,6 +42,7 @@ case $1 in
 	-cf | cf)
 		cat $2 | xclip -sel clip
 	;;
+    # TODO -d -f 都实现多参数, 使其根据两个参数筛选结果
     -d | d)
         checkParamCount $# 2
         find . -type d -iname "*$2*" 
