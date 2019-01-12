@@ -32,11 +32,24 @@ compileThenRun(){
 		exit 1
 	fi
 
+	# 去除第一个参数
+	temp=''
+	count=0
+	for a in $@; do
+		count=$((count+1))
+		if [ $count = 1 ];then
+			continue
+		fi
+		temp=$temp" "$a
+	done
+	
+	rm -f $path/run.${sourceFile%.*}.run
+
 	# 编译
 	g++ $path/$sourceFile -o $path/run.${sourceFile%.*}.run
 	if [ -f $path/run.${sourceFile%.*}.run ];then
 		# 执行
-		$path/run.${sourceFile%.*}.run
+		$path/run.${sourceFile%.*}.run $temp
 	else
 		log_error "compile occur error"
 		exit 1
@@ -48,9 +61,10 @@ case $1 in
 		help 
 	;;
 	-c)
-		ls -A | egrep ".*[^\.][\.]{1}run" | xargs rm
+		find . -iname "run.*.run" | xargs rm 
+		# ls -A | egrep ".*[^\.][\.]{1}run" | xargs rm
 	;;
 	*)
-		compileThenRun $1 
+		compileThenRun $@
 	;;
 esac
