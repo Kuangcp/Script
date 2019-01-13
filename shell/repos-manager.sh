@@ -1,8 +1,9 @@
 path=$(cd `dirname $0`; pwd)
 . $path/base/base.sh
 
+userDir=`cd && pwd`
 # main repos alias config
-configPath="/home/kcp/.repos.sh"
+configPath="${userDir}/.repos.sh"
 
 getPath(){
     line=$1

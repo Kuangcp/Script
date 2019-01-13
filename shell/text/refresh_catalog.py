@@ -16,7 +16,7 @@ ignore_list=[".", "【", "】", ":", "：", ",", "，", "/", "(", ")","《" ,"�
 
 title='''---
 title: %s
-date: 
+date: %s
 tags: 
 categories: 
 ---
@@ -119,7 +119,8 @@ def append_title_and_catalog(filename):
 
     with open(filename, 'r+') as file:
         if '---' != lines[0].strip() or len(lines) == 0:
-            file.write(title%(filename.split('/')[-1]))
+            now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) 
+            file.write(title%(filename.split('/')[-1], now))
         for line in lines:
             file.write(line)
     
