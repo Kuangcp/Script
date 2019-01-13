@@ -1,6 +1,4 @@
 beautifulsoup4==4.6.3
-catfish==1.4.4
-evdev==1.0.0
 fire==0.1.3
 httpie==0.9.8
 lxml==4.2.1
