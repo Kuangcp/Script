@@ -2,6 +2,7 @@ path=$(cd `dirname $0`; pwd)
 . $path/base/base.sh
 
 userDir=`cd && pwd`
+
 # main repos alias config
 configPath="${userDir}/.repos.sh"
 
@@ -150,12 +151,39 @@ listRepos(){
 # add repo in current path
 addRepo(){
     repo_path=`pwd`
-    echo "请输入仓库注释/说明"
+    log_info "Please input comment or description"
     read comment
-    echo "请输入别名, 例如 输入 a 得到 kg.a"
+    log_info "Please input alias name, such as input a, then alias kg.a='/path/to'"
     read aliasName
     echo "alias kg."$aliasName"='cd $repo_path' # $comment" >> $configPath
-    echo "添加完成, 请 source .zshrc 或其他别名配置文件"
+    log_info "add success, Please run source ~/.zshrc or ~/.bashrc or ..."
+}
+
+addPythonPath(){
+    lib_path='/usr/local/lib'
+    project=$(pwd)
+    
+    log_info "Please select a python version"
+    versions=$(ls $lib_path | grep "python")
+    for version in $versions; do
+        echo "  " $version 
+    done
+    read version
+    if [ ! -d $lib_path/$version ];then 
+        log_error "target dir not exist: $lib_path/$version"
+    fi
+    
+    log_info "Please input filename, result: $lib_path/$version/dist-packages/filename.pth"
+    while true; do
+        read filename
+        if [ -f "$lib_path/$version/dist-packages/$filename.pth" ];then
+            log_warn "$filename already exist"
+        else 
+            break
+        fi
+    done
+    sudo sh -c "echo $project >> $lib_path/$version/dist-packages/$filename.pth"
+    log_info "add success: $lib_path/$version/dist-packages/$filename.pth"
 }
 
 help(){
@@ -169,6 +197,7 @@ help(){
     printf "$format" "-pl|pull" "repo ..." "batch pull repo from remote "
     printf "$format" "-pla|pla" "" "pull all repo from remote"
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
+    printf "$format" "-app" "" "add current dir to sys.path for python"
     printf "$format" "-c|c" "" "open alias config file "
 }
 
@@ -199,6 +228,9 @@ case $1 in
     ;;
     -c | c)
         vim $configPath
+    ;;
+    -app)
+        addPythonPath
     ;;
     *)
         checkRepos
