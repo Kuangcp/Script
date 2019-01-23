@@ -28,7 +28,7 @@ class RedisConfig:
         """ 两个Redis连接, 根据key转移数据 """
         data_type = origin.type(key)
         data_type = data_type.decode('utf-8')
-        print(key, data_type)
+        print("%-6s %s" % (data_type, key))
         if data_type == "string":
             target.set(key, origin.get(key))
         elif data_type == "list":
@@ -50,8 +50,8 @@ class RedisConfig:
 def main():
     # improve performance
     # origin = RedisConfig('120.78.154.52', 9898, '', 1)
-    originConfig = RedisConfig('localhost', 6380, 'myth', 3)
-    targetConfig = RedisConfig('localhost', 6666, '', 3)
+    originConfig = RedisConfig('localhost', 6379, 'myth', 3)
+    targetConfig = RedisConfig('localhost', 6380, 'myth', 3)
     originConfig.transTo(targetConfig)
     # originConfig.transByKey(originConfig.getConnection(), targetConfig.getConnection(), "all-2018-10-26")
 
