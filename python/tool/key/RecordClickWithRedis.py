@@ -5,7 +5,7 @@ import time
 import os
 from configparser import ConfigParser
 
-file = '/main.conf'
+path = '/home/kcp/.config/app-conf/key-record/main.conf'
 
 def detectInputKey(eventNum, conn):
     ''' 记录每个按键次数以及总按键数 '''
@@ -32,15 +32,13 @@ def detectInputKey(eventNum, conn):
         logError('Error!! Device has been removed Or Application has been interrupted')
 
 def get_conf():
-    global file
     # 加载配置文件
-    path = os.path.split(os.path.realpath(__file__))[0]
-    mainConf = path + file
-    if not os.path.exists(mainConf) :
+    global path
+    if not os.path.exists(path) :
         logError('Please refer to Readme.md initialization configuration')
         return 0 
     cf = ConfigParser()
-    cf.read(mainConf)
+    cf.read(path)
     return cf
 
 def get_conn():

@@ -50,9 +50,10 @@ class RedisConfig:
 def main():
     # improve performance
     # origin = RedisConfig('120.78.154.52', 9898, '', 1)
-    originConfig = RedisConfig('localhost', 6379, 'myth', 3)
-    targetConfig = RedisConfig('localhost', 6380, 'myth', 3)
-    originConfig.transTo(targetConfig)
-    # originConfig.transByKey(originConfig.getConnection(), targetConfig.getConnection(), "all-2018-10-26")
+    originConfig = RedisConfig('localhost', 6379, 'myth', 2)
+    targetConfig = RedisConfig('localhost', 6379, 'myth', 3)
+    # originConfig.transTo(targetConfig)
+
+    originConfig.transByKey(originConfig.getConnection(), targetConfig.getConnection(), "key_map")
 
 main()
