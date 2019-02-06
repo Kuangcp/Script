@@ -81,7 +81,7 @@ pushToAllRepos(){
         fi
         showLine "$line" $purple
         result=`cd $repo_path && git status`
-        haveCommit=`expr match "$result" ".*领先"`
+        haveCommit=`expr match "$result" ".*is ahead of"`
         if [ $haveCommit != 0 ]; then 
             cd $repo_path && git push
         fi
