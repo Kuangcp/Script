@@ -7,6 +7,8 @@ blue='\033[0;36m'
 white='\033[0;37m'
 end='\033[0m'
 
+configFile='/home/kcp/.config/app-conf/key-record/main.conf'
+
 help(){
     printf "Run：$red sh record.sh$green <verb> $yellow<args>$end\n"
     format="  $green%-5s $yellow%-15s$end%-20s\n"
@@ -22,12 +24,17 @@ startup(){
         printf $red"Please use root to run this script\n"$end
         exit 1
     fi
+
+    if [ ! -f $configFile ]; then
+        echo "[event]\nkey = 9\n\n[redis]\nhost = 127.0.0.1\nport = 6666\ndb = 2\npassword=\n" >> $configFile
+    fi
+
     eventNum=$1
     path=$(cd `dirname $0`; pwd)
     if [ $eventNum'z' = 'z' ];then
         printf "$green use default config to start $end \n"
     else
-        sed -i "s/key\s=.*/key = $eventNum/g" $path/main.conf
+        sed -i "s/key\s=.*/key = $eventNum/g" $configFile
         printf "$green use event $eventNum to start $end \n"
     fi
     (python3 $path/RecordClickWithRedis.py &)
@@ -75,8 +82,7 @@ case $1 in
         ps -ef | grep "WithRedis.py" | grep -v "grep"
     ;;
     -cnf)
-        path=$(cd `dirname $0`; pwd)
-        vim $path/main.conf
+       vim $configFile
     ;;
     *)
         help
