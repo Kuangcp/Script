@@ -77,3 +77,6 @@
 
 https://github.com/asdf-vm/asdf/blob/master/completions/asdf.bash 
 参考并实现提示功能
+
+- gradle download link:  http://101.110.118.70/downloads.gradle.org/distributions/gradle-5.1.1-bin.zip
+
