@@ -52,8 +52,9 @@ case $1 in
         find . -type f -iname "*$2*" 
     ;;
     *)
+        path=${1#*\./}
         currentPath=`pwd`
-        printf $currentPath/$1 | xclip -sel clip
+        printf $currentPath/$path | xclip -sel clip
         # 注意, xclip 会一直存在, 且父进程是 1, 命令执行多次, 也只有一个进程存在, 但是看心情退出????
     ;;
 esac
