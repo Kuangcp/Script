@@ -197,8 +197,43 @@ help(){
     printf "$format" "-pl|pull" "repo ..." "batch pull repo from remote "
     printf "$format" "-pla|pla" "" "pull all repo from remote"
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
-    printf "$format" "-app" "" "add current dir to sys.path for python"
     printf "$format" "-c|c" "" "open alias config file "
+    printf "$format" "-app" "" "add current dir to sys.path for python"
+    printf "$format" "-f|f" "filename" "show file content url in github"
+}
+
+get_user_repo(){
+    domain=$1
+
+    remote=$(git remote -v | grep $domain".*push" | awk '{print $2}')
+    remote=${remote#*:}
+    remote=${remote%.git*}
+    echo $remote
+}
+
+get_remote_file_url(){
+    file_path=$(pwd)'/'$1
+    while true; do
+        current=$(pwd)
+        if [ $current = '/' ];then
+            log_error "has find with root dir /, but not find git repo"
+            exit 1
+        fi
+        if [ -d $current/.git ];then
+            # echo "repo root path: "$current
+            root_path=$current
+            break
+        fi
+        cd ..
+    done
+
+    file_path=${file_path#*$root_path}
+
+    github_remote=$(get_user_repo github)
+    log_info "\n  https://raw.githubusercontent.com/"$github_remote"/master"$file_path"\n"
+
+    gitee_remote=$(get_user_repo gitee)
+    log_info " https://gitee.com/"$gitee_remote"/raw/master"$file_path"\n"
 }
 
 # 入口 读取脚本参数调用对应 函数
@@ -228,6 +263,9 @@ case $1 in
     ;;
     -c | c)
         vim $configPath
+    ;;
+    -f | f)
+        get_remote_file_url $2
     ;;
     -app)
         addPythonPath
