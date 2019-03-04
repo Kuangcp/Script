@@ -189,7 +189,7 @@ addPythonPath(){
 help(){
     printf "Run：$red sh repos-manager.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-10s $yellow%-10s$end%-20s\n"
-    printf "$format" "-h" "" "show help"
+    printf "$format" "-h|h" "" "show help"
     printf "$format" "" "" "show all modify local repo"
     printf "$format" "-l|l|list" "" "list all local repo"
     printf "$format" "-p|p|push" "" "push all modify local repo to remote "
@@ -238,7 +238,7 @@ get_remote_file_url(){
 
 # 入口 读取脚本参数调用对应 函数
 case $1 in 
-    -h)
+    -h|h)
         help;;
     -pl | pull)
         pullRepos $@
