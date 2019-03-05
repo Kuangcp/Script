@@ -69,17 +69,17 @@ case $1 in
         done;;
     
     -a | a | all)
-        printf "开始更新全部, 目录: %s\n" "$config_target_repo"
+        printf "refresh all catalog: path=%s\n" "$config_target_repo"
         read_dir $config_target_repo;;
     
     -al | al | alter)
-        printf "更新已修改文件, 目录: %s\n" "$config_target_repo"
+        printf "refresh catalog: path=%s\n" "$config_target_repo"
         result=`cd $config_target_repo && git status -s`
         # 使用标志变量, 前缀为修改或者新增的行 才能进行更新, 每个文件都判断一次并更新这个标志变量一次
         change_flag=0 
         for line in $result;do
-            # echo ">>"$line
-            if [ `echo $line | grep -E "^[A|M]+$|^\?\?$"` ]; then
+            # mark next line has modify
+            if [ `echo $line | grep -E "^[A|M]+$|^\?\?|->$"` ]; then
                 change_flag=1
             fi
             map_result=`echo "$line" | grep ".md"`
