@@ -230,10 +230,14 @@ get_remote_file_url(){
     file_path=${file_path#*$root_path}
 
     github_remote=$(get_user_repo github)
-    log_info "\n  https://raw.githubusercontent.com/"$github_remote"/master"$file_path"\n"
+    if [ ! $github_remote'z' = 'z' ];then
+        log_info "\n  https://raw.githubusercontent.com/"$github_remote"/master"$file_path"\n"
+    fi
 
     gitee_remote=$(get_user_repo gitee)
-    log_info " https://gitee.com/"$gitee_remote"/raw/master"$file_path"\n"
+    if [ ! $gitee_remote'z' = 'z' ];then
+        log_info " https://gitee.com/"$gitee_remote"/raw/master"$file_path"\n"
+    fi
 }
 
 # 入口 读取脚本参数调用对应 函数
