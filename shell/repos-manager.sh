@@ -182,7 +182,7 @@ addPythonPath(){
             break
         fi
     done
-    sudo sh -c "echo $project >> $lib_path/$version/dist-packages/$filename.pth"
+    sudo sh -c "echo $project"/" >> $lib_path/$version/dist-packages/$filename.pth"
     log_info "add success: $lib_path/$version/dist-packages/$filename.pth"
 }
 
@@ -198,7 +198,7 @@ help(){
     printf "$format" "-pla|pla" "" "pull all repo from remote"
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
     printf "$format" "-c|c" "" "open alias config file "
-    printf "$format" "-app" "" "add current dir to sys.path for python"
+    printf "$format" "-app" "" "add current dir to sys.path for python /usr/local/lib/ ..."
     printf "$format" "-f|f" "filename" "show file content url in github"
 }
 
