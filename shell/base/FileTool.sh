@@ -34,6 +34,13 @@ checkParamCount(){
 case $1 in 
     -h | h)
         help ;;
+    -l)
+        if [ ! $# = 3 ];then
+            echo "please input file targetDir"
+            exit 1
+        fi
+        ln -s $(pwd)/$2 $3/$2
+    ;;
     -p | p)
         currentPath=`pwd`
         echo $currentPath/$2
