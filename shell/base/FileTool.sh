@@ -20,6 +20,7 @@ help(){
     printf "$format" "-d|d" "dirname" "当前路径递归搜索目录"
     printf "$format" "-p|p" "relative path" "输出相对路径的绝对路径并复制到粘贴板"
     printf "$format" "-cf|cf" "relative path" "复制文件内容到粘贴板"
+    printf "$format" "-l" "file targetDIr" "链接文件到指定目录"
 }
 
 checkParamCount(){
@@ -35,10 +36,7 @@ case $1 in
     -h | h)
         help ;;
     -l)
-        if [ ! $# = 3 ];then
-            echo "please input file targetDir"
-            exit 1
-        fi
+        checkParamCount $# 3
         ln -s $(pwd)/$2 $3/$2
     ;;
     -p | p)
@@ -55,8 +53,7 @@ case $1 in
         find . -type d -iname "*$2*" 
     ;;
     -f | f)
-        checkParamCount $# 2
-        find . -type f -iname "*$2*" 
+        find . -type f -iname "*$2*$3*$4" 
     ;;
     *)
         path=${1#*\./}
