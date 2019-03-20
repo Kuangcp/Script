@@ -55,7 +55,7 @@ showProcessByName(){
 showAllProcess(){
     printf "${cyan}KiB\tMiB\tPID\tCommand ${end} \n"
     ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
-    printf "\nmemory sum info\n\n"
+    # printf "\nmemory sum info\n\n"
     free -h
 }
 
