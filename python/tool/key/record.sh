@@ -39,6 +39,7 @@ startup(){
     fi
     (python3 $path/RecordClickWithRedis.py &)
 }
+
 shutdown(){
     if [ $(id -u) != "0" ]; then
         printf $red"Please use root to run this script\n"$end
@@ -51,21 +52,30 @@ shutdown(){
         kill -9 $id
     fi
 }
+
 query(){
-    result=`cat /proc/bus/input/devices`
+    result=$(cat /proc/bus/input/devices)
     flag=0
+    printf $green"may be keyboard: \n"$end
     for line in $result;do
         # echo $line
         result=`echo $line | grep event`
         if [ $flag = 1 ] && [ $result'z' != 'z' ];then
-            echo $line
-            flag=0
+            printf $line"    "
         fi
         if [ $line = 'Keyboard"' ];then
             flag=1
         fi
+
+        # 一个设备可能占据多行, 具有多个 event
+        first=$(echo $line | grep "I: Bus")
+        if [ ! $first'z' = 'z' ]; then
+            flag=0
+        fi
     done
+    echo ""
 }
+
 case $1 in 
     -h)
         help ;;
