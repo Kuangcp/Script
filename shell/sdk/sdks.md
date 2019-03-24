@@ -16,7 +16,7 @@ http://
 # gradle
 现代化的构建工具  
 http://services.gradle.org/distributions/  
-3.5 4.0 4.1 4.2 4.5 4.6 4.7 4.8 4.9 4.10 5.0 5.1 5.2.1  
+3.5 4.0 4.1 4.2 4.5 4.6 4.7 4.8 4.9 4.10 5.0 5.1 5.2.1 5.3  
 
 # grails
 基于Groovy的类Rails框架  
