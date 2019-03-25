@@ -56,20 +56,20 @@ shutdown(){
 query(){
     result=$(cat /proc/bus/input/devices)
     flag=0
-    printf $green"may be keyboard: \n"$end
+    printf $green"It could be a keyboard event: "$end
     for line in $result;do
         # echo $line
         result=`echo $line | grep event`
         if [ $flag = 1 ] && [ $result'z' != 'z' ];then
-            printf $line"    "
+            printf $line" "
         fi
-        if [ $line = 'Keyboard"' ];then
+        if [ $line = 'kbd' ];then
             flag=1
         fi
 
         # 一个设备可能占据多行, 具有多个 event
-        first=$(echo $line | grep "I: Bus")
-        if [ ! $first'z' = 'z' ]; then
+        first=$(echo $line | grep "Bus")
+        if [ $first'z' != 'z' ]; then
             flag=0
         fi
     done
