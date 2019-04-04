@@ -68,7 +68,7 @@ def generate_catalog(filename) -> []:
 
         catalogs.append(tab + "1. [" + temp + "](#" + result + ")\n")
     
-    catalogs.append("\n**目录 end**|_"+nowTime+"_| [码云](https://gitee.com/gin9) | [CSDN](http://blog.csdn.net/kcp606) | [OSChina](https://my.oschina.net/kcp1104) | [cnblogs](http://www.cnblogs.com/kuangcp)")
+    catalogs.append("\n**目录 end**|_"+nowTime+"_| [Gitee](https://gitee.com/gin9/Memo) | [Github](https://github.com/Kuangcp/Memo)")
     catalogs.append("*"*40)
     return catalogs
 
