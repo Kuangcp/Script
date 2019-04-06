@@ -9,9 +9,7 @@ cyan='\033[0;36m'
 white='\033[0;37m'
 end='\033[0m'
 
-
 grey='\033[3;37;40m'
-
 
 log(){
     printf "$1 $2\n"
@@ -26,3 +24,15 @@ log_warn(){
     printf "$yellow $1 $end\n" 
 }
 
+log_t(){
+    printf "`date +%F_%T`: $1 $end\n"
+}
+log_error_t(){
+    printf "`date +%F_%T`: $red $1 $end\n" 
+}
+log_info_t(){
+    printf "`date +%F_%T`: $green $1 $end\n" 
+}
+log_warn_t(){
+    printf "`date +%F_%T`: $yellow $1 $end\n" 
+}

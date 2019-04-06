@@ -2,14 +2,8 @@
 
 # simplify some about file and path action 
 
-red='\033[0;31m'
-green='\033[0;32m'
-yellow='\033[0;33m'
-blue='\033[0;34m'
-purple='\033[0;35m'
-cyan='\033[0;36m'
-white='\033[0;37m'
-end='\033[0m'
+path=$(cd `dirname $0`; pwd)
+. $path/base.sh
 
 help(){
     printf "Run：$red bash FileTool.sh $green<verb> $yellow<args>$end\n"
@@ -23,7 +17,7 @@ help(){
     printf "$format" "-l" "file targetDIr" "链接文件到指定目录"
 }
 
-checkParamCount(){
+assertParamCount(){
     actual=$1
     expect=$2
     if [ ! $1 = $2 ]; then
@@ -36,7 +30,7 @@ case $1 in
     -h | h)
         help ;;
     -l)
-        checkParamCount $# 3
+        assertParamCount $# 3
         ln -s $(pwd)/$2 $3/$2
     ;;
     -p | p)
@@ -49,7 +43,7 @@ case $1 in
 	;;
     # TODO -d -f 都实现多参数, 使其根据两个参数筛选结果
     -d | d)
-        checkParamCount $# 2
+        assertParamCount $# 2
         find . -type d -iname "*$2*" 
     ;;
     -f | f)

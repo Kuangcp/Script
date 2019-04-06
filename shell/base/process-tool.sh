@@ -1,15 +1,8 @@
 #!/bin/bash
 
 # view performance status 
-
-red='\033[0;31m'
-green='\033[0;32m'
-yellow='\033[0;33m'
-blue='\033[0;34m'
-purple='\033[0;35m'
-cyan='\033[0;36m'
-white='\033[0;37m'
-end='\033[0m'
+path=$(cd `dirname $0`; pwd)
+. $path/base.sh
 
 userDir=(`cd && pwd`)
 logDir=$userDir'/.config/app-conf/log'
@@ -21,7 +14,7 @@ init(){
 }
 
 help(){
-    printf "Run：$red bash Performance.sh $green<verb> $yellow<args>$end\n"
+    printf "Run：$red bash process-tool.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-8s $yellow%-20s$end%-20s\n"
     printf "$format" "-h" "" "帮助"
     printf "$format" "" "[processName][m|s]" "所有或指定进程状态 按内存降序,m 标记是否统计内存 s 标记进程单行显示"
@@ -35,7 +28,7 @@ help(){
 }
 
 checkExistProcess(){
-    result=$(ps aux | egrep -v "grep" | egrep -v "Performance\.sh.*$1" | grep -i $1 --color)
+    result=$(ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color)
     if [ ${#result} = 0 ];then
         printf "no process info about $red $1 $end \n"
         exit 0
@@ -49,7 +42,7 @@ showProcessByName(){
     fi
     checkExistProcess $1
     echo "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
-    ps aux | egrep -v "grep" | egrep -v "Performance\.sh.*$1" | grep -i $1 --color
+    ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color
 }
 
 showAllProcess(){
@@ -70,6 +63,65 @@ watchProcess(){
     sleep 10
 }
 
+sumProcess(){
+    displayCount=40
+    if [ ! "$1"z = "z" ];then 
+        displayCount=$(($1 + 1))
+    fi
+    
+    result=$(showAllProcess | head -n $displayCount)
+    echo "$result"
+
+    printf "\n${green}sum: $end"
+    printf "$result" | egrep "^[0-9]" | awk '{sum += $1};END {print sum/1024 " MiB | " sum/1024/1024 " GiB"}'
+}
+
+sortProcess(){
+    displayCount=40
+    if [ ! "$1"z = "z" ];then 
+        # validate number
+        displayCount=$1
+        if [ $1 -lt 10 ];then
+            displayCount=$(($1 + 1 ))
+            while true; do
+                showAllProcess | head -n $displayCount
+                printf "$green...................... $end \n"
+                sleep 3
+            done
+        fi
+    fi
+    while true; do
+        showAllProcess | head -n $displayCount
+        sleep 3
+        clear
+    done
+}
+
+killToolProcess(){
+    ids=`ps aux | grep "process-tool.sh" | egrep -v "grep" | egrep -v "process-tool\.sh -d"| awk '{print $2}'`
+    if [ "$ids"1 = "1" ];then
+        printf $red"not exist background running script $end \n"
+    else
+        for id in $ids; do
+            printf $red"pid : $id killed $end \n"
+            kill -9 $id
+        done
+    fi
+}
+
+listProcessByName(){
+    if [ $# != 3 ];then
+        printf "$red the third param is missing $end \n"
+        exit 1
+    else
+        while true; do
+            showProcessByName $2
+            printf "$green...................................................................$end\n"
+            sleep $3
+        done
+    fi
+}
+
 backgroundWatch(){
     checkExistProcess $1
     while true; do
@@ -83,16 +135,7 @@ case $1 in
     -h|h)
         help ;;
     -p | p)
-		if [ "$3"z = "z" ];then
-            printf "$red the third param is missing $end \n"
-            exit 1
-		else
-			while true; do
-				showProcessByName $2 
-				printf "$green...................................................................$end\n"
-				sleep $3
-			done
-		fi
+        listProcessByName $@
     ;;
     -s)
         if [ $# = 1 ];then
@@ -109,48 +152,16 @@ case $1 in
         done
     ;;
     -ss | ss)
-        displayCount=40
-        if [ ! "$2"z = "z" ];then 
-            # validate number
-            displayCount=$2
-            if [ $2 -lt 10 ];then
-                displayCount=$(($2 + 1 ))
-                while true; do
-                    showAllProcess | head -n $displayCount
-                    printf "$green ... $end \n"
-                    sleep 3
-                done
-            fi
-        fi
-        while true; do
-            showAllProcess | head -n $displayCount
-            sleep 3
-            clear
-        done
+        sortProcess $2
     ;;
     -b)
-        ps aux | egrep -v "grep" | egrep -v "Performance\.sh -b" | grep -i "Performance.sh" --color
+        ps aux | egrep -v "grep" | egrep -v "process-tool.sh -b" | grep -i "process-tool.sh" --color
     ;;
     -stop)
-        ids=`ps aux | grep "Performance.sh" | egrep -v "grep" | egrep -v "Performance\.sh -d"| awk '{print $2}'`
-        if [ "$ids"1 = "1" ];then
-            printf $red"not exist background running script $end \n"
-        else
-            for id in $ids; do
-                printf $red"pid : $id killed $end \n"
-                kill -9 $id
-            done
-        fi
+        killToolProcess
     ;;
     -sum|sum)
-        displayCount=40
-        if [ ! "$2"z = "z" ];then 
-            displayCount=$(($2 + 1))
-        fi
-        result=$(showAllProcess | head -n $displayCount)
-        echo "$result"
-        printf "\n${green}sum: $end"
-        printf "$result" | egrep "^[0-9]" | awk '{sum += $1};END {print sum/1024 " MiB | " sum/1024/1024 " GiB"}'
+        sumProcess $2 
     ;;
     -watch | watch)
       (backgroundWatch $2 &)  
