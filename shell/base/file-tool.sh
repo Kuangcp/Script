@@ -49,6 +49,12 @@ case $1 in
     -f | f)
         find . -type f -iname "*$2*$3*$4" 
     ;;
+    -me)
+        assertParamCount $# 2
+        file=$2
+        
+        for i in $(ls); do cat $i >> $file; done
+    ;;
     *)
         path=${1#*\./}
         currentPath=`pwd`
