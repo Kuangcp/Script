@@ -47,7 +47,7 @@ init(){
 
 # Delay delete file and shielded signal, Not blocking the current terminal 
 delayDelete(){
-    result=`ps -ef | grep RecycleBin.sh | grep -v grep | wc -l`
+    result=`ps -ef | grep recycle-bin.sh | grep -v grep | wc -l`
     # Restrict running only one process. But the first run will be 2. 
     # because this function is run by a fork process ?
     if [ "$result" != "2" ];then
@@ -167,7 +167,7 @@ logWarn(){
 }
 
 help(){
-    printf "Run：$red sh RecycleBin.sh$green <verb> $yellow<args>$end\n"
+    printf "Run：$red sh recycle-bin.sh$green <verb> $yellow<args>$end\n"
     format="  $green%-5s $yellow%-15s$end%-20s\n"
     printf "$format" "any" "" "move file/dir to trash"
     printf "$format" "-h" "" "show help"
@@ -175,7 +175,7 @@ help(){
     printf "$format" "-as" "suffix" "delete *.suffix"
     printf "$format" "-l" "" "list all file in trash(exclude link file)"
     printf "$format" "-s" "" "search file from trash"
-    printf "$format" "-roll" "file" "rollback file from trash"
+    printf "$format" "-rb" "file" "roll back file from trash"
     printf "$format" "-lo" "file" "show log"
     printf "$format" "-cnf" "" "edit main config file "
     printf "$format" "-b" "" "show background running script"
@@ -222,7 +222,7 @@ listTrashFiles(){
 }
 
 upgrade(){
-    curl https://gitee.com/gin9/script/raw/master/shell/base/RecycleBin.sh -o $realPath/RecycleBin.sh
+    curl https://gitee.com/gin9/script/raw/master/shell/base/recycle-bin.sh -o $realPath/recycle-bin.sh
     printf $green"upgrade script success\n"$end
 }
 
@@ -265,14 +265,14 @@ case $1 in
     #         printf "$red no this dir or file: $2 $end \n"
     #     fi
     # ;;
-    -roll)
+    -rb)
         rollback $2
     ;;
     -b)
-        ps aux | grep RSS | grep -v "grep" && ps aux | egrep -v "grep" | grep RecycleBin.sh | grep -v "RecycleBin.sh -b"
+        ps aux | grep RSS | grep -v "grep" && ps aux | egrep -v "grep" | grep recycle-bin.sh | grep -v "recycle-bin.sh -b"
     ;;
     -d)
-        id=`ps -ef | grep "RecycleBin.sh" | grep -v "grep" | grep -v "\-d" | awk '{print $2}'`
+        id=`ps -ef | grep "recycle-bin.sh" | grep -v "grep" | grep -v "\-d" | awk '{print $2}'`
         if [ "$id"1 = "1" ];then
             printf $red"not exist background running script\n"$end
         else
