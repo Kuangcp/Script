@@ -36,3 +36,12 @@ log_info_t(){
 log_warn_t(){
     printf "`date +%F_%T`: $yellow $1 $end\n" 
 }
+
+assertParamCount(){
+    actual=$1
+    expect=$2
+    if [ ! $1 = $2 ]; then
+        log_error "please input correct param count: $2"
+        exit 1
+    fi
+}

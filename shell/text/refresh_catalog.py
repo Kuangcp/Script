@@ -54,13 +54,13 @@ def generate_catalog(filename) -> []:
     catalogs = ["**目录 start**\n \n"]
     nowTime = time.strftime('%Y-%m-%d %H:%M',time.localtime(time.time()))
     for line in lines:
-        if not line.startswith("#"):
+        if not line.startswith('#'):
             continue
         line = line.strip('\n')
         weight = line.count("#")
         tab = "    "*(weight - 1)
         line = line.replace("#", "").strip()
-        temp=line
+        temp = line
 
         line = delete_char(line, ignore_list)
         line = line.replace(" ", "-").strip()
@@ -68,7 +68,7 @@ def generate_catalog(filename) -> []:
 
         catalogs.append(tab + "1. [" + temp + "](#" + result + ")\n")
     
-    catalogs.append("\n**目录 end**|_"+nowTime+"_| [Gitee](https://gitee.com/gin9/Memo) | [Github](https://github.com/Kuangcp/Memo)")
+    catalogs.append("\n**目录 end**|_"+nowTime+"_|")
     catalogs.append("*"*40)
     return catalogs
 
@@ -112,10 +112,14 @@ def refresh_catalog(filename):
 
 def append_title_and_catalog(filename):
     if filename is None:
-        logError('filename is empty')
+        logError('file is not found: ' + filename)
         return 
     files = open(os.path.abspath(filename), 'r')
     lines = files.readlines()
+
+    if len(lines) == 0:
+        logError('file is empty: ' + filename)
+        return
 
     with open(filename, 'r+') as file:
         if '---' != lines[0].strip() or len(lines) == 0:
