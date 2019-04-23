@@ -79,6 +79,6 @@ http://
 3.5.0
 
 # visualvm
-类似于jdk自带工具 jvisualvm  
-http://  
-1.3.9
+jvisualvm独立后的项目  
+https://visualvm.github.io/index.html  
+1.3.9 1.4.2
