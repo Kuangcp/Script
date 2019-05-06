@@ -47,16 +47,16 @@ loadConfig(){
 # .bashrc/.zshrc 文件追加 环境变量 信息
 appendPath(){
     sdk=$1
-    if [ -f $trueFile ];then
+    if [ ! -f $trueFile ];then
         trueFile=$userDir"/."$shellType"rc"
     fi
-    echo "\n"$sdk"_HOME="$basePath"/sdk/"$sdk"/current" >> $trueFile
+    printf "\n"$sdk"_HOME="$basePath"/sdk/"$sdk"/current\n" >> $trueFile
     if [ $sdk = 'java' ];then
-        echo 'export JRE_HOME=${'$sdk'_HOME}/jre' >> $trueFile
-        echo 'export CLASSPATH=.:${'$sdk'_HOME}/lib:${JRE_HOME}/lib' >> $trueFile
-        echo 'export PATH=${'$sdk'_HOME}/bin:$PATH'  >> $trueFile
+        printf 'export JRE_HOME=${'$sdk'_HOME}/jre\n' >> $trueFile
+        printf 'export CLASSPATH=.:${'$sdk'_HOME}/lib:${JRE_HOME}/lib\n' >> $trueFile
+        printf 'export PATH=${'$sdk'_HOME}/bin:$PATH\n'  >> $trueFile
     else
-        echo "export PATH=\$PATH:$"$sdk"_HOME/bin" >> $trueFile
+        printf "export PATH=\$PATH:$"$sdk"_HOME/bin\n" >> $trueFile
     fi
     . $trueFile
     printf "环境变量配置完成\n"
@@ -74,6 +74,7 @@ querySDKExist(){
     fi
     printf $3"  "
 }
+
 showOneSdk(){
     sdkName=$2;sdkVersion=$3;
     short=`echo $sdkName | colrm 1 2`
