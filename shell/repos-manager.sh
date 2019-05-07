@@ -229,15 +229,21 @@ get_remote_file_url(){
 
     file_path=${file_path#*$root_path}
 
-    github_remote=$(get_user_repo github)
-    if [ ! $github_remote'z' = 'z' ];then
-        log_info "\n  raw: https://raw.githubusercontent.com/"$github_remote"/master"$file_path""
-        log_info " url: https://github.com/"$github_remote"/blob/master"$file_path"\n"
+    remote=$(get_user_repo github)
+    if [ ! $remote'z' = 'z' ];then
+        log_info "\n  raw: https://raw.githubusercontent.com/"$remote"/master"$file_path""
+        log_info " url: https://github.com/"$remote"/blob/master"$file_path"\n"
     fi
 
-    gitee_remote=$(get_user_repo gitee)
-    if [ ! $gitee_remote'z' = 'z' ];then
-        log_info " raw: https://gitee.com/"$gitee_remote"/raw/master"$file_path"\n"
+    remote=$(get_user_repo gitee)
+    if [ ! $remote'z' = 'z' ];then
+        log_info " raw: https://gitee.com/"$remote"/raw/master"$file_path"\n"
+    fi
+
+    remote=$(get_user_repo gitlab)
+    if [ ! $remote'z' = 'z' ];then
+        log_info " raw: https:"$remote"/raw/master"$file_path"\n"
+        log_info " url: https:"$remote"/blob/master"$file_path"\n"
     fi
 }
 
