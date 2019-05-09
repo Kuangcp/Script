@@ -196,10 +196,11 @@ help(){
     printf "$format" "-pa|pa" "" "push current local repo to all remote"
     printf "$format" "-pl|pull" "repo ..." "batch pull repo from remote "
     printf "$format" "-pla|pla" "" "pull all repo from remote"
+    printf "$format" "-ds|ds" "" "download subdir by svn for github"
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
-    printf "$format" "-c|c" "" "open alias config file "
-    printf "$format" "-app" "" "add current dir to sys.path for python /usr/local/lib/ ..."
+    printf "$format" "-cnf|cnf" "" "open alias config file "
     printf "$format" "-f|f" "filename" "show file content url in github"
+    printf "$format" "-append" "" "add current dir to sys.path for python /usr/local/lib/ ..."
 }
 
 get_user_repo(){
@@ -266,19 +267,24 @@ case $1 in
         log_info "ready to pull all repos"
         pullAllRepos
     ;;
+    -ds | ds)
+        # url=${2/tree\/master/trunk} bash
+        url=$(echo $2 | awk '{gsub(/tree\/master/,"trunk");print}')
+        svn co $url
+    ;;
     -ac | ac)
         addRepo
     ;;
     -l | l | list)
         listRepos | sort
     ;;
-    -c | c)
+    -cnf | cnf)
         vim $configPath
     ;;
     -f | f)
         get_remote_file_url $2
     ;;
-    -app)
+    -append)
         addPythonPath
     ;;
     *)
