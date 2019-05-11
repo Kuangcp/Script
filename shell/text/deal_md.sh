@@ -56,6 +56,7 @@ help(){
     printf "Run：$red sh deal_md.sh.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-15s $yellow%-12s$end%-20s\n"
     printf "$format"  "-h|h|help"    "" "输出帮助信息"
+    printf "$format"  "-init"        "" "设置当前目录为笔记仓库的目录"
     printf "$format"  ""    "filename"  "更新指定文件索引目录 "
     printf "$format"  "-c|c|current" "" "更新当前目录所有md文件的索引目录"
     printf "$format"  "-a|a|all"     "" "更新指定目录下所有md文件的索引目录"

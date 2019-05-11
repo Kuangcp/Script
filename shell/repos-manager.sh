@@ -196,10 +196,11 @@ help(){
     printf "$format" "-pa|pa" "" "push current local repo to all remote"
     printf "$format" "-pl|pull" "repo ..." "batch pull repo from remote "
     printf "$format" "-pla|pla" "" "pull all repo from remote"
+    printf "$format" "-ds|ds" "" "download subdir by svn for github"
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
-    printf "$format" "-c|c" "" "open alias config file "
-    printf "$format" "-app" "" "add current dir to sys.path for python /usr/local/lib/ ..."
+    printf "$format" "-cnf|cnf" "" "open alias config file "
     printf "$format" "-f|f" "filename" "show file content url in github"
+    printf "$format" "-append" "" "add current dir to sys.path for python /usr/local/lib/ ..."
 }
 
 get_user_repo(){
@@ -229,15 +230,21 @@ get_remote_file_url(){
 
     file_path=${file_path#*$root_path}
 
-    github_remote=$(get_user_repo github)
-    if [ ! $github_remote'z' = 'z' ];then
-        log_info "\n  raw: https://raw.githubusercontent.com/"$github_remote"/master"$file_path""
-        log_info " url: https://github.com/"$github_remote"/blob/master"$file_path"\n"
+    remote=$(get_user_repo github)
+    if [ ! $remote'z' = 'z' ];then
+        log_info "\n  raw: https://raw.githubusercontent.com/"$remote"/master"$file_path""
+        log_info " url: https://github.com/"$remote"/blob/master"$file_path"\n"
     fi
 
-    gitee_remote=$(get_user_repo gitee)
-    if [ ! $gitee_remote'z' = 'z' ];then
-        log_info " raw: https://gitee.com/"$gitee_remote"/raw/master"$file_path"\n"
+    remote=$(get_user_repo gitee)
+    if [ ! $remote'z' = 'z' ];then
+        log_info " raw: https://gitee.com/"$remote"/raw/master"$file_path"\n"
+    fi
+
+    remote=$(get_user_repo gitlab)
+    if [ ! $remote'z' = 'z' ];then
+        log_info " raw: https:"$remote"/raw/master"$file_path"\n"
+        log_info " url: https:"$remote"/blob/master"$file_path"\n"
     fi
 }
 
@@ -260,19 +267,24 @@ case $1 in
         log_info "ready to pull all repos"
         pullAllRepos
     ;;
+    -ds | ds)
+        # url=${2/tree\/master/trunk} bash
+        url=$(echo $2 | awk '{gsub(/tree\/master/,"trunk");print}')
+        svn co $url
+    ;;
     -ac | ac)
         addRepo
     ;;
     -l | l | list)
         listRepos | sort
     ;;
-    -c | c)
+    -cnf | cnf)
         vim $configPath
     ;;
     -f | f)
         get_remote_file_url $2
     ;;
-    -app)
+    -append)
         addPythonPath
     ;;
     *)
