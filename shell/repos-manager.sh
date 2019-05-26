@@ -287,6 +287,11 @@ case $1 in
     -append)
         addPythonPath
     ;;
+    -go)
+        if [ -f $2 ]; then
+            sudo tar -C /usr/local -xzf $2 
+        fi
+    ;;
     *)
         checkRepos
     ;;
