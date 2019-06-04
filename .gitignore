@@ -9,4 +9,5 @@ __pycache__/
 # 所有conf文件为本地配置 ini为公开配置
 
 test.*
+*.test
 .idea/
