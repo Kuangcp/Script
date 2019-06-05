@@ -53,8 +53,11 @@
 - [批量重命名文件](/python/rename_image.py)
 
 ## 按组切换 host
-> [Python源码](/python/tool/switch-hosts/app.py)
+> [Python源码](/python/tool/switch-host-group/app.py)
 
+功能参考自 [SwitchHosts](https://github.com/oldj/SwitchHosts)  
+处于个人原因, 不太喜欢该软件, 重且bug多 但是操作方便  
+写Python脚本就简单直接 但是操作复杂了点, 如果host组内容不是频繁改动 还是很适合的  
 
 ## 创建Github任意提交时间
 > [Python版](/python/nouse/create_commit.py) `参考自github上的greenhat`

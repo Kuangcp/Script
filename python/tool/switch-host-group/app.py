@@ -1,3 +1,5 @@
+#!/ust/bin/python3
+
 import fire
 import sys
 import json
@@ -11,8 +13,7 @@ cyan = '\033[0;36m'
 white = '\033[0;37m'
 end = '\033[0m'
 
-# host_file = '/etc/hosts'
-host_file = 'hosts.test'
+host_file = '/etc/hosts'
 
 new_file_path=None
 
