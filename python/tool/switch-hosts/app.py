@@ -69,89 +69,81 @@ def append_group(group, file_path):
     print()
     log_info('append group sucessful')
 
-def uncomment_group(group):
+
+def comment_content(result_lines, line, content_flag):
+    if content_flag and not line.startswith('#'):
+        # print('#', line)
+        result_lines.append('#' + line)
+    else : 
+        result_lines.append(line)
+
+
+def uncomment_content(result_lines, line, content_flag):
+    if content_flag and line.startswith('#'):
+        # print(line[1:])
+        result_lines.append(line[1:])
+    else:
+        result_lines.append(line)
+
+def replace_content_at_end(result_lines, file_path):
+    with open(file_path, 'r') as file: 
+        lines = file.readlines()
+        for line in lines:
+            result_lines.append(line)
+
+
+def handle_group_content(group, content_func=None):
     if not has_contain_group(group):
         log_error('group not exist')
         return
-    result_lines = []
-    with open(host_file) as file: 
-        lines = file.readlines()
-        content_flag = False
-        for line in lines:
-            if get_group_start(group) in line:
-                content_flag = True
-                result_lines.append(line)
-                continue
-
-            if get_group_end(group) in line:
-                content_flag = False
-                result_lines.append(line)
-                continue
-            
-            if content_flag and line.startswith('#'):
-                print(line[1:])
-                result_lines.append(line[1:])
-                continue
-                
-            result_lines.append(line)
-
-    write_to_hosts(result_lines)
-
-def comment_group(group):
-    if not has_contain_group(group):
-        log_error('group not exist')
-        return
-    result_lines = []
-    with open(host_file) as file: 
-        lines = file.readlines()
-        content_flag = False
-        for line in lines:
-            if get_group_start(group) in line:
-                content_flag = True
-                result_lines.append(line)
-                continue
-
-            if get_group_end(group) in line:
-                content_flag = False
-                result_lines.append(line)
-                continue
-            
-            if content_flag and not line.startswith('#'):
-                print('#', line)
-                result_lines.append('#' + line)
-                continue
-                
-            result_lines.append(line)
     
+    result_lines = []
+    with open(host_file) as file: 
+        lines = file.readlines()
+        content_flag = False
+        for line in lines:
+            if get_group_start(group) in line:
+                content_flag = True
+                result_lines.append(line)
+                continue
+
+            if get_group_end(group) in line:
+                content_flag = False
+                result_lines.append(line)
+                continue
+            
+            content_func(result_lines, line, content_flag)
+
     write_to_hosts(result_lines)
 
 
 def write_to_hosts(lines):
+    total_content = ''.join(lines)
     with open(host_file, 'w+') as file: 
-        for line in lines:
-            file.write(line)
-            
+        file.write(total_content)
+
 
 def main(verb=None, *args):
     if verb == '-h':
         help()
         sys.exit(0)
     
-    if verb == '-a':
-        if len(args) != 2 or args[0] is None or args[1] is None:
-            log_error('invalid param, at least need 2')
-            sys.exit(0)
-        
-        append_group(group=args[0], file_path=args[1])
-    
-    if verb == '-r':
-        pass
+    if len(args) < 2 or args[0] is None or args[1] is None:
+        log_error('invalid param, at least need 2')
+    else:
+        if verb == '-a':
+            append_group(group=args[0], file_path=args[1])
+        # if verb == '-r':
+        #     handle_group_content(group=args[0], replace=True, file_path=args[1])
 
-    if verb == '-on':
-        uncomment_group(group=args[0])
+    if len(args) < 1:
+        log_error('group not exist')
+    else: 
+        if verb == '-on':
+            handle_group_content(group=args[0], content_func=uncomment_content)
 
-    if verb == '-off':
-        comment_group(group=args[0])
+        if verb == '-off':
+            handle_group_content(group=args[0], content_func=comment_content)
 
 
 fire.Fire(main)
