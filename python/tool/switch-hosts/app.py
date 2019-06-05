@@ -11,8 +11,10 @@ cyan = '\033[0;36m'
 white = '\033[0;37m'
 end = '\033[0m'
 
-host_file = '/etc/hosts'
-# host_file = 'hosts.test'
+# host_file = '/etc/hosts'
+host_file = 'hosts.test'
+
+new_file_path=None
 
 def log_error(msg):
     print('%s%s%s%s' % (red, 'ERROR: ', msg, end))
@@ -65,34 +67,27 @@ def append_group(group, file_path):
         for line in lines:
             host.write(line)
             print(line, end='')
+        print()
     host.write('\n\n' + get_group_end(group) + '\n')
-    print()
     log_info('append group sucessful')
 
-
+# add # for content in group
 def comment_content(result_lines, line, content_flag):
     if content_flag and not line.startswith('#'):
-        # print('#', line)
         result_lines.append('#' + line)
     else : 
         result_lines.append(line)
 
-
+# remove # for content in group
 def uncomment_content(result_lines, line, content_flag):
     if content_flag and line.startswith('#'):
-        # print(line[1:])
         result_lines.append(line[1:])
     else:
         result_lines.append(line)
 
-def replace_content_at_end(result_lines, file_path):
-    with open(file_path, 'r') as file: 
-        lines = file.readlines()
-        for line in lines:
-            result_lines.append(line)
 
-
-def handle_group_content(group, content_func=None):
+# read origin file, write back origin file with the result list 
+def replace_content(group, content_func=None, logic_func=None):
     if not has_contain_group(group):
         log_error('group not exist')
         return
@@ -100,24 +95,61 @@ def handle_group_content(group, content_func=None):
     result_lines = []
     with open(host_file) as file: 
         lines = file.readlines()
-        content_flag = False
-        for line in lines:
-            if get_group_start(group) in line:
-                content_flag = True
-                result_lines.append(line)
-                continue
-
-            if get_group_end(group) in line:
-                content_flag = False
-                result_lines.append(line)
-                continue
-            
-            content_func(result_lines, line, content_flag)
-
+        result_lines = content_func(group, lines, logic_func)
+    
     write_to_hosts(result_lines)
+
+# func value, trans into  replace_content
+def open_close_group(group, lines, logic_func) -> []:
+    content_flag = False
+    result_lines=[]
+    for line in lines:
+        if get_group_start(group) in line:
+            content_flag = True
+            result_lines.append(line)
+            continue 
+
+        if get_group_end(group) in line:
+            content_flag = False
+            result_lines.append(line)
+            continue
+
+        if logic_func is None:
+            log_error('must have logic func')
+            sys.exit()
+        logic_func(result_lines, line, content_flag)
+    return result_lines
+
+# func value , trans into  replace_content
+def replace_group_content(group, lines, logic_func=None):
+    result_lines = []
+    content_flag = False
+    for line in lines:
+        if get_group_start(group) in line:
+            content_flag = True
+            result_lines.append(line)
+            continue 
+
+        if get_group_end(group) in line:
+            content_flag = False
+            print(new_file_path)
+            with open(new_file_path, 'r') as file:
+                new_lines = file.readlines()
+                for new_line in new_lines:
+                    result_lines.append(new_line)
+                result_lines.append('\n')
+            result_lines.append(line)
+            continue
+        
+        if not content_flag:
+            result_lines.append(line)
+
+    return result_lines
 
 
 def write_to_hosts(lines):
+    if lines is None:
+        return
     total_content = ''.join(lines)
     with open(host_file, 'w+') as file: 
         file.write(total_content)
@@ -133,17 +165,19 @@ def main(verb=None, *args):
     else:
         if verb == '-a':
             append_group(group=args[0], file_path=args[1])
-        # if verb == '-r':
-        #     handle_group_content(group=args[0], replace=True, file_path=args[1])
+        if verb == '-r':
+            global new_file_path
+            new_file_path=args[1]
+            replace_content(group=args[0], content_func=replace_group_content)
 
     if len(args) < 1:
         log_error('group not exist')
     else: 
         if verb == '-on':
-            handle_group_content(group=args[0], content_func=uncomment_content)
+            replace_content(group=args[0], content_func=open_close_group, logic_func=uncomment_content)
 
         if verb == '-off':
-            handle_group_content(group=args[0], content_func=comment_content)
+            replace_content(group=args[0], content_func=open_close_group, logic_func=comment_content)
 
 
 fire.Fire(main)

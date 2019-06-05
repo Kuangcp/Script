@@ -52,6 +52,10 @@
 ## 文件处理
 - [批量重命名文件](/python/rename_image.py)
 
+## 按组切换 host
+> [Python源码](/python/tool/switch-hosts/app.py)
+
+
 ## 创建Github任意提交时间
 > [Python版](/python/nouse/create_commit.py) `参考自github上的greenhat`
 > [Shell脚本](/shell/create_commit.sh)
