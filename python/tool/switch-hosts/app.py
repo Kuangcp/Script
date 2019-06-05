@@ -11,8 +11,8 @@ cyan = '\033[0;36m'
 white = '\033[0;37m'
 end = '\033[0m'
 
-# host_file = '/etc/hosts'
-host_file = 'hosts.test'
+host_file = '/etc/hosts'
+# host_file = 'hosts.test'
 
 def log_error(msg):
     print('%s%s%s%s' % (red, 'ERROR: ', msg, end))
@@ -44,7 +44,6 @@ def get_group_end(value) -> str:
 
 
 def has_contain_group(group) -> bool:
-    global host_file
     with open(host_file) as file: 
         lines = file.readlines()
         for line in lines:
@@ -70,6 +69,68 @@ def append_group(group, file_path):
     print()
     log_info('append group sucessful')
 
+def uncomment_group(group):
+    if not has_contain_group(group):
+        log_error('group not exist')
+        return
+    result_lines = []
+    with open(host_file) as file: 
+        lines = file.readlines()
+        content_flag = False
+        for line in lines:
+            if get_group_start(group) in line:
+                content_flag = True
+                result_lines.append(line)
+                continue
+
+            if get_group_end(group) in line:
+                content_flag = False
+                result_lines.append(line)
+                continue
+            
+            if content_flag and line.startswith('#'):
+                print(line[1:])
+                result_lines.append(line[1:])
+                continue
+                
+            result_lines.append(line)
+
+    write_to_hosts(result_lines)
+
+def comment_group(group):
+    if not has_contain_group(group):
+        log_error('group not exist')
+        return
+    result_lines = []
+    with open(host_file) as file: 
+        lines = file.readlines()
+        content_flag = False
+        for line in lines:
+            if get_group_start(group) in line:
+                content_flag = True
+                result_lines.append(line)
+                continue
+
+            if get_group_end(group) in line:
+                content_flag = False
+                result_lines.append(line)
+                continue
+            
+            if content_flag and not line.startswith('#'):
+                print('#', line)
+                result_lines.append('#' + line)
+                continue
+                
+            result_lines.append(line)
+    
+    write_to_hosts(result_lines)
+
+
+def write_to_hosts(lines):
+    with open(host_file, 'w+') as file: 
+        for line in lines:
+            file.write(line)
+            
 
 def main(verb=None, *args):
     if verb == '-h':
@@ -87,13 +148,10 @@ def main(verb=None, *args):
         pass
 
     if verb == '-on':
-        pass
+        uncomment_group(group=args[0])
 
     if verb == '-off':
-        pass
+        comment_group(group=args[0])
 
-        
-# docker11 start
-# docker11 end
 
 fire.Fire(main)

@@ -27,7 +27,7 @@ help(){
     printf "$format" "watch" "processName" "10s统计进程总内存 输出到 $logDir/ {processName}.process.log"
 }
 
-checkExistProcess(){
+check_exist_process(){
     result=$(ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color)
     if [ ${#result} = 0 ];then
         printf "no process info about $red $1 $end \n"
@@ -35,48 +35,48 @@ checkExistProcess(){
     fi
 }
 
-showProcessByName(){
+show_process_by_name(){
     if [ $# = 0 ];then
         printf "$red please specific process name $end \n"
         exit 1
     fi
-    checkExistProcess $1
+    check_exist_process $1
     echo "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
     ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color
 }
 
-showAllProcess(){
+show_all_processes(){
     printf "${cyan}KiB\tMiB\tPID\tCommand ${end} \n"
     ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
     # printf "\nmemory sum info\n\n"
     free -h
 }
 
-statisticsMemory(){
+statistic_memory(){
     ps aux | egrep -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;print sum "K " sum/1024"M "}'
 }
 
-watchProcess(){
+watch_process(){
     date +%s | xargs printf
     printf "$green `date "+%Y-%m-%d %H:%M:%S"` $end"
-    statisticsMemory $1 
+    statistic_memory $1 
     sleep 10
 }
 
-sumProcess(){
+sum_proces(){
     displayCount=40
     if [ ! "$1"z = "z" ];then 
         displayCount=$(($1 + 1))
     fi
     
-    result=$(showAllProcess | head -n $displayCount)
+    result=$(show_all_processes | head -n $displayCount)
     echo "$result"
 
     printf "\n${green}sum: $end"
     printf "$result" | egrep "^[0-9]" | awk '{sum += $1};END {print sum/1024 " MiB | " sum/1024/1024 " GiB"}'
 }
 
-sortProcess(){
+sort_process(){
     displayCount=40
     if [ ! "$1"z = "z" ];then 
         # validate number
@@ -84,20 +84,21 @@ sortProcess(){
         if [ $1 -lt 10 ];then
             displayCount=$(($1 + 1 ))
             while true; do
-                showAllProcess | head -n $displayCount
+                show_all_processes | head -n $displayCount
                 printf "$green...................... $end \n"
                 sleep 3
             done
         fi
     fi
     while true; do
-        showAllProcess | head -n $displayCount
+        show_all_processes | head -n $displayCount
         sleep 3
         clear
     done
 }
 
-killToolProcess(){
+# kill self process
+kill_self(){
     ids=`ps aux | grep "process-tool.sh" | egrep -v "grep" | egrep -v "process-tool\.sh -d"| awk '{print $2}'`
     if [ "$ids"1 = "1" ];then
         printf $red"not exist background running script $end \n"
@@ -109,23 +110,23 @@ killToolProcess(){
     fi
 }
 
-listProcessByName(){
+list_process_by_name(){
     if [ $# != 3 ];then
         printf "$red the third param is missing $end \n"
         exit 1
     else
         while true; do
-            showProcessByName $2
+            show_process_by_name $2
             printf "$green...................................................................$end\n"
             sleep $3
         done
     fi
 }
 
-backgroundWatch(){
-    checkExistProcess $1
+background_watch(){
+    check_exist_process $1
     while true; do
-        watchProcess $1 >> $logDir/$1.process.log
+        watch_process $1 >> $logDir/$1.process.log
     done
 }
 
@@ -135,7 +136,7 @@ case $1 in
     -h|h)
         help ;;
     -p | p)
-        listProcessByName $@
+        list_process_by_name $@
     ;;
     -s)
         if [ $# = 1 ];then
@@ -152,30 +153,30 @@ case $1 in
         done
     ;;
     -ss | ss)
-        sortProcess $2
+        sort_process $2
     ;;
     -b)
         ps aux | egrep -v "grep" | egrep -v "process-tool.sh -b" | grep -i "process-tool.sh" --color
     ;;
     -stop)
-        killToolProcess
+        kill_self
     ;;
     -sum|sum)
-        sumProcess $2 
+        sum_proces $2 
     ;;
     -watch | watch)
-      (backgroundWatch $2 &)  
+      (background_watch $2 &)  
     ;;
     *)
         if [ $# = 0 ];then
-            showAllProcess | less
+            show_all_processes | less
         elif [ $# = 1 ]; then
-            showProcessByName $1 
+            show_process_by_name $1 
         elif [ $2 = "m" ];then 
-            checkExistProcess $1
-            statisticsMemory $1
+            check_exist_process $1
+            statistic_memory $1
         elif [ $2 = "s" ];then 
-            showProcessByName $1  | less -S 
+            show_process_by_name $1  | less -S 
         fi
     ;;
 esac
