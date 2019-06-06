@@ -2,7 +2,8 @@
 
 import fire
 import sys
-import json
+from functools import reduce
+import os.path
 
 red = '\033[0;31m'
 green = '\033[0;32m'
@@ -15,14 +16,18 @@ end = '\033[0m'
 
 host_file = '/etc/hosts'
 
-new_file_path=None
+new_file_path = None
 
-def log_error(msg):
-    print('%s%s%s%s' % (red, 'ERROR: ', msg, end))
+def log_error(*msg):
+    if msg is None:
+        msg_str = ''
+    else:
+        msg_str = reduce(lambda x, y: str(x) + ' ' + str(y), msg)
+    print('%s%s%s%s' % (red, 'ERROR | ', msg_str, end))
 
 
 def log_info(msg):
-    print('%s%s%s%s' % (green, 'INFO: ', msg, end))
+    print('%s%s%s%s' % (green, 'INFO  | ', msg, end))
 
 
 def print_param(verb, args, comment):
@@ -58,9 +63,11 @@ def has_contain_group(group) -> bool:
 def append_group(group, file_path):
     contained = has_contain_group(group)
     if contained:
-        log_error('group already exist')
+        log_error('group already exist', group)
         return
     
+    assert_file(file_path)
+
     host = open(host_file, 'a')
     host.write('\n' + get_group_start(group) + '\n\n')
     with open(file_path) as file: 
@@ -72,12 +79,14 @@ def append_group(group, file_path):
     host.write('\n\n' + get_group_end(group) + '\n')
     log_info('append group sucessful')
 
+
 # add # for content in group
 def comment_content(result_lines, line, content_flag):
     if content_flag and not line.startswith('#'):
         result_lines.append('#' + line)
     else : 
         result_lines.append(line)
+
 
 # remove # for content in group
 def uncomment_content(result_lines, line, content_flag):
@@ -100,6 +109,7 @@ def replace_content(group, content_func=None, logic_func=None):
     
     write_to_hosts(result_lines)
 
+
 # func value, trans into  replace_content
 def open_close_group(group, lines, logic_func) -> []:
     content_flag = False
@@ -120,6 +130,7 @@ def open_close_group(group, lines, logic_func) -> []:
             sys.exit()
         logic_func(result_lines, line, content_flag)
     return result_lines
+
 
 # func value , trans into  replace_content
 def replace_group_content(group, lines, logic_func=None):
@@ -156,29 +167,42 @@ def write_to_hosts(lines):
         file.write(total_content)
 
 
+def assert_file(file_path):
+    if not os.path.exists(file_path):
+        log_error('file not found:', file_path)
+        sys.exit(1)
+
+
+def assert_param(args, count):
+    if len(args) < count:
+        log_error('invalid param, at least need', count)
+        sys.exit(1)
+    
+
 def main(verb=None, *args):
+    assert_file(host_file)
+
     if verb == '-h':
         help()
         sys.exit(0)
     
-    if len(args) < 2 or args[0] is None or args[1] is None:
-        log_error('invalid param, at least need 2')
-    else:
-        if verb == '-a':
-            append_group(group=args[0], file_path=args[1])
-        if verb == '-r':
-            global new_file_path
-            new_file_path=args[1]
-            replace_content(group=args[0], content_func=replace_group_content)
+    if verb == '-a':
+        assert_param(args, 2);
+        append_group(group=args[0], file_path=args[1])
+    
+    if verb == '-r':
+        assert_param(args, 2);
+        global new_file_path
+        new_file_path=args[1]
+        replace_content(group=args[0], content_func=replace_group_content)
 
-    if len(args) < 1:
-        log_error('group not exist')
-    else: 
-        if verb == '-on':
-            replace_content(group=args[0], content_func=open_close_group, logic_func=uncomment_content)
+    if verb == '-on':
+        assert_param(args, 1);
+        replace_content(group=args[0], content_func=open_close_group, logic_func=uncomment_content)
 
-        if verb == '-off':
-            replace_content(group=args[0], content_func=open_close_group, logic_func=comment_content)
+    if verb == '-off':
+        assert_param(args, 1);
+        replace_content(group=args[0], content_func=open_close_group, logic_func=comment_content)
 
 
 fire.Fire(main)
