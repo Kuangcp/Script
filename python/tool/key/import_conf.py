@@ -1,18 +1,22 @@
-from RecordClickWithRedis import get_conf,get_conn
+from RecordClickWithRedis import get_conn
+from configparser import ConfigParser
 
 # import key map from ini to a new redis 
 
 path='/home/kcp/Application/script/python/tool/key/pokerII.ini'
-cf = get_conf()
+cf = ConfigParser()
+cf.read(path)
+conn = get_conn()
+print(conn)
 
-for i in range(1, 130):
-    try:
+try:
+    for i in range(1, 130):
         line = cf.get('poker', str(i))
+    
         print(i, ' = ', line)
-        conn = get_conn()
-        # print(conn)
         conn.hset('key_map', i, line)
-    except Exception:
-        pass
+except Exception as e:
+    print(e)
+    pass
     
 

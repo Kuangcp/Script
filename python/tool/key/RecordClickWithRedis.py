@@ -36,7 +36,7 @@ def get_conf():
     global path
     if not os.path.exists(path) :
         logError('Please refer to Readme.md initialization configuration')
-        return 0 
+        exit(1) 
     cf = ConfigParser()
     cf.read(path)
     return cf

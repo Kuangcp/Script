@@ -3,30 +3,31 @@
 ## 1. 配置脚本
 1. 配置 conf 文件, 并把该文件的绝对路径配置到 record.sh 中  
     `配置文件` 等号左右必须要有空格
-    ```conf
-        [event]
-        key = 5
+```conf
+[event]
+key = 5
 
-        [redis]
-        host = 127.0.0.1
-        port = 6666
-        db = 2
-        password=
-    ```
-1. sh record.sh -q 搜索到所有有可能为键盘的事件号
-1. root权限 启动脚本 sh record.sh -s 事件号 
+[redis]
+host = 127.0.0.1
+port = 6666
+db = 2
+password=
+```
+2. sh record.sh -q 搜索到所有有可能为键盘的事件号
+3. root权限 启动脚本 sh record.sh -s 事件号 
 
 
 ## 2.配置redis
 ```sh
     # 快速配置redis
     docker pull hub.baidubce.com/mythos/redis-alpine:1211
-    docker tag hub.baidubce.com/mythos/redis-alpine:1211 redis
-    docker run --name redis -p 6666:6379 -d redis3:latest
+    docker tag hub.baidubce.com/mythos/redis-alpine:1211 redis3-myth
+    docker run --name redis -p 6666:6379 -d redis3-myth
 ```
 > 其中, 记录到redis 中的数据结构为 zset  
 - 日期
     - 键的code -> 敲击次数 
+
 > 记录键盘code和键对应的是hash结构
 - code -> key
 
