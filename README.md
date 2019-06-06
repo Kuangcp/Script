@@ -67,10 +67,11 @@
 > [Python实现](/python/tool/key)
 
 ## 刷CSDN浏览量
-> CSDN浏览量应该和IP有关系, 所以一天也就刷一次, 权当玩玩
-> [Python实现](/python/increase_readed.py)
+> CSDN浏览量应该和IP有关系, 所以一天也就刷一次, 权当玩玩   
+> 用了一年后CSDN改服务器为openresty了, 做了保护 脚本失效了 2019-06-07  
 
-有心思折腾的话, 就放在手机上跑(借助tmux), 跑一次就开启关闭下飞行模式, 重新分配ip 
+[Python实现](/python/increase_readed.py)
+
 
 *********
 
