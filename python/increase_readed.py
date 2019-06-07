@@ -1,14 +1,22 @@
 #!/usr/bin/python3
 import fire
-from base.ReadURL import ReadURL
+from tool.spider.ReadURL import ReadURL
 from time import sleep
-import time
 
 
 # 增加某用户的CSDN阅读量, 发现是每天都能去增加一次
 
 def read_blog(list_url):
-    read_url = ReadURL(list_url)
+    read_url = ReadURL(list_url, {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:67.0) Gecko/20100101 Firefox/67.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'DNT': '1',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Cache-Control': 'max-age=0',
+    })
     soup = read_url.read_html()
 
     print(soup)
@@ -28,7 +36,16 @@ def read_blog(list_url):
 
 def show_info(info_url):
     """ 展示用户信息 """
-    read_url = ReadURL(info_url)
+    read_url = ReadURL(info_url, {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:67.0) Gecko/20100101 Firefox/67.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'DNT': '1',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Cache-Control': 'max-age=0',
+    })
     soup = read_url.read_html()
 
     print(soup)
