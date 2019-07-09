@@ -56,20 +56,20 @@ delayDelete(){
         fileNum=`ls -A $trashDir | wc -l`
         while [ ! $fileNum = 0 ]; do
             sleep $checkTime
-            logInfoWithWhite "→ timing detection  ▌ check trash ..."
+            logInfoWithWhite "→ timing detection  ▌" "check trash ..."
             ls -A $trashDir | cat | while read line; do
                 currentTime=`date +%s`
                 removeTime=${line##*\.}
                 ((result=$currentTime-$removeTime))
                 # echo "$line | $result"
                 if [ $result -ge $liveTime ];then
-                    logWarn "▶ real delete       ▌ rm -rf $trashDir/$line"
+                    logWarn "▶ real delete       ▌" "rm -rf $trashDir/$line"
                     rm -rf "$trashDir/$line"
                 fi
             done
             fileNum=`ls -A $trashDir | wc -l`
         done
-        logError "▶ trash is empty    ▌ script will exit ..."
+        logError "▶ trash is empty    ▌" "script will exit ..."
     fi
 }
 
@@ -82,7 +82,7 @@ moveFile(){
         printf $red"file not exist \n"
         exit
     fi
-    logInfoWithGreen "◆ prepare to delete ▌ $currentPath/$fileName"
+    logInfoWithGreen "◆ prepare to delete ▌" "$currentPath/$fileName"
     # 多级目录时, 需要先创建好
     hasDir=`expr match "$fileName" ".*/"`
     if [ ! $hasDir = 0 ]; then 
@@ -146,24 +146,24 @@ rollback(){
     file=${1%\.*}
     file=${file%\.*}
     mv $trashDir/$1 $file
-    logInfoWithCyan "◀ rollback file     ▌ $file"
+    logInfoWithCyan "◀ rollback file     ▌" "$file"
     printf $green"rollback [$file] complete \n"
 }
 
 logInfoWithWhite(){
-    printf "`date +%F_%T` $1\n" >>$logFile
+    printf "`date +%F_%T` $1 $2\n" >>$logFile
 }
 logInfoWithGreen(){
-    printf `date +%F_%T`"$green $1\n" >>$logFile
+    printf `date +%F_%T`"$green $1$end $2\n" >>$logFile
 }
 logInfoWithCyan(){
-    printf `date +%F_%T`"$cyan $1\n" >>$logFile
+    printf `date +%F_%T`"$cyan $1$end $2\n" >>$logFile
 }
 logError(){
-    printf `date +%F_%T`"$red $1\n" >>$logFile
+    printf `date +%F_%T`"$red $1$end $2\n" >>$logFile
 }
 logWarn(){
-    printf `date +%F_%T`"$yellow $1\n" >>$logFile
+    printf `date +%F_%T`"$yellow $1$end $2\n" >>$logFile
 }
 
 help(){
@@ -277,7 +277,7 @@ case $1 in
             printf $red"not exist background running script\n"$end
         else
             printf $red"pid : $id killed\n"$end
-            logWarn "♢ killed script     ▌ pid: $id"
+            logWarn "♢ killed script     ▌" "pid: $id"
             kill -9 $id
         fi
     ;;
