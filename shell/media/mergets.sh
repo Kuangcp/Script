@@ -21,7 +21,7 @@ case $1 in
     *)
         file=$(date +%F_%T).mp4
         ffmpeg -i $1 -c copy -bsf:a aac_adtstoasc $file
-        echo "finished $file"
+        echo "\n\n\tfinished $file \n\n"
     ;;
 esac
 

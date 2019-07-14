@@ -13,20 +13,6 @@ init(){
     fi
 }
 
-help(){
-    printf "Run：$red bash process-tool.sh $green<verb> $yellow<args>$end\n"
-    format="  $green%-8s $yellow%-20s$end%-20s\n"
-    printf "$format" "-h" "" "帮助"
-    printf "$format" "" "[processName][m|s]" "所有或指定进程状态 按内存降序,m 标记是否统计内存 s 标记进程单行显示"
-    printf "$format" "-p|p" "process interval" "按名称查看相关进程 或者按时间间隔一直查看进程信息"
-    printf "$format" "-b" "" "查看该脚本后台进程"
-    printf "$format" "-stop" "" "kill 该脚本所有后台进程"
-    printf "$format" "-pm|pm" "processName" "按名称查看相关进程的使用内存统计"
-    printf "$format" "-ss|ss" "[count]" "查看内存占用最多的几个进程 count默认40个 3s刷新一次"
-    printf "$format" "-sum|sum" "[count]" "查看内存占用最多的几个进程 并统计这几个进程内存总占用量"
-    printf "$format" "watch" "processName" "10s统计进程总内存 输出到 $logDir/ {processName}.process.log"
-}
-
 check_exist_process(){
     result=$(ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color)
     if [ ${#result} = 0 ];then
@@ -46,10 +32,15 @@ show_process_by_name(){
 }
 
 show_all_processes(){
-    printf "${cyan}KiB\tMiB\tPID\tCommand ${end} \n"
-    ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
+    printf "${cyan}KiB\tMiB\tPID\tCPU\tCommand ${end} \n"
+    ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t"$3 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
     # printf "\nmemory sum info\n\n"
     free -h
+}
+
+show_all_processes_sort_cpu(){
+    printf "${cyan}CPU\tMiB\tPID\tCommand ${end} \n"
+    ps aux | grep -v RSS | awk '{print $3 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
 }
 
 statistic_memory(){
@@ -130,27 +121,30 @@ background_watch(){
     done
 }
 
-init 
+help(){
+    printf "Run：$red bash process-tool.sh $green<verb> $yellow<args>$end\n"
+    format="  $green%-10s $yellow%-22s$end%-20s\n"
+    printf "$format" "-h" "" "帮助"
+    printf "$format" "" "[processName][m|s]" "所有或指定进程状态 按内存降序,m 标记是否统计内存 s 标记进程单行显示"
+    printf "$format" "-cpu|cpu" "" "查看所有进程的使用内存统计 且按CPU排序"
+    printf "$format" "-p|p" "processName interval" "按名称查看相关进程 并按时间间隔一直查看进程信息"
+    printf "$format" "-b" "" "查看该脚本后台进程"
+    printf "$format" "-stop" "" "kill 该脚本所有后台进程"
+    printf "$format" "-ss|ss" "[count]" "查看内存占用最多的几个进程 count默认40个 3s刷新一次"
+    printf "$format" "-sum|sum" "[count]" "查看内存占用最多的几个进程 并统计这几个进程内存总占用量"
+    printf "$format" "watch" "processName" "10s统计进程总内存 输出到 $logDir/ {processName}.process.log"
+}
 
+init 
 case $1 in 
-    -h|h)
-        help ;;
+    -h | h)
+        help 
+    ;;
     -p | p)
         list_process_by_name $@
     ;;
-    -s)
-        if [ $# = 1 ];then
-            printf "$red At least one parameter is needed $end\n"
-            exit 
-        fi
-        count=-1
-        for str in $@; do
-            count=$((count+1))
-            if [ $count = 0 ];then
-                continue
-            fi
-            echo $count $str
-        done
+    -cpu | cpu)
+        show_all_processes_sort_cpu | less
     ;;
     -ss | ss)
         sort_process $2
