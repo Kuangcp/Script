@@ -8,12 +8,14 @@
     1. [Git仓库有关](#git仓库有关)
     1. [Github和Gitbook](#github和gitbook)
     1. [文件处理](#文件处理)
+    1. [按组切换 host](#按组切换-host)
     1. [创建Github任意提交时间](#创建github任意提交时间)
     1. [记录并统计敲击键盘的数据](#记录并统计敲击键盘的数据)
     1. [刷CSDN浏览量](#刷csdn浏览量)
+    1. [通过 m3u8 URL 下载并转换成mp4](#通过-m3u8-url-下载并转换成mp4)
 1. [相关的脚本库](#相关的脚本库)
 
-**目录 end**|_2019-01-05 12:15_| [码云](https://gitee.com/gin9) | [CSDN](http://blog.csdn.net/kcp606) | [OSChina](https://my.oschina.net/kcp1104) | [cnblogs](http://www.cnblogs.com/kuangcp)
+**目录 end**|_2019-07-14 18:31_|
 ****************************************
 
 # 实用性脚本
@@ -44,34 +46,35 @@
   - [Shell实现版](/shell/check_by_aliases.sh)
 
 ## Github和Gitbook
-> [Python脚本](/python/create_tree.py) 实现了将一个md的仓库, 生成一个GitBook所特有的目录文件 SUMMARY.md
+> [Python](/python/create_tree.py) 实现了将一个md的仓库, 生成一个GitBook所特有的目录文件 SUMMARY.md
+
 然后就能方便的在线阅读了, 而且几乎没有修改自己笔记的仓库
 
-[笔记 实例](https://github.com/Kuangcp/Memo)
+> [示例](https://github.com/Kuangcp/Memo)
 
 ## 文件处理
-- [批量重命名文件](/python/rename_image.py)
+- [Python](/python/rename_image.py)`批量重命名文件`
 
 ## 按组切换 host
-> [Python源码](/python/tool/switch-host-group/app.py)
+> [Python](/python/tool/switch-host-group/app.py)
 
-功能参考自 [SwitchHosts](https://github.com/oldj/SwitchHosts)  
-处于个人原因, 不太喜欢该软件, 重且bug多 但是操作方便  
+功能参考自 [SwitchHosts](https://github.com/oldj/SwitchHosts) 出于个人原因, 不太喜欢该软件, 重且bug多 但是操作方便  
 写Python脚本就简单直接 但是操作复杂了点, 如果host组内容不是频繁改动 还是很适合的  
 
 ## 创建Github任意提交时间
-> [Python版](/python/nouse/create_commit.py) `参考自github上的greenhat`
-> [Shell脚本](/shell/create_commit.sh)
+> [Python](/python/nouse/create_commit.py) `参考自github上的greenhat`
+> [Shell](/shell/create_commit.sh)
 
 ## 记录并统计敲击键盘的数据
-> [Python实现](/python/tool/key)
+> [Python](/python/tool/key)
 
 ## 刷CSDN浏览量
 > CSDN浏览量应该和IP有关系, 所以一天也就刷一次, 权当玩玩   
-> 用了一年后CSDN改服务器为openresty了, 做了保护 脚本失效了 2019-06-07  
 
-[Python实现](/python/increase_readed.py)
+> [Python](/python/increase_readed.py)
 
+## 通过 m3u8 URL 下载并转换成mp4
+> [Shell](/shell/media/mergets.sh)
 
 *********
 
