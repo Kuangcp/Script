@@ -109,7 +109,10 @@ refresh_current_dir(){
 refresh_one_file(){
     assertParamCount $# 1
     check_config
-    # 没有参数的时候, 就是单文件的更新
+    if [ ! -f $1 ];then
+        log_error "file not found"
+        exit 1
+    fi
     result=$(generate_catalog $1)
     printf "$result\n"
 }
