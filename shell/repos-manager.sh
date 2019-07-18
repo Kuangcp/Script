@@ -40,17 +40,20 @@ pushToAllRemote(){
     result=`git remote -v`
     count=-1
     for temp in $result; do
+    {
         count=$(( $count + 1 ))
         if [ $(($count % 6)) = 0 ]; then
             echo $start"$temp"$end
             git push $temp
         fi
+    }
     done
 }
 
 pullAllRepos(){
     # 并行 最后有序合并输出
     cat $configPath | while read line; do
+    {
         # ignore that comment contain + character
         ignore=`echo "$line" | grep "+"`
         if [ "$ignore"x != "x" ];then 
@@ -62,13 +65,18 @@ pullAllRepos(){
             continue
         fi
         
-        showLine "$line" $purple
-        cd $repo_path && git pull
+        result=""
+        result=$result""$(showLine "$line" $purple)"\n"
+        result=$result""$(cd $repo_path && git pull)"\n"
+        echo "$result"
+    }&
     done
+    wait
 }
 
 pushToAllRepos(){
-    cat $configPath | while read line;do
+    cat $configPath | while read line; do
+    {
         # ignore that comment contain + character
         ignore=`echo "$line" | grep "+"`
         if [ "$ignore"x != "x" ];then 
@@ -85,7 +93,9 @@ pushToAllRepos(){
         if [ $haveCommit != 0 ]; then 
             cd $repo_path && git push
         fi
+    }&
     done
+    wait
 }
 
 checkRepos(){
@@ -119,7 +129,7 @@ checkRepos(){
             repoOutput=$repoOutput" "$(echo ''$end)
         fi
 
-        echo $repoOutput
+        echo "$repoOutput"
     }&
     done
     wait
@@ -140,7 +150,7 @@ showLine(){
     if [ "$ignore"x != "x" ];then 
         printf "$yellow%-20s $pathColor%-56s $red%-20s $end\n" $str_alias $str_path "$str_comment"
     else
-        printf "$yellow%-20s $pathColor%-56s $green%-20s $end\n" $str_alias $str_path "$str_comment"
+        printf "$yellow%-20s $pathColor%-56s $blue%-20s $end\n" $str_alias $str_path "$str_comment"
     fi
 }
 
