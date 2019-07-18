@@ -90,6 +90,8 @@ pushToAllRepos(){
 
 checkRepos(){
     cat $configPath | while read line; do
+    {
+        repoOutput=''
         # ignore that comment contain + character
         ignore=`echo "$line" | grep "+"`
         if [ "$ignore"x != "x" ];then 
@@ -103,20 +105,24 @@ checkRepos(){
 
         result=`cd "$repo_path" && git status -s 2>&1`
         if [ ! "$result" = "" ];then
-            showLine "$line" $green
+            repoOutput=$repoOutput" "$(showLine "$line" $green)"\n"
             count=0
             temp=''
             for file in $result; do
                 count=$(( $count + 1 ))
                 temp="$temp   $file"
                 if [ $(($count%2)) = 0 ];then
-                    log $cyan "$temp"
+                    repoOutput=$repoOutput" "$(log $cyan "$temp")"\n"
                     temp=''
                 fi
             done
-            echo ''$end
+            repoOutput=$repoOutput" "$(echo ''$end)
         fi
+
+        echo $repoOutput
+    }&
     done
+    wait
 }
 
 showLine(){
