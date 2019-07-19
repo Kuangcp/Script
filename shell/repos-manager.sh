@@ -128,8 +128,9 @@ checkRepos(){
             done
             repoOutput=$repoOutput" "$(echo ''$end)
         fi
-
-        echo "$repoOutput"
+        if [ ! "$repoOutput" = "" ]; then
+            echo "$repoOutput"
+        fi
     }&
     done
     wait
