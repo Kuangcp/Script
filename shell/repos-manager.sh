@@ -39,10 +39,12 @@ pushToAllRemote(){
     path=`pwd`
     result=`git remote -v`
     count=-1
+
+    remotes=""
     for temp in $result; do
         count=$(( $count + 1 ))
         if [ $(($count % 6)) = 0 ]; then
-            echo $start"$temp"$end
+            log_info "push to "$temp
             git push $temp
         fi
     done
@@ -51,6 +53,7 @@ pushToAllRemote(){
 pullAllRepos(){
     # 并行 最后有序合并输出
     cat $configPath | while read line; do
+    {
         # ignore that comment contain + character
         ignore=`echo "$line" | grep "+"`
         if [ "$ignore"x != "x" ];then 
@@ -62,13 +65,18 @@ pullAllRepos(){
             continue
         fi
         
-        showLine "$line" $purple
-        cd $repo_path && git pull
+        result=""
+        result=$result""$(showLine "$line" $purple)"\n"
+        result=$result""$(cd $repo_path && git pull)"\n"
+        echo "$result"
+    }&
     done
+    wait
 }
 
 pushToAllRepos(){
-    cat $configPath | while read line;do
+    cat $configPath | while read line; do
+    {
         # ignore that comment contain + character
         ignore=`echo "$line" | grep "+"`
         if [ "$ignore"x != "x" ];then 
@@ -85,11 +93,15 @@ pushToAllRepos(){
         if [ $haveCommit != 0 ]; then 
             cd $repo_path && git push
         fi
+    }&
     done
+    wait
 }
 
 checkRepos(){
     cat $configPath | while read line; do
+    {
+        repoOutput=''
         # ignore that comment contain + character
         ignore=`echo "$line" | grep "+"`
         if [ "$ignore"x != "x" ];then 
@@ -103,20 +115,25 @@ checkRepos(){
 
         result=`cd "$repo_path" && git status -s 2>&1`
         if [ ! "$result" = "" ];then
-            showLine "$line" $green
+            repoOutput=$repoOutput" "$(showLine "$line" $green)"\n"
             count=0
             temp=''
             for file in $result; do
                 count=$(( $count + 1 ))
                 temp="$temp   $file"
                 if [ $(($count%2)) = 0 ];then
-                    log $cyan "$temp"
+                    repoOutput=$repoOutput" "$(log $cyan "$temp")"\n"
                     temp=''
                 fi
             done
-            echo ''$end
+            repoOutput=$repoOutput" "$(echo ''$end)
         fi
+        if [ ! "$repoOutput" = "" ]; then
+            echo "$repoOutput"
+        fi
+    }&
     done
+    wait
 }
 
 showLine(){
@@ -134,7 +151,7 @@ showLine(){
     if [ "$ignore"x != "x" ];then 
         printf "$yellow%-20s $pathColor%-56s $red%-20s $end\n" $str_alias $str_path "$str_comment"
     else
-        printf "$yellow%-20s $pathColor%-56s $green%-20s $end\n" $str_alias $str_path "$str_comment"
+        printf "$yellow%-20s $pathColor%-56s $blue%-20s $end\n" $str_alias $str_path "$str_comment"
     fi
 }
 
@@ -232,17 +249,20 @@ get_remote_file_url(){
 
     remote=$(get_user_repo github)
     if [ ! $remote'z' = 'z' ];then
-        log_info "\n  raw: https://raw.githubusercontent.com/"$remote"/master"$file_path""
+        log "\nGithub"
+        log_info " raw: https://raw.githubusercontent.com/"$remote"/master"$file_path""
         log_info " url: https://github.com/"$remote"/blob/master"$file_path"\n"
     fi
 
     remote=$(get_user_repo gitee)
     if [ ! $remote'z' = 'z' ];then
+        log "Gitee"
         log_info " raw: https://gitee.com/"$remote"/raw/master"$file_path"\n"
     fi
 
     remote=$(get_user_repo gitlab)
     if [ ! $remote'z' = 'z' ];then
+        log "Gitlab"
         log_info " raw: https:"$remote"/raw/master"$file_path"\n"
         log_info " url: https:"$remote"/blob/master"$file_path"\n"
     fi
@@ -256,15 +276,12 @@ case $1 in
         pullRepos $@
     ;;
     -p | push | p)
-        log_info "ready to push all repos"
         pushToAllRepos
     ;;
     -pa | pa)
-        log_info "ready to push repo to all remote"
         pushToAllRemote
     ;;
     -pla | pla)
-        log_info "ready to pull all repos"
         pullAllRepos
     ;;
     -ds | ds)
