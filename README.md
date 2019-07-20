@@ -15,9 +15,8 @@
     1. [通过 m3u8 URL 下载并转换成mp4](#通过-m3u8-url-下载并转换成mp4)
 1. [相关的脚本库](#相关的脚本库)
 
-**目录 end**|_2019-07-14 18:31_|
+**目录 end**|_2019-07-20 14:17_|
 ****************************************
-
 # 实用性脚本
 > 给自己Linux使用的脚本
 
@@ -45,7 +44,7 @@
 - [快速查看改动的git仓库](/python/nouse/check_repos.py) 
   - [Shell实现版](/shell/check_by_aliases.sh)
 
-## Github和Gitbook
+### Github和Gitbook
 > [Python](/python/create_tree.py) 实现了将一个md的仓库, 生成一个GitBook所特有的目录文件 SUMMARY.md
 
 然后就能方便的在线阅读了, 而且几乎没有修改自己笔记的仓库
@@ -65,7 +64,7 @@
 > [Python](/python/nouse/create_commit.py) `参考自github上的greenhat`  
 > [Shell](/shell/create_commit.sh)
 
-## 记录并统计敲击键盘的数据
+## 记录并统计键盘按键数据
 > [Python](/python/tool/key)
 
 ## 刷CSDN浏览量
@@ -82,7 +81,4 @@
 - [useful-script](https://github.com/oldratlee/useful-scripts)
 - [iScript](https://github.com/PeterDing/iScript)`影音有关的脚本`
 - [across](https://github.com/teddysun/across) `bench等有用的脚本`
-
-- 管理服务器发布脚本 Tomcat 相关
-  -  `curl https://gitee.com/gin9/script/raw/master/shell/deploy/manager.sh -o manager.sh`
 
