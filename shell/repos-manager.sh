@@ -39,14 +39,14 @@ pushToAllRemote(){
     path=`pwd`
     result=`git remote -v`
     count=-1
+
+    remotes=""
     for temp in $result; do
-    {
         count=$(( $count + 1 ))
         if [ $(($count % 6)) = 0 ]; then
-            echo $start"$temp"$end
+            log_info "push to "$temp
             git push $temp
         fi
-    }
     done
 }
 
@@ -249,17 +249,20 @@ get_remote_file_url(){
 
     remote=$(get_user_repo github)
     if [ ! $remote'z' = 'z' ];then
-        log_info "\n  raw: https://raw.githubusercontent.com/"$remote"/master"$file_path""
+        log "\nGithub"
+        log_info " raw: https://raw.githubusercontent.com/"$remote"/master"$file_path""
         log_info " url: https://github.com/"$remote"/blob/master"$file_path"\n"
     fi
 
     remote=$(get_user_repo gitee)
     if [ ! $remote'z' = 'z' ];then
+        log "Gitee"
         log_info " raw: https://gitee.com/"$remote"/raw/master"$file_path"\n"
     fi
 
     remote=$(get_user_repo gitlab)
     if [ ! $remote'z' = 'z' ];then
+        log "Gitlab"
         log_info " raw: https:"$remote"/raw/master"$file_path"\n"
         log_info " url: https:"$remote"/blob/master"$file_path"\n"
     fi
@@ -273,15 +276,12 @@ case $1 in
         pullRepos $@
     ;;
     -p | push | p)
-        log_info "ready to push all repos"
         pushToAllRepos
     ;;
     -pa | pa)
-        log_info "ready to push repo to all remote"
         pushToAllRemote
     ;;
     -pla | pla)
-        log_info "ready to pull all repos"
         pullAllRepos
     ;;
     -ds | ds)
