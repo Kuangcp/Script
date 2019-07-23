@@ -26,6 +26,18 @@ assertParamCount(){
     fi
 }
 
+get_search_pattern(){
+    pattern=""
+    verb=$1
+
+    for temp in $*; do
+        pattern=$pattern".*"$temp
+    done
+    pattern=$pattern".*"
+    pattern=${pattern#*$verb}
+    echo $pattern
+}
+
 case $1 in 
     -h | h)
         help ;;
@@ -43,11 +55,12 @@ case $1 in
 	;;
     # TODO -d -f 都实现多参数, 使其根据两个参数筛选结果
     -d | d)
-        assertParamCount $# 2
-        find . -type d -iname "*$2*" 
+        pattern=$(get_search_pattern $*)
+        find . -type d -iregex $pattern
     ;;
     -f | f)
-        find . -type f -iname "*$2*$3*$4" 
+        pattern=$(get_search_pattern $*)
+        find . -type f -iregex $pattern 
     ;;
     -me)
         assertParamCount $# 2
