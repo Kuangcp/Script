@@ -15,6 +15,8 @@ help(){
     printf "$format" "-p|p" "relative path" "输出相对路径的绝对路径并复制到粘贴板"
     printf "$format" "-cf|cf" "relative path" "复制文件内容到粘贴板"
     printf "$format" "-l" "file targetDIr" "链接文件到指定目录"
+    printf "$format" "-b" "file" "文件或目录加 .bak"
+    printf "$format" "-ub" "file" "文件或目录删除 .bak"
 }
 
 assertParamCount(){
@@ -44,6 +46,15 @@ case $1 in
     -l)
         assertParamCount $# 3
         ln -s $(pwd)/$2 $3/$2
+    ;;
+    -b)
+        assertParamCount $# 2
+        mv $2 ${2}.bak
+    ;;
+    -ub)
+        assertParamCount $# 2
+        origin=${2%.bak*}
+        mv $2 $origin
     ;;
     -p | p)
         currentPath=`pwd`
