@@ -69,13 +69,12 @@ show_stack_of_process(){
 
 show_all_java_process(){
     result=$(jps)
-    echo "$result\n"
-    tempNum=0
+    printf "\n$result\n\n"
+
     log_info "Please select the java process:"
     read tempNum
 
     tempCount=0
-    pid=0
     echo "$result" | while read line; do
         tempCount=$(( $tempCount + 1 ))
         if test $tempCount = $tempNum; then 
