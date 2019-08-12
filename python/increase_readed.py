@@ -52,6 +52,9 @@ def show_info(info_url):
     title_list = soup.find_all('div')
     for line in title_list:
         class_type = ReadURL.get_element(str(line), 'class')
+        if class_type is None:
+            continue
+            
         if 'item-tiling' in class_type:
             first_temp = str(line).split('class="count"')
             print_info('\t原创', first_temp[1].split('</')[0][1:])
