@@ -69,9 +69,14 @@ show_stack_of_process(){
 
 show_all_java_process(){
     result=$(jps)
-    printf "\n$result\n\n"
+    # printf "\n$result\n\n"
+    lineNum=0
+    echo "$result" | while read line; do
+        lineNum=$(( $lineNum + 1 ))
+        printf "    $red%s$end %s \n" $lineNum "$line"
+    done
 
-    log_info "Please select the java process:"
+    log_info "Please select the java process: "
     read tempNum
 
     tempCount=0
