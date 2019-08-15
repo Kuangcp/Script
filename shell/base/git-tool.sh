@@ -15,7 +15,7 @@ diff_branch(){
 case $1 in 
     -dc)
     # TODO validate branch is correct
-        if [ $2'z' = 'z' ];then 
+        if test -z $2; then 
             log_error "must select one branch"
             exit 1;
         fi

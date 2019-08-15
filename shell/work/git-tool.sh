@@ -16,13 +16,20 @@ help(){
 create_branch(){
     version=$1
     feature=$2
+    if test -z $version || test -z $feature; then
+        echo "must input two param"
+        exit
+    fi
+
     # 获取项目名
     name=$(git remote -v | awk '{print $2}')
     name=${name##*btr-project\/}
     name=${name%%.git*}
     date=$(date +%Y%m%d)
     branch_name="${date}_${name}_${version}_$feature"
-    echo $branch_name
+    printf "$green %s $end" $branch_name
+    printf $branch_name | xclip -sel clip
+
     git branch $branch_name
 }
 
@@ -31,6 +38,6 @@ case $1 in
         help
     ;;
     *)
-        create_branch $1 $2
+        create_branch $*
     ;;
 esac

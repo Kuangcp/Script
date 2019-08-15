@@ -224,7 +224,8 @@ get_user_repo(){
     domain=$1
 
     remote=$(git remote -v | grep $domain".*push" | awk '{print $2}')
-    remote=${remote#*:}
+    remote=${remote#*//}
+    remote=${remote#*/}
     remote=${remote%.git*}
     echo $remote
 }
@@ -248,6 +249,7 @@ get_remote_file_url(){
     file_path=${file_path#*$root_path}
 
     remote=$(get_user_repo github)
+    echo $remote
     if [ ! $remote'z' = 'z' ];then
         log "\nGithub"
         log_info " raw: https://raw.githubusercontent.com/"$remote"/master"$file_path""
