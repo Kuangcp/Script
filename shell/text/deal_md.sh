@@ -23,7 +23,7 @@ check_config(){
 
 generate_catalog(){
     # bash $path'/append_catalog.sh' "$1"
-    python3 $path'/refresh_catalog.py' -at "$1"
+    python3 "$path/refresh_catalog.py" 'at' $1
 }
 
 handle_file(){
@@ -86,7 +86,7 @@ refresh_changed(){
                 ignore_file=`echo $map_result | grep "$ignore" `
                 if [ "$ignore_file"z = "z" ];then
                     printf "\033[0;32m modify: \033[0m" 
-                    result=$(generate_catalog $config_target_repo/$map_result)
+                    result=$(generate_catalog "$config_target_repo/$map_result")
                     printf "$result\n"
                 fi
             fi
