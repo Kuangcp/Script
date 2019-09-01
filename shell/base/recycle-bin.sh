@@ -154,16 +154,16 @@ logInfoWithWhite(){
     printf "`date +%F_%T` $1 $2\n" >>$logFile
 }
 logInfoWithGreen(){
-    printf `date +%F_%T`"$green $1$end $2\n" >>$logFile
+    printf `date +%F_%T`"$green $1 $2$end\n" >>$logFile
 }
 logInfoWithCyan(){
-    printf `date +%F_%T`"$cyan $1$end $2\n" >>$logFile
+    printf `date +%F_%T`"$cyan $1 $2$end\n" >>$logFile
 }
 logError(){
-    printf `date +%F_%T`"$red $1$end $2\n" >>$logFile
+    printf `date +%F_%T`"$red $1 $2$end\n" >>$logFile
 }
 logWarn(){
-    printf `date +%F_%T`"$yellow $1$end $2\n" >>$logFile
+    printf `date +%F_%T`"$yellow $1 $2$end\n" >>$logFile
 }
 
 help(){
