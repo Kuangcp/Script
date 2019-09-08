@@ -168,12 +168,12 @@ listRepos(){
 # add repo in current path
 addRepo(){
     repo_path=`pwd`
-    log_info "Please input comment or description"
+    log_info "Please input description"
     read comment
-    log_info "Please input alias name, such as input a, then alias kg.a='/path/to'"
+    log_info "Please input alias name, such as input a, result: $end alias kg.a='/current/path/to'"
     read aliasName
     echo "alias kg."$aliasName"='cd $repo_path' # $comment" >> $configPath
-    log_info "add success, Please run source ~/.zshrc or ~/.bashrc or ..."
+    log_info "add success, Please run $end source ~/.zshrc"
 }
 
 addPythonPath(){
