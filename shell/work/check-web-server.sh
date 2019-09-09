@@ -11,6 +11,11 @@ userDir=(`cd && pwd`)
 cache_page="$userDir/.config/app-conf/log/healthcheck_status"
 icon_file='/home/kcp/Application/Icon/Stream.svg'
 
+pid=$$
+# app cache var
+
+down_flag=0
+
 log(){
     printf " $1\n"
 }
@@ -67,7 +72,7 @@ find_server(){
     if test $# == 0 ;then
         log_error "please input any param \n"
         help
-        exit 0
+        kill $pid
     fi 
     params="$*"
     regex=${params// /.*}
@@ -77,7 +82,7 @@ find_server(){
     if test $count != 3; then
         log_error "more than one matched"
         echo "$result" | less
-        exit 0
+        kill $pid
     fi
     echo "$result"
 }
@@ -94,7 +99,6 @@ watch_server_up(){
     regex=${params// /.*}
     result=$(find_server $*)
 
-    down_flag=0
     project_name=''
     for line in $result; do
         # log_info $line
@@ -141,6 +145,11 @@ case $1 in
         help 
     ;;
     *)
+        if test $# == 0 ;then
+            log_error "please input any param \n"
+            help
+            exit 1
+        fi
         # update_cache
         find_ip_by_app $*
     ;;
