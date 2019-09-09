@@ -44,6 +44,12 @@ find_ip_by_app(){
     regex=${params// /.*}
     # echo $regex
     result=$(cat $cache_page | grep "$regex" -A 2)
+    count=$(echo $result | wc -w)
+    if test $count != 3; then
+        log_error "more than one matched"
+        echo "$result" | less
+        exit 0
+    fi
     for line in $result; do
         # log_info $line
         is_title=$(echo $line | grep "$regex")
