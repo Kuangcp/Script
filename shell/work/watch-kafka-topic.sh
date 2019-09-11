@@ -12,8 +12,9 @@ cache_page="$userDir/.config/app-conf/log/ofc_kafka_topic"
 log_file="$userDir/.config/app-conf/log/ofc_kafka_topic/total.log"
 icon_file='/home/kcp/Application/Icon/Stream.svg'
 
-topics='OFC_PURCHASE_FINISH OFC_DATA_TRACK OFC_PURCHASE IM_YUN_XIN_CC_MESSAGE_FOR_BIZ'
+topics='OFC_PURCHASE_FINISH OFC_DATA_TRACK OFC_PURCHASE IM_YUN_XIN_CC_MESSAGE_FOR_BIZ OFC_PACKAGE_DELIVERY OFC_SUB_SALE_ORDER OFC_CANCEL_ORDER_MONITOR'
 
+threshold=10
 pid=$$
 
 log(){
@@ -60,8 +61,9 @@ check_topic_total_lag(){
             # echo $count"---------"$line
             num=$(remove_td_tag $line)
             # printf "%s $yellow%-40s  %3s $end\n" `date +%y-%m-%d_%H:%M:%S` "$topic" "$num"
-            printf "%s $yellow%-40s  %3s $end\n" `date +%y-%m-%d_%H:%M:%S` "$topic" "$num"  >> $log_file
-            if test $num  -gt 1; then
+            printf "%s %-40s  %3s \n" `date +%y-%m-%d_%H:%M:%S` "$topic" "$num"  >> $log_file
+            mo_num=$(echo $num | sed 's/,//g')
+            if test $mo_num -gt $threshold; then
                 msg="$topic has lag $num"
                 notify-send -i $icon_file "$msg" -t 3000
             fi
