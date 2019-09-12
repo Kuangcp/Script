@@ -12,7 +12,26 @@ cache_page="$userDir/.config/app-conf/log/ofc_kafka_topic"
 log_file="$userDir/.config/app-conf/log/ofc_kafka_topic/total.log"
 icon_file='/home/kcp/Application/Icon/Stream.svg'
 
-topics='OFC_PURCHASE_FINISH OFC_DATA_TRACK OFC_PURCHASE IM_YUN_XIN_CC_MESSAGE_FOR_BIZ OFC_PACKAGE_DELIVERY OFC_SUB_SALE_ORDER OFC_CANCEL_ORDER_MONITOR'
+topics='OFC_PURCHASE_FINISH OFC_DATA_TRACK 
+OFC_PURCHASE_ORDER_CREATED 
+OFC_PACKAGE_DELIVERY 
+OFC_PREAPARE_QUTE_CREATE_SUPPLIER_ORDER 
+OFC_SUB_SALE_ORDER 
+OFC_CANCEL_ORDER_MONITOR 
+OFC_SUPPLIER_ORDER_CREATED 
+OFC_PURCHASE_ORDER_PROCESSED 
+OFC_PURCHASE_REPRICE 
+OFC_PACKAGE_RECEIVE 
+OFC_PACKAGE_PACK 
+OFC_GENERATE_ORDER 
+OFC_ORDER_PAID 
+IM_YUN_XIN_CC_MESSAGE_TO_ADMIN 
+OFC_PURCHASE IM_YUN_XIN_CC_MESSAGE_FOR_BIZ 
+LOGISTICS_PARTS_TRACK 
+quote_quoteResultPushErp 
+inquiry 
+oms_order_process '
+
 
 threshold=10
 pid=$$
@@ -99,6 +118,7 @@ watch_ofc_topic(){
         check_topic_total_lag  $topic 
         # check_topic_detail_lag  $topic 
     done
+    printf "\n"  >> $log_file
 }
 
 
@@ -112,7 +132,7 @@ case $1 in
     *)
         for i in $(seq 1 10000); do
             watch_ofc_topic
-            sleep 3;
+            sleep 2;
         done
     ;;
 esac
