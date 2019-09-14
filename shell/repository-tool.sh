@@ -246,7 +246,7 @@ get_remote_file_url(){
 
 # 入口 读取脚本参数调用对应 函数
 case $1 in 
-    -h|h)
+    -h | h)
         help;;
     -pl | pull)
         pullRepos $@
@@ -270,6 +270,13 @@ case $1 in
     ;;
     -l | l | list)
         listRepos | sort
+    ;;
+    -traash | trash)
+        current_branch=$(git branch --show-current)
+        git add -A
+        git checkout -b trash/`date "+%Y%m%d-%H%M%S"`-$current_branch
+        git commit -am "cache"
+        git checkout -
     ;;
     -cnf | cnf)
         vim $configPath
