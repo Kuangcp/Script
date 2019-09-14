@@ -8,16 +8,16 @@ path=$(cd `dirname $0`; pwd)
 help(){
     printf "Run：$red bash FileTool.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-6s $yellow%-16s$end%-20s\n"
-    printf "$format" "-h" "" "帮助"
-    printf "$format" "" "" "复制当前路径到粘贴板"
-    printf "$format" "-f|f" "filename" "当前路径递归搜索文件"
-    printf "$format" "-d|d" "dirname" "当前路径递归搜索目录"
-    printf "$format" "-p|p" "relative path" "输出相对路径的绝对路径并复制到粘贴板"
-    printf "$format" "-cf|cf" "relative path" "复制文件内容到粘贴板"
-    printf "$format" "-cs" "absolute path" "依据绝对路径创建交换文件"
-    printf "$format" "-l" "file targetDIr" "链接文件到指定目录"
-    printf "$format" "-b" "file" "文件或目录加 .bak"
-    printf "$format" "-ub" "file" "文件或目录删除 .bak"
+    printf "$format" "-h" "" "help"
+    printf "$format" "" "" "copy current path"
+    printf "$format" "-f|f" "filename" "search file on current path"
+    printf "$format" "-d|d" "dirname" "search dir on current path"
+    printf "$format" "-p|p" "relative path" "copy file path and show it"
+    printf "$format" "-cf|cf" "relative path" "copy file content"
+    printf "$format" "-cs" "absolute path, count" "create swap file by absolute path"
+    printf "$format" "-l" "file dir" "link file under dir"
+    printf "$format" "-b" "file" "change file between file.bak with file"
+    printf "$format" "-append" "" "add current dir to sys.path for python /usr/local/lib/ ..."
 }
 
 assert_param_count(){
@@ -62,21 +62,62 @@ get_search_pattern(){
     echo $pattern
 }
 
+add_python_sys_path(){
+    lib_path='/usr/local/lib'
+    project=$(pwd)
+    
+    log_info "Please select a python version"
+    versions=$(ls $lib_path | grep "python")
+    for version in $versions; do
+        echo "  " $version 
+    done
+    read version
+    if [ ! -d $lib_path/$version ];then 
+        log_error "target dir not exist: $lib_path/$version"
+    fi
+    
+    log_info "Please input filename, result: $lib_path/$version/dist-packages/filename.pth"
+    while true; do
+        read filename
+        if [ -f "$lib_path/$version/dist-packages/$filename.pth" ];then
+            log_warn "$filename already exist"
+        else 
+            break
+        fi
+    done
+    sudo sh -c "echo $project"/" >> $lib_path/$version/dist-packages/$filename.pth"
+    log_info "add success: $lib_path/$version/dist-packages/$filename.pth"
+}
+
 case $1 in 
     -h | h)
         help ;;
-    -l)
+    -l | l)
         assert_param_count $# 3
-        ln -s $(pwd)/$2 $3/$2
+        ln -s "$(pwd)/$2" "$3/$2"
     ;;
-    -b)
+    -b|b)
         assert_param_count $# 2
-        mv $2 ${2}.bak
+        is_match=$(echo $2 | grep -e ".*\.bak$")
+        # echo $is_match
+        if test -z $is_match; then
+            mv "$2" "${2}.bak"
+        else 
+            origin=${2%.bak*}
+            # echo $origin
+            mv "$2" "$origin"
+        fi
     ;;
-    -ub)
-        assert_param_count $# 2
-        origin=${2%.bak*}
-        mv $2 $origin
+    -tar|tar)
+        file=$2
+        if [ ! -f $file ];then 
+            log_error "$file is not exist"
+            exit 
+        fi
+
+        suffix=${file##*\.}
+        file_name=${file%\.*}
+        mv "$2" "${file_name}.`date "+%Y%m%d-%H:%M:%S"`.$suffix"
     ;;
     -cs)
         create_swap_file $2 $3
@@ -98,11 +139,13 @@ case $1 in
         pattern=$(get_search_pattern $*)
         find . -type f -iregex $pattern 
     ;;
-    -me)
-        assert_param_count $# 2
-        file=$2
-        
-        for i in $(ls); do cat $i >> $file; done
+    -append)
+        add_python_sys_path
+    ;;
+    -go)
+        if [ -f $2 ]; then
+            sudo tar -C /usr/local -xzf $2 
+        fi
     ;;
     *)
         path=${1#*\./}

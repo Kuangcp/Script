@@ -176,32 +176,7 @@ addRepo(){
     log_info "add success, Please run $end source ~/.zshrc"
 }
 
-addPythonPath(){
-    lib_path='/usr/local/lib'
-    project=$(pwd)
-    
-    log_info "Please select a python version"
-    versions=$(ls $lib_path | grep "python")
-    for version in $versions; do
-        echo "  " $version 
-    done
-    read version
-    if [ ! -d $lib_path/$version ];then 
-        log_error "target dir not exist: $lib_path/$version"
-    fi
-    
-    log_info "Please input filename, result: $lib_path/$version/dist-packages/filename.pth"
-    while true; do
-        read filename
-        if [ -f "$lib_path/$version/dist-packages/$filename.pth" ];then
-            log_warn "$filename already exist"
-        else 
-            break
-        fi
-    done
-    sudo sh -c "echo $project"/" >> $lib_path/$version/dist-packages/$filename.pth"
-    log_info "add success: $lib_path/$version/dist-packages/$filename.pth"
-}
+
 
 help(){
     printf "Run：$red sh repos-manager.sh $green<verb> $yellow<args>$end\n"
@@ -217,7 +192,6 @@ help(){
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
     printf "$format" "-cnf|cnf" "" "open alias config file "
     printf "$format" "-f|f" "filename" "show file content url in github"
-    printf "$format" "-append" "" "add current dir to sys.path for python /usr/local/lib/ ..."
 }
 
 get_user_repo(){
@@ -302,14 +276,6 @@ case $1 in
     ;;
     -f | f)
         get_remote_file_url $2
-    ;;
-    -append)
-        addPythonPath
-    ;;
-    -go)
-        if [ -f $2 ]; then
-            sudo tar -C /usr/local -xzf $2 
-        fi
     ;;
     *)
         checkRepos
