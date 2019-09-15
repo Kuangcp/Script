@@ -1,5 +1,5 @@
 #!/bin/bash
-
+pid=$$
 # view performance status 
 path=$(cd `dirname $0`; pwd)
 . $path/base.sh
@@ -38,9 +38,14 @@ show_all_processes(){
     free -h
 }
 
+# TODO remove last process, self ? 
 show_all_processes_sort_cpu(){
+    process=$1
+    if test -z $process; then
+        process="*"
+    fi
     printf "${cyan}CPU\tMiB\tPID\tCommand ${end} \n"
-    ps aux | grep -v RSS | awk '{print $3 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
+    ps aux | grep "$process" | grep -v "$pid" | grep -v "grep" | grep -v RSS | awk '{print $3 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t'$green'" $11 "'$end'"}' | sort -hr
 }
 
 statistic_memory(){
@@ -124,15 +129,15 @@ background_watch(){
 help(){
     printf "Run：$red bash process-tool.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-10s $yellow%-22s$end%-20s\n"
-    printf "$format" "-h" "" "帮助"
-    printf "$format" "" "[processName][m|s]" "所有或指定进程状态 按内存降序,m 标记是否统计内存 s 标记进程单行显示"
-    printf "$format" "-cpu|cpu" "" "查看所有进程的使用内存统计 且按CPU排序"
-    printf "$format" "-p|p" "processName interval" "按名称查看相关进程 并按时间间隔一直查看进程信息"
+    printf "$format" "-h" "" "help"
+    printf "$format" "" "[process][m|s]" "status of process sort by memory. m flag count memory; s flag show line with no wrap;"
+    printf "$format" "-cpu|cpu" "" "sort by cpu desc"
+    printf "$format" "-p|p" "process interval" "按名称查看相关进程 并按时间间隔一直查看进程信息"
     printf "$format" "-b" "" "查看该脚本后台进程"
     printf "$format" "-stop" "" "kill 该脚本所有后台进程"
     printf "$format" "-ss|ss" "[count]" "查看内存占用最多的几个进程 count默认40个 3s刷新一次"
     printf "$format" "-sum|sum" "[count]" "查看内存占用最多的几个进程 并统计这几个进程内存总占用量"
-    printf "$format" "watch" "processName" "10s统计进程总内存 输出到 $logDir/ {processName}.process.log"
+    printf "$format" "watch" "process" "10s统计进程总内存 输出到 $logDir/ {process}.process.log"
 }
 
 init 
@@ -144,7 +149,7 @@ case $1 in
         list_process_by_name $@
     ;;
     -cpu | cpu)
-        show_all_processes_sort_cpu | less
+        show_all_processes_sort_cpu $2 | less
     ;;
     -ss | ss)
         sort_process $2

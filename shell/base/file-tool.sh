@@ -7,14 +7,14 @@ path=$(cd `dirname $0`; pwd)
 
 help(){
     printf "Run：$red bash FileTool.sh $green<verb> $yellow<args>$end\n"
-    format="  $green%-6s $yellow%-16s$end%-20s\n"
+    format="  $green%-8s $yellow%-22s$end%-20s\n"
     printf "$format" "-h" "" "help"
     printf "$format" "" "" "copy current path"
     printf "$format" "-f|f" "filename" "search file on current path"
     printf "$format" "-d|d" "dirname" "search dir on current path"
     printf "$format" "-p|p" "relative path" "copy file path and show it"
     printf "$format" "-cf|cf" "relative path" "copy file content"
-    printf "$format" "-cs" "absolute path, count" "create swap file by absolute path"
+    printf "$format" "-cs" "absolute_path count" "create swap file by absolute path"
     printf "$format" "-l" "file dir" "link file under dir"
     printf "$format" "-b" "file" "change file between file.bak with file"
     printf "$format" "-append" "" "add current dir to sys.path for python /usr/local/lib/ ..."
