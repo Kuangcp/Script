@@ -6,7 +6,7 @@ userDir=`cd && pwd`
 # main repos alias config
 configPath="${userDir}/.repos.sh"
 
-getPath(){
+get_repo_path(){
     line=$1
     vars=`expr match "$line" "alias.kg.*"`
     if [ "$vars" = "0" ]; then 
@@ -18,7 +18,7 @@ getPath(){
     echo "$vars"
 }
 
-pullRepos(){
+pull_all_repos(){
     . $configPath
     flag=0
     for repo in "$@" ; do
@@ -35,7 +35,7 @@ pullRepos(){
     done
 }
 
-pushToAllRemote(){
+push_current_all_remotes(){
     path=`pwd`
     result=`git remote -v`
     count=-1
@@ -50,7 +50,7 @@ pushToAllRemote(){
     done
 }
 
-pullAllRepos(){
+pull_configed_repos(){
     # 并行 最后有序合并输出
     cat $configPath | while read line; do
     {
@@ -60,13 +60,13 @@ pullAllRepos(){
             continue
         fi
 
-        repo_path=$(getPath "$line")
+        repo_path=$(get_repo_path "$line")
         if [ "$repo_path" = "" ];then
             continue
         fi
         
         result=""
-        result=$result""$(showLine "$line" $purple)"\n"
+        result=$result""$(show_line_colorful "$line" $purple)"\n"
         result=$result""$(cd $repo_path && git pull)"\n"
         echo "$result"
     }&
@@ -74,7 +74,7 @@ pullAllRepos(){
     wait
 }
 
-pushToAllRepos(){
+push_configed_repos(){
     cat $configPath | while read line; do
     {
         # ignore that comment contain + character
@@ -83,11 +83,11 @@ pushToAllRepos(){
             continue
         fi
 
-        repo_path=$(getPath "$line")
+        repo_path=$(get_repo_path "$line")
         if [ "$repo_path" = "" ];then
             continue
         fi
-        showLine "$line" $purple
+        show_line_colorful "$line" $purple
         result=`cd $repo_path && git status`
         haveCommit=`expr match "$result" ".*is ahead of"`
         if [ $haveCommit != 0 ]; then 
@@ -98,7 +98,7 @@ pushToAllRepos(){
     wait
 }
 
-checkRepos(){
+check_repo_change(){
     cat $configPath | while read line; do
     {
         repoOutput=''
@@ -108,14 +108,14 @@ checkRepos(){
             continue
         fi
 
-        repo_path=$(getPath "$line")
+        repo_path=$(get_repo_path "$line")
         if [ "$repo_path" = "" ];then
             continue
         fi
 
         result=`cd "$repo_path" && git status -s 2>&1`
         if [ ! "$result" = "" ];then
-            repoOutput=$repoOutput" "$(showLine "$line" $green)"\n"
+            repoOutput=$repoOutput" "$(show_line_colorful "$line" $green)"\n"
             count=0
             temp=''
             for file in $result; do
@@ -136,7 +136,7 @@ checkRepos(){
     wait
 }
 
-showLine(){
+show_line_colorful(){
     line=$1
     pathColor=$2
 
@@ -155,18 +155,18 @@ showLine(){
     fi
 }
 
-listRepos(){
+list_configed_repos(){
     cat $configPath | while read line ; do 
         vars=`expr match "$line" "alias.kg.*"`
         if [ "$vars" = "0" ]; then 
             continue
         fi
-        showLine "$line" $cyan
+        show_line_colorful "$line" $cyan
     done
 }
 
 # add repo in current path
-addRepo(){
+config_new_repo(){
     repo_path=`pwd`
     log_info "Please input description"
     read comment
@@ -175,7 +175,6 @@ addRepo(){
     echo "alias kg."$aliasName"='cd $repo_path' # $comment" >> $configPath
     log_info "add success, Please run $end source ~/.zshrc"
 }
-
 
 
 help(){
@@ -188,6 +187,7 @@ help(){
     printf "$format" "-pa|pa" "" "push current local repo to all remote"
     printf "$format" "-pl|pull" "repo ..." "batch pull repo from remote "
     printf "$format" "-pla|pla" "" "pull all repo from remote"
+    printf "$format" "-fb|fb" "branch remote" "fetch remote branch, create it. remote default is origin"
     printf "$format" "-ds|ds" "" "download subdir by svn for github"
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
     printf "$format" "-cnf|cnf" "" "open alias config file "
@@ -249,16 +249,26 @@ case $1 in
     -h | h)
         help;;
     -pl | pull)
-        pullRepos $@
+        pull_all_repos $@
+    ;;
+    -fb | fb)
+        branch=$2
+        if test $# -gt 2;then
+            remote=$3
+        else
+            remote='origin'
+        fi
+        git fetch $remote 
+        git checkout -b $branch $remote/$branch 
     ;;
     -p | push | p)
-        pushToAllRepos
+        push_configed_repos
     ;;
     -pa | pa)
-        pushToAllRemote
+        push_current_all_remotes
     ;;
     -pla | pla)
-        pullAllRepos
+        pull_configed_repos
     ;;
     -ds | ds)
         # url=${2/tree\/master/trunk} bash
@@ -266,10 +276,10 @@ case $1 in
         svn co $url
     ;;
     -ac | ac)
-        addRepo
+        config_new_repo
     ;;
     -l | l | list)
-        listRepos | sort
+        list_configed_repos | sort
     ;;
     -traash | trash)
         current_branch=$(git branch --show-current)
@@ -285,6 +295,6 @@ case $1 in
         get_remote_file_url $2
     ;;
     *)
-        checkRepos
+        check_repo_change
     ;;
 esac
