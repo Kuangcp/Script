@@ -12,29 +12,12 @@ total_consumer_url='http://kafka-manager.qipeipu.net/clusters/online/consumers'
 userDir=(`cd && pwd`)
 cache_dir="$userDir/.config/app-conf/log/ofc_kafka_topic"
 log_file="$cache_dir/total.log"
-man_log_file="$cache_dir/man-total.log"
+consumers_page="$cache_dir/consumers-page.html"
+consumers_log="$cache_dir/consumers.log"
 
 icon_file='/home/kcp/Application/Icon/warning-circle-yellow.svg'
 
-topics='OFC_PURCHASE_FINISH OFC_DATA_TRACK 
-OFC_PURCHASE_ORDER_CREATED 
-OFC_PACKAGE_DELIVERY 
-OFC_PREAPARE_QUTE_CREATE_SUPPLIER_ORDER 
-OFC_SUB_SALE_ORDER 
-OFC_CANCEL_ORDER_MONITOR 
-OFC_SUPPLIER_ORDER_CREATED 
-OFC_PURCHASE_ORDER_PROCESSED 
-OFC_PURCHASE_REPRICE 
-OFC_PACKAGE_RECEIVE 
-OFC_PACKAGE_PACK 
-OFC_GENERATE_ORDER 
-OFC_ORDER_PAID 
-IM_YUN_XIN_CC_MESSAGE_TO_ADMIN 
-OFC_PURCHASE IM_YUN_XIN_CC_MESSAGE_FOR_BIZ 
-LOGISTICS_PARTS_TRACK 
-quote_quoteResultPushErp 
-inquiry 
-oms_order_process '
+topics='OFC_PURCHASE_FINISH OFC_DATA_TRACK '
 
 warn_threshold=10
 pid=$$
@@ -117,8 +100,39 @@ check_topic_detail_lag(){
 
 
 watch_total_topic(){
-    curl $total_consumer_url -o $cache_dir/$topic > /dev/null 2>&1
+    curl $total_consumer_url -o $consumers_page > /dev/null 2>&1
+    origins=$(cat $consumers_page | grep -v "(0% coverage" | grep -v "unavailable" | grep "lag" -B 2)
     
+    app=''
+    topic=''
+    count=0
+    for line in  $origins; do
+        # echo "===="$line
+        count=$((count+1))
+        if test $count = 2; then
+            temp=${line#*consumers\/}
+            temp=${temp%//type*}
+            app=${temp%%/topic*}
+            topic=${temp#*topic/}
+            topic=${topic%%/type*}
+        fi
+        if test $count = 5; then
+            # echo $line
+            if  [ ! $(echo $temp | grep -v "KF") = "" ]; then
+                # echo 8888888888 $temp
+                if test $line -gt $warn_threshold; then
+                    printf "%s %-30s %-50s " `date +%y-%m-%d_%H:%M:%S` $app  $topic >> $consumers_log
+                    printf "$line\n"  >> $consumers_log
+                    msg="$topic : $line"
+                    notify-send -i $icon_file "$msg" -t 3000
+                fi
+            fi
+        fi 
+        if test $count = 7; then
+            count=0
+        fi
+    done
+    printf "\n"  >> $consumers_log
 }
 
 watch_ofc_topic(){
@@ -138,8 +152,14 @@ case $1 in
     log)
         less $log_file
     ;;
+    la)
+        less $consumers_log
+    ;;
     a)
-        watch_total_topic
+        while true; do
+            watch_total_topic
+            sleep 2;
+        done
     ;;
     *)
         while true; do

@@ -8,7 +8,7 @@ from evdev import InputDevice
 
 
 def detect_input_key(count, event_num):
-    """ 传入计数器, 事件号, 开始记录按键 """
+    """ 传入计数器, 事件号, 开始记录按键 off 退出"""
     dev = InputDevice('/dev/input/event' + str(event_num))
     key_map = {}
     temp = [' ', ' ', ' ']
@@ -19,6 +19,7 @@ def detect_input_key(count, event_num):
         temp.append(ch)
         temp = temp[1:]
         if ''.join(temp) == 'off':
+            print('\nlist input key map \n')
             for key, value in key_map.items():
                 print(value, '=', key)
             exit(0)
