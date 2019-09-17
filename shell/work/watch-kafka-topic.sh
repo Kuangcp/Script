@@ -7,10 +7,14 @@ cyan='\033[0;36m'
 white='\033[0;37m'
 end='\033[0m'
 
+total_consumer_url='http://kafka-manager.qipeipu.net/clusters/online/consumers'
+
 userDir=(`cd && pwd`)
-cache_page="$userDir/.config/app-conf/log/ofc_kafka_topic"
-log_file="$userDir/.config/app-conf/log/ofc_kafka_topic/total.log"
-icon_file='/home/kcp/Application/Icon/Stream.svg'
+cache_dir="$userDir/.config/app-conf/log/ofc_kafka_topic"
+log_file="$cache_dir/total.log"
+man_log_file="$cache_dir/man-total.log"
+
+icon_file='/home/kcp/Application/Icon/warning-circle-yellow.svg'
 
 topics='OFC_PURCHASE_FINISH OFC_DATA_TRACK 
 OFC_PURCHASE_ORDER_CREATED 
@@ -32,8 +36,7 @@ quote_quoteResultPushErp
 inquiry 
 oms_order_process '
 
-
-threshold=10
+warn_threshold=10
 pid=$$
 
 log(){
@@ -58,9 +61,9 @@ help(){
 
 update_cache(){
     topic=$1
-    rm -f $cache_page/$topic
-    curl http://kafka-manager.qipeipu.net/clusters/online/consumers/ofc-service-online/topic/$topic/type/ZK -o $cache_page/$topic > /dev/null 2>&1
-    log_info "   update: "$cache_page/$topic
+    rm -f $cache_dir/$topic
+    curl http://kafka-manager.qipeipu.net/clusters/online/consumers/ofc-service-online/topic/$topic/type/ZK -o $cache_dir/$topic > /dev/null 2>&1
+    log_info "   update: "$cache_dir/$topic
 }
 
 remove_td_tag(){
@@ -71,7 +74,7 @@ remove_td_tag(){
 
 check_topic_total_lag(){
     topic=$1
-    page=$cache_page/$topic
+    page=$cache_dir/$topic
     result=$(cat $page | grep Total -A 1)
     count=0
     for line in $result; do
@@ -82,8 +85,8 @@ check_topic_total_lag(){
             # printf "%s $yellow%-40s  %3s $end\n" `date +%y-%m-%d_%H:%M:%S` "$topic" "$num"
             printf "%s %-40s  %3s \n" `date +%y-%m-%d_%H:%M:%S` "$topic" "$num"  >> $log_file
             mo_num=$(echo $num | sed 's/,//g')
-            if test $mo_num -gt $threshold; then
-                msg="$topic has lag $num"
+            if test $mo_num -gt $warn_threshold; then
+                msg="$topic : $num"
                 notify-send -i $icon_file "$msg" -t 3000
             fi
         fi
@@ -92,7 +95,7 @@ check_topic_total_lag(){
 
 check_topic_detail_lag(){
     topic=$1
-    page=$cache_page/$topic
+    page=$cache_dir/$topic
     cat $page | grep Total -A 1
     # result=$(cat $page | grep Total -A 1)
     # count=0
@@ -112,6 +115,12 @@ check_topic_detail_lag(){
     # done
 }
 
+
+watch_total_topic(){
+    curl $total_consumer_url -o $cache_dir/$topic > /dev/null 2>&1
+    
+}
+
 watch_ofc_topic(){
     for topic in $topics; do
         update_cache $topic
@@ -129,8 +138,11 @@ case $1 in
     log)
         less $log_file
     ;;
+    a)
+        watch_total_topic
+    ;;
     *)
-        for i in $(seq 1 10000); do
+        while true; do
             watch_ofc_topic
             sleep 2;
         done
