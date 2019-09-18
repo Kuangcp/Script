@@ -20,6 +20,7 @@ icon_file='/home/kcp/Application/Icon/warning-circle-yellow.svg'
 topics='OFC_PURCHASE_FINISH OFC_DATA_TRACK '
 
 warn_threshold=10
+log_threshold=1
 pid=$$
 
 log(){
@@ -103,6 +104,7 @@ watch_total_topic(){
     curl $total_consumer_url -o $consumers_page > /dev/null 2>&1
     origins=$(cat $consumers_page | grep -v "(0% coverage" | grep -v "unavailable" | grep "lag" -B 2)
     
+    has_lag=0
     app=''
     topic=''
     count=0
@@ -119,10 +121,12 @@ watch_total_topic(){
         if test $count = 5; then
             # echo $line
             if  [ ! $(echo $temp | grep -v "KF") = "" ]; then
-                # echo 8888888888 $temp
-                if test $line -gt $warn_threshold; then
+                if test $line -gt $log_threshold; then
+                    has_lag=1
                     printf "%s %-30s %-50s " `date +%y-%m-%d_%H:%M:%S` $app  $topic >> $consumers_log
                     printf "$line\n"  >> $consumers_log
+                fi
+                if test $line -gt $warn_threshold; then
                     msg="$topic : $line"
                     notify-send -i $icon_file "$msg" -t 3000
                 fi
@@ -132,7 +136,10 @@ watch_total_topic(){
             count=0
         fi
     done
-    printf "\n"  >> $consumers_log
+    if test $has_lag = 1; then
+        printf "\n"  >> $consumers_log
+    fi
+
 }
 
 watch_ofc_topic(){
