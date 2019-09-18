@@ -20,6 +20,7 @@ icon_file='/home/kcp/Application/Icon/warning-circle-yellow.svg'
 topics='OFC_PURCHASE_FINISH OFC_DATA_TRACK '
 
 info_group='btr-im-admin-online btr-im-service-online btr-operation-publish-online ofc-service-online operation-service operation-web'
+ignore_topic='quote_quoteResultPushErp'
 
 other_threshold=200
 warn_threshold=10
@@ -111,7 +112,11 @@ watch_total_topic(){
                 fi
                 if test $line -gt $warn_threshold; then
                     is_info_topic=$(echo $info_group | grep $app)
-                    if [ $line -lt $other_threshold ] && [ "$is_info_topic" = "" ];then
+                    if [ $line -lt $other_threshold ] && [ "$is_info_topic" = "" ]; then
+                        continue
+                    fi
+                    is_ignore=$(echo $ignore_topic | grep $topic)
+                    if [ ! "$is_ignore" = "" ]; then
                         continue
                     fi
                     msg="$topic : $line"
@@ -157,7 +162,7 @@ case $1 in
     a)
         while true; do
             watch_total_topic
-            sleep 2;
+            sleep 5;
         done
     ;;
     d)
@@ -168,7 +173,7 @@ case $1 in
     w)
         while true; do
             watch_ofc_topic
-            sleep 2;
+            sleep 5;
         done
     ;;
     *)
