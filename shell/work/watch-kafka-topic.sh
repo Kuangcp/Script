@@ -19,6 +19,9 @@ icon_file='/home/kcp/Application/Icon/warning-circle-yellow.svg'
 
 topics='OFC_PURCHASE_FINISH OFC_DATA_TRACK '
 
+info_group='btr-im-admin-online btr-im-service-online btr-operation-publish-online ofc-service-online operation-service operation-web'
+
+other_threshold=200
 warn_threshold=10
 log_threshold=1
 pid=$$
@@ -43,7 +46,7 @@ help(){
     printf "$format" "" "" "search any"
 }
 
-update_cache(){
+update_cache_for_ofc(){
     topic=$1
     rm -f $cache_dir/$topic
     curl http://kafka-manager.qipeipu.net/clusters/online/consumers/ofc-service-online/topic/$topic/type/ZK -o $cache_dir/$topic > /dev/null 2>&1
@@ -77,37 +80,16 @@ check_topic_total_lag(){
     done
 }
 
-check_topic_detail_lag(){
-    topic=$1
-    page=$cache_dir/$topic
-    cat $page | grep Total -A 1
-    # result=$(cat $page | grep Total -A 1)
-    # count=0
-    # for line in $result; do
-    #     count=$((count+1))
-    #     if test $count = 3;then
-    #         # echo $count"---------"$line
-    #         num=$(remove_td_tag $line)
-    #         printf "%s $yellow%-40s  %3s $end\n" `date +%y-%m-%d_%H:%M:%S` "$topic" "$num"
-            
-    #         # printf "%s $yellow%-40s  %s $end\n" `date +%y-%m-%d_%H:%M:%S` "$topic" "$num"  >> $log_file
-    #         if test $num  -gt 1; then
-    #             msg="$topic has lag $num"
-    #             notify-send -i $icon_file "$msg" -t 3000
-    #         fi
-    #     fi
-    # done
-}
-
-
 watch_total_topic(){
     curl $total_consumer_url -o $consumers_page > /dev/null 2>&1
     origins=$(cat $consumers_page | grep -v "(0% coverage" | grep -v "unavailable" | grep "lag" -B 2)
-    
+    date_str=$(date +%y-%m-%d_%H:%M:%S)
+
     has_lag=0
     app=''
     topic=''
     count=0
+
     for line in  $origins; do
         # echo "===="$line
         count=$((count+1))
@@ -118,35 +100,42 @@ watch_total_topic(){
             topic=${temp#*topic/}
             topic=${topic%%/type*}
         fi
+
         if test $count = 5; then
             # echo $line
             if  [ ! $(echo $temp | grep -v "KF") = "" ]; then
                 if test $line -gt $log_threshold; then
                     has_lag=1
-                    printf "%s %-30s %-50s " `date +%y-%m-%d_%H:%M:%S` $app  $topic >> $consumers_log
+                    printf "%s %-30s %-50s " $date_str $app  $topic >> $consumers_log
                     printf "$line\n"  >> $consumers_log
                 fi
                 if test $line -gt $warn_threshold; then
+                    is_info_topic=$(echo $info_group | grep $app)
+                    if [ $line -lt $other_threshold ] && [ "$is_info_topic" = "" ];then
+                        continue
+                    fi
                     msg="$topic : $line"
                     notify-send -i $icon_file "$msg" -t 3000
                 fi
             fi
-        fi 
+        fi
+
         if test $count = 7; then
             count=0
         fi
     done
+
     if test $has_lag = 1; then
         printf "\n"  >> $consumers_log
+    else
+        printf "%s \n" $date_str >> $consumers_log
     fi
-
 }
 
 watch_ofc_topic(){
     for topic in $topics; do
-        update_cache $topic
+        update_cache_for_ofc $topic
         check_topic_total_lag  $topic 
-        # check_topic_detail_lag  $topic 
     done
     printf "\n"  >> $log_file
 }
@@ -159,8 +148,11 @@ case $1 in
     log)
         less $log_file
     ;;
-    la)
+    l)
         less $consumers_log
+    ;;
+    ln)
+        less -N $consumers_log
     ;;
     a)
         while true; do
@@ -168,10 +160,19 @@ case $1 in
             sleep 2;
         done
     ;;
-    *)
+    d)
+        last_pid=$(ps aux | grep  "watch-kafka-topic.sh a" | grep -v grep | awk '{print $2}')
+        log_error "killed $last_pid"
+        kill $last_pid
+    ;;
+    w)
         while true; do
             watch_ofc_topic
             sleep 2;
         done
+    ;;
+    *)
+        help
+        
     ;;
 esac
