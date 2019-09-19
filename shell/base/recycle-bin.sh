@@ -63,13 +63,13 @@ delayDelete(){
                 ((result=$currentTime-$removeTime))
                 # echo "$line | $result"
                 if [ $result -ge $liveTime ];then
-                    logWarn "▶ real delete      ▌" "rm -rf $trashDir/$line"
+                    logWarn "▶ real delete       ▌" "rm -rf $trashDir/$line"
                     rm -rf "$trashDir/$line"
                 fi
             done
             fileNum=`ls -A $trashDir | wc -l`
         done
-        logError "▶ trash is empty   ▌" "script will exit ..."
+        logError "▶ trash is empty    ▌" "script will exit ..."
     fi
 }
 
