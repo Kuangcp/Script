@@ -178,7 +178,7 @@ config_new_repo(){
 
 
 help(){
-    printf "Run：$red sh repos-manager.sh $green<verb> $yellow<args>$end\n"
+    printf "Run：$red sh repository-tool.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-10s $yellow%-15s$end%-20s\n"
     printf "$format" "-h|h" "" "show help"
     printf "$format" "" "" "show all modify local repo"
