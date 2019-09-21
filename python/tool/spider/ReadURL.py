@@ -12,7 +12,7 @@ class ReadURL:
         self.url = url
         self.headers = headers
 
-    def read_html(self) -> BeautifulSoup:
+    def analysis_html(self) -> BeautifulSoup:
         log.setLevel(logging.INFO)
         """ 将url解析成soup对象 """
         log.info("Read %s" % self.url)

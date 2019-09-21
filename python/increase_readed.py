@@ -26,7 +26,7 @@ def read_blog(list_url) -> bool:
     """读取页的URL得到每个博客URL 返回是否有该页存在"""
     print(list_url)
     read_url = ReadURL(list_url, header)
-    soup = read_url.read_html()
+    soup = read_url.analysis_html()
 
     title_list = soup.find_all('h4')
 
@@ -39,7 +39,7 @@ def read_blog(list_url) -> bool:
             if "kcp606" not in url:
                 continue
             read_url.url = url
-            read_url.read_html()
+            read_url.analysis_html()
 
     return len(title_list) != 0
 
@@ -47,7 +47,7 @@ def read_blog(list_url) -> bool:
 def show_info(info_url):
     """ 展示用户信息 """
     read_url = ReadURL(info_url, header)
-    soup = read_url.read_html()
+    soup = read_url.analysis_html()
 
     title_list = soup.find_all('div')
     for line in title_list:
