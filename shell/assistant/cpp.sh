@@ -14,10 +14,10 @@ log_error(){
 }
 
 help(){
-	printf "Run：$red sh c_run.sh $green<verb> $yellow<args>$end\n\n"
+	printf "Run：$red sh cpp.sh $green<verb> $yellow<args>$end\n"
 	format="  $green%-3s $yellow%-6s$end%-20s\n"
-	printf "$format" "" "file" "compile then run(cpp/c)"
-	printf "$format" "-c" "" "clean *run file in current dir"
+	printf "$format" "" "file" "compile then run (cpp/c)"
+	printf "$format" "-c" "" "clean *run file in dir with recurise"
 	printf "$format" "-h" "" "help"
 }
 
@@ -43,13 +43,14 @@ compileThenRun(){
 		temp=$temp" "$a
 	done
 	
-	rm -f $path/run.${sourceFile%.*}.run
+	run_file=${sourceFile}.run
+	rm -f $path/$run_file
 
 	# 编译
-	g++ $path/$sourceFile -o $path/run.${sourceFile%.*}.run
-	if [ -f $path/run.${sourceFile%.*}.run ];then
+	g++ $path/$sourceFile -o $path/$run_file
+	if [ -f $path/$run_file ];then
 		# 执行
-		$path/run.${sourceFile%.*}.run $temp
+		$path/$run_file $temp
 	else
 		log_error "compile occur error"
 		exit 1
@@ -61,8 +62,7 @@ case $1 in
 		help 
 	;;
 	-c)
-		find . -iname "run.*.run" | xargs rm 
-		# ls -A | egrep ".*[^\.][\.]{1}run" | xargs rm
+		find . -iregex  ".*\.run$" | xargs rm 
 	;;
 	*)
 		compileThenRun $@
