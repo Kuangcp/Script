@@ -1,11 +1,14 @@
-#  展示按键 , 需要 evdev 模块
+import os
 import sys
 import termios
 import tty
 from select import select
 
+#  展示按键 , 需要 evdev 模块
 from evdev import InputDevice
 
+pwd=os.path.split(os.path.realpath(__file__))[0]
+key_map_config = pwd+'/key_map.conf'
 
 def detect_input_key(count, event_num):
     """ 传入计数器, 事件号, 开始记录按键 off 退出"""
@@ -18,17 +21,23 @@ def detect_input_key(count, event_num):
 
         temp.append(ch)
         temp = temp[1:]
+
         if ''.join(temp) == 'off':
-            print('\nlist input key map \n')
-            for key, value in key_map.items():
-                print(value, '=', key)
-            exit(0)
+            exit_and_save_map(temp, key_map)
 
         for event in dev.read():
             if event.value == 1 and event.code != 0:
                 count += 1
                 print(count, event.code)
                 key_map[ch] = event.code
+
+def exit_and_save_map(temp,key_map):
+    print('\nlist input key map \n')
+    with open(key_map_config, 'w+') as file: 
+        for key, value in key_map.items():
+            print(value, '=', key)
+            file.write(str(value)+' = '+ str(key)+'\n')
+    exit(0)
 
 
 def read():
@@ -43,7 +52,7 @@ def read():
 
 
 if __name__ == "__main__":
-    print("please input listen event: ", end='')
+    print("please input listen event for keyboard: ", end='')
 
     eventNum = input()
     detect_input_key(0, eventNum)
