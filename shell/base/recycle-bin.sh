@@ -46,7 +46,7 @@ init(){
 }
 
 # Delay delete file and shielded signal, Not blocking the current terminal 
-delayDelete(){
+delay_delete(){
     result=`ps -ef | grep recycle-bin.sh | grep -v grep | wc -l`
     # Restrict running only one process. But the first run will be 2. 
     # because this function is run by a fork process ?
@@ -74,7 +74,7 @@ delayDelete(){
 }
 
 # move file to trash 
-moveFile(){
+move_file(){
     fileName="$1";
     deleteTime=`date +%s`
     readable=`date +%Y-%m-%d_%H-%M-%S`
@@ -96,13 +96,13 @@ moveFile(){
     # 全部加上双引号是因为文件名中有可能会有空格
     mv "$currentPath/$fileName" "$trashDir/$fileName.$readable.$deleteTime"
 }
-moveBySuffix(){
+move_by_suffix(){
     name=$1
-    moveAll ".*[^\.][\.]{1}$name"
+    move_all ".*[^\.][\.]{1}$name"
 }
 
 # * 通配符删除
-moveAll(){
+move_all(){
     pattern=$1
     if [ "$pattern"1 = "1" ];then
         printf "delete [all file]/[exclude hidden file]/[no]?  [a/y/n] : " 
@@ -130,7 +130,7 @@ moveAll(){
     fi
     for file in $list; do
         # echo ">> $file"
-        moveFile "$file"
+        move_file "$file"
     done
 }
 
@@ -184,7 +184,7 @@ help(){
     printf "$format" "-cl" "" "start check trash dir"
 }
 
-showNameColorful(){
+show_name_colorful(){
     fileName=$1
     timeStamp=${fileName##*\.}
     fileName=${fileName%\.*}
@@ -199,7 +199,7 @@ showNameColorful(){
 }
 
 # 按删除的日期排序 列出
-listTrashFiles(){
+list_trash_files(){
     # grep r 是为了将一行结果变成多行, 目前不展示link文件
     file_list=`ls --sort=t --time=status -lrAFh $trashDir | egrep -v '^lr' | grep 'r'`
     count=0
@@ -210,7 +210,7 @@ listTrashFiles(){
         count=$(($count + 1))
         if [ $(($count % 9)) = 0 ];then
             # actual filename with colorful
-            showNameColorful $line
+            show_name_colorful $line
         elif [ $(($count % 9)) = 2 ];then
             printf "%-4s" " $line"
         elif [ $(($count % 9)) -gt 5 ] && [ $(($count % 9)) -lt 9 ];then
@@ -235,18 +235,18 @@ case $1 in
         help
     ;;
     -a)
-        moveAll "$2"
-        (delayDelete &)  
+        move_all "$2"
+        (delay_delete &)  
     ;;
     -as)
-        moveBySuffix "$2"
-        (delayDelete &)  
+        move_by_suffix "$2"
+        (delay_delete &)  
     ;;
     -lo)
         less $logFile
     ;;
     -l)
-        listTrashFiles
+        list_trash_files
     ;;
     -s) 
         if [ $# -lt 2 ]; then 
@@ -254,7 +254,7 @@ case $1 in
             exit 1
         fi
 
-        listTrashFiles | grep "$2"
+        list_trash_files | grep "$2"
     ;;
     # -cd)
     #     if [ -d $trashDir/$2 ]; then 
@@ -288,7 +288,7 @@ case $1 in
         upgrade
     ;;
     -cl)
-        (delayDelete &)
+        (delay_delete &)
     ;;
     *)
         if [ $# = 0 ];then
@@ -298,9 +298,10 @@ case $1 in
         fi
 
         for file in "$@" ;do
-            moveFile "$file"
+            printf "=> remove file: [ $file ]\n"
+            move_file "$file"
         done
         
-        (delayDelete &)
+        (delay_delete &)
     ;;
 esac
