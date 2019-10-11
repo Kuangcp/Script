@@ -86,6 +86,16 @@ watch_ofc(){
     watch_consumer $url $consumer
 }
 
+help(){
+    printf "Run：$red sh watch-kafka-consumer.sh $green<verb> $yellow<args>$end\n"
+    format="  $green%-6s $yellow%-8s$end%-20s\n"
+    printf "$format" "h" "" "help"
+    printf "$format" "l" "" "show log"
+    printf "$format" "ln" "" "show log with line num"
+    printf "$format" "ofc" "" "watch ofc all topic "
+    printf "$format" "d" "" "kill current script"
+}
+
 case $1 in 
     -h|h)
         help 
@@ -113,6 +123,5 @@ case $1 in
     ;;
     *)
         help
-        
     ;;
 esac

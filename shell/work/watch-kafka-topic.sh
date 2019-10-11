@@ -42,13 +42,6 @@ log_warn(){
     printf `date +%y-%m-%d_%H:%M:%S`"$yellow $1 $end\n" 
 }
 
-help(){
-    printf "Run：$red sh watch-kafka-topic.sh $green<verb> $yellow<args>$end\n"
-    format="  $green%-6s $yellow%-8s$end%-20s\n"
-    printf "$format" "h" "" "help"
-    printf "$format" "" "" "search any"
-}
-
 update_cache_for_ofc(){
     topic=$1
     rm -f $cache_dir/$topic
@@ -147,11 +140,21 @@ watch_ofc_topic(){
     printf "\n"  >> $log_file
 }
 
+help(){
+    printf "Run：$red sh watch-kafka-topic.sh $green<verb> $yellow<args>$end\n"
+    format="  $green%-6s $yellow%-8s$end%-20s\n"
+    printf "$format" "h" "" "help"
+    printf "$format" "l" "" "show log"
+    printf "$format" "ln" "" "show log with line num"
+    printf "$format" "a" "" "watch all topic exlude KF "
+    printf "$format" "d" "" "kill current script"
+}
 
 case $1 in 
     -h|h)
         help 
     ;;
+    # deprecated
     log)
         less $log_file
     ;;
@@ -172,6 +175,7 @@ case $1 in
         log_error "killed $last_pid"
         kill $last_pid
     ;;
+    # deprecated
     w)
         while true; do
             watch_ofc_topic
