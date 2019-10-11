@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # simplify some about file and path action 
+userDir=`cd && pwd`
+app_bin="$userDir/Application/bin"
 
 path=$(cd `dirname $0`; pwd)
 . $path/base.sh
@@ -95,6 +97,13 @@ case $1 in
     -l | l)
         assert_param_count $# 3
         ln -s "$(pwd)/$2" "$3/$2"
+    ;;
+    -lp | lp)
+        assert_param_count $# 2
+        ln -s "$(pwd)/$2" "$app_bin/$2"
+    ;;
+    -x|x)
+        chmod +x $2
     ;;
     -b|b)
         assert_param_count $# 2
