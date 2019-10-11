@@ -17,8 +17,21 @@ cache_dir="$userDir/.config/app-conf/log/ofc_kafka_topic"
 url=' '
 consumers_log=" "
 
-icon_file='/home/kcp/Application/Icon/warning-circle-yellow.svg'
+icon_file='/home/kcp/Application/Icon/warning-circle-green.svg'
 total_consumer_url='http://kafka-manager.qipeipu.net/clusters/online/consumers'
+
+log(){
+    printf " $1\n"
+}
+log_error(){
+    printf "$red $1 $end\n" 
+}
+log_info(){
+    printf "$green $1 $end\n" 
+}
+log_warn(){
+    printf "$yellow $1 $end\n" 
+}
 
 init_config(){
     consumer=${url%%/*}
@@ -117,7 +130,11 @@ case $1 in
         done
     ;;
     d)
-        last_pid=$(ps aux | grep  "watch-kafka-consumers.sh a" | grep -v grep | awk '{print $2}')
+        last_pid=$(ps aux | grep  "watch-kafka-consumer.sh ofc" | grep -v grep | awk '{print $2}')
+        if test -z $last_pid ; then 
+            log_error 'not found process'
+            exit
+        fi
         log_error "killed $last_pid"
         kill $last_pid
     ;;
