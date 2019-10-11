@@ -9,7 +9,12 @@ end='\033[0m'
 
 total_consumer_url='http://kafka-manager.qipeipu.net/clusters/online/consumers'
 
+other_threshold=200
+warn_threshold=10
+log_threshold=1
+pid=$$
 userDir=(`cd && pwd`)
+
 cache_dir="$userDir/.config/app-conf/log/ofc_kafka_topic"
 log_file="$cache_dir/total.log"
 consumers_page="$cache_dir/consumers-page.html"
@@ -22,10 +27,7 @@ topics='OFC_PURCHASE_FINISH OFC_DATA_TRACK '
 info_group='btr-im-admin-online btr-im-service-online btr-operation-publish-online ofc-service-online operation-service operation-web'
 ignore_topic='quote_quoteResultPushErp'
 
-other_threshold=200
-warn_threshold=10
-log_threshold=1
-pid=$$
+
 
 log(){
     printf " $1\n"
