@@ -19,7 +19,10 @@ help(){
     printf "$format" "-cs" "absolute_path count" "create swap file by absolute path"
     printf "$format" "-l" "file dir" "link file under dir"
     printf "$format" "-b" "file" "change file between file.bak with file"
-    printf "$format" "-append" "" "add current dir to sys.path for python /usr/local/lib/ ..."
+    printf "\n"
+    printf "$format" "-append" "" "[python] add current dir to sys.path for python /usr/local/lib/ ..."
+    printf "$format" "-go" "*.tar.gz" "[go] install go on /usr/local "
+    printf "$format" "-dg" "" "[go] download latest go from https://golang.google.cn/dl/ "
 }
 
 assert_param_count(){
@@ -155,6 +158,11 @@ case $1 in
         if [ -f $2 ]; then
             sudo tar -C /usr/local -xzf $2 
         fi
+    ;;
+    -dg)
+        latest_url=$(curl -s https://golang.google.cn/dl/ | grep -e "https.*linux-amd" | head -n 1 | awk '{print $4}' | cut -d '"' -f 2)
+        echo $latest_url
+        wget $latest_url
     ;;
     *)
         path=${1#*\./}
