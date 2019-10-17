@@ -50,6 +50,7 @@ def show_info(info_url):
     soup = read_url.analysis_html()
 
     title_list = soup.find_all('div')
+    show_level = False
     for line in title_list:
         class_type = ReadURL.get_element(str(line), 'class')
         if class_type is None:
@@ -62,8 +63,11 @@ def show_info(info_url):
             print_info('喜欢', first_temp[3].split('</')[0][1:])
             print_info('评论', first_temp[4].split('</')[0][1:])
 
+        if 'level-' in str(line) and not show_level:
+            print_info('等级', str(line).split('level-')[1][0])
+            show_level = True
         if 'grade-box clearfix' in class_type:
-            print_info('等级', str(line).split(',点击查看等级说明')[0].split('target="_blank" title="')[1])
+            # print_info('等级', str(line).split(',点击查看等级说明')[0].split('target="_blank" title="')[1])
             print_info('访问', str(line).split('<dd title="')[1].split('">')[0])
             print_info('积分', str(line).split('<dd title="')[2].split('">')[0])
             print_info('排名', str(line).split('<dl title="')[1].split('">')[0])
