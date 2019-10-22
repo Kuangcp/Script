@@ -188,10 +188,10 @@ help(){
     printf "$format" "-pl|pull" "repo ..." "batch pull repo from remote "
     printf "$format" "-pla|pla" "" "pull all repo from remote"
     printf "$format" "-fb|fb" "branch remote" "fetch remote branch, create it. remote default is origin"
-    printf "$format" "-ds|ds" "" "download subdir by svn for github"
+    printf "$format" "-ds|ds" "url" "download subdir by svn from url that github directory"
     printf "$format" "-ac|ac" "" "add current local repo to alias config"
     printf "$format" "-cnf|cnf" "" "open alias config file "
-    printf "$format" "-f|f" "filename" "show file content url in github"
+    printf "$format" "-f|f" "filename" "show file content url for github"
 }
 
 get_user_repo(){
