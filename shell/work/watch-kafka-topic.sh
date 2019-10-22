@@ -115,7 +115,7 @@ watch_total_topic(){
                         continue
                     fi
                     msg="$topic : $line"
-                    notify-send -i $icon_file "$msg" -t 3000
+                    notify-send -i $icon_file "$app" "$msg" -t 3000
                 fi
             fi
         fi
