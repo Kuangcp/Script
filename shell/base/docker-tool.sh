@@ -14,7 +14,7 @@ help(){
     printf "Run：$red sh DockerTool.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-3s $yellow%-4s$end%-20s\n"
     printf "$format" "-h" "" "help"
-    printf "$format" "-l" "" "list image tags"
+    printf "$format" "-l" "image" "list image all tags"
 }
 
 list_image_tags(){
@@ -28,8 +28,7 @@ case $1 in
         help ;;
     -l|l)
         assertParamCount $# 2
-        list_image_tags $2
-    ;;
+        list_image_tags $2 ;;
     *)
         help ;;
 esac
