@@ -13,7 +13,11 @@ init(){
     fi
 }
 
-check_exist_process(){
+check_process(){
+    ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color
+}
+
+check_process_with_notify(){
     result=$(ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color)
     if [ ${#result} = 0 ];then
         printf "no process info about $red $1 $end \n"
@@ -26,7 +30,7 @@ show_process_by_name(){
         printf "$red please specific process name $end \n"
         exit 1
     fi
-    check_exist_process $1
+    check_process_with_notify $1
     echo "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
     ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color
 }
@@ -49,7 +53,7 @@ show_all_processes_sort_cpu(){
 }
 
 statistic_memory(){
-    ps aux | egrep -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;print sum "K " sum/1024"M "}'
+    ps aux | egrep -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;printf "%8sK %sM\n",sum,sum/1024}'
 }
 
 watch_process(){
@@ -120,7 +124,7 @@ list_process_by_name(){
 }
 
 background_watch(){
-    check_exist_process $1
+    check_process_with_notify $1
     while true; do
         watch_process $1 >> $logDir/$1.process.log
     done
@@ -157,6 +161,21 @@ case $1 in
     -b)
         ps aux | egrep -v "grep" | egrep -v "process-tool.sh -b" | grep -i "process-tool.sh" --color
     ;;
+    -ms)
+        for param in $*; do
+            if test "-ms" = $param;then
+                continue
+            fi
+            # echo $param
+             result=$(check_process $param)
+            if [ ${#result} = 0 ];then
+                continue
+            fi
+            printf "%-10s: " $param
+            statistic_memory $param
+        done
+
+    ;;
     -stop)
         kill_self
     ;;
@@ -172,7 +191,7 @@ case $1 in
         elif [ $# = 1 ]; then
             show_process_by_name $1 
         elif [ $2 = "m" ];then 
-            check_exist_process $1
+            check_process_with_notify $1
             statistic_memory $1
         elif [ $2 = "s" ];then 
             show_process_by_name $1  | less -S 
