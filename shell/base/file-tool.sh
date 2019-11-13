@@ -18,6 +18,7 @@ help(){
     printf "$format" "-cf|cf" "relative path" "copy file content"
     printf "$format" "-cs" "absolute_path count" "create swap file by absolute path"
     printf "$format" "-l" "file dir" "link file under dir"
+    printf "$format" "-lp" "file" "link file to customer bin"
     printf "$format" "-b" "file" "change file between file.bak with file"
     printf "\n"
     printf "$format" "-append" "" "[python] add current dir to sys.path for python /usr/local/lib/ ..."
