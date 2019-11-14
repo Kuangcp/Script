@@ -8,7 +8,7 @@ path=$(cd `dirname $0`; pwd)
 . $path/base.sh
 
 help(){
-    printf "Run：$red bash FileTool.sh $green<verb> $yellow<args>$end\n"
+    printf "Run：$red bash file-tool.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-8s $yellow%-22s$end%-20s\n"
     printf "$format" "-h" "" "help"
     printf "$format" "" "" "copy current path"
@@ -20,6 +20,7 @@ help(){
     printf "$format" "-l" "file dir" "link file under dir"
     printf "$format" "-lp" "file" "link file to customer bin"
     printf "$format" "-b" "file" "change file between file.bak with file"
+    printf "$format" "-e" "file" "decompress file"
     printf "\n"
     printf "$format" "-append" "" "[python] add current dir to sys.path for python /usr/local/lib/ ..."
     printf "$format" "-go" "*.tar.gz" "[go] install go on /usr/local "
@@ -95,6 +96,31 @@ add_python_sys_path(){
     log_info "add success: $lib_path/$version/dist-packages/$filename.pth"
 }
 
+decompress_file(){
+    file=$1
+    suffix=${file##*\.}
+    # log_info "start extract: "$suffix
+    case $suffix in
+        tgz)
+            tar xzf $file
+        ;;
+        gz)
+            has_tar=$(echo $file| grep '.tar')
+            if test -z $has_tar;then
+                gzip -d $file
+            else
+                tar xzf $file
+            fi
+        ;;
+        zip)
+            unzip $file
+        ;;
+        *)
+            log_warn "not support this type"
+        ;;
+    esac
+}
+
 case $1 in 
     -h | h)
         help ;;
@@ -147,6 +173,10 @@ case $1 in
     -d | d)
         pattern=$(get_search_pattern $*)
         find . -type d -iregex $pattern
+    ;;
+    -e | e)
+        assert_param_count $# 2
+        decompress_file $2
     ;;
     -f | f)
         pattern=$(get_search_pattern $*)
