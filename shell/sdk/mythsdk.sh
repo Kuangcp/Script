@@ -16,7 +16,37 @@ help(){
     printf "$format" "-ls|ls|lists " "<sdk>" "列出 所有sdk/指定的sdk 的详细信息"
     printf "$format" "-i|i|install " "sdk <ver>" "下载安装指定sdk的 指定版本/最新版本"
     printf "$format" "-iz|iz " "sdk ver file" "从zip包中安装指定sdk的指定版本 包名:sdk-version.zip  内容:version/bin"
+    printf "$format" "-id|id " "sdk ver dir" "从目录中安装指定sdk的指定版本 逻辑和上述压缩包一致"
+    printf "$format" "-a|a " "sdk ver" "添加 sdk version"
+    printf "$format" "export " "" "导出配置文件到当前目录"
     printf "$format" "-u|u|use " "sdk ver" "使用指定sdk的指定版本"
+}
+
+assertParamCount(){
+    actual=$1
+    expect=$2
+    if [ ! $1 = $2 ]; then
+        printf "$error please input correct param count: $2 $end \n"
+        exit 1
+    fi
+}
+
+findSDKStartLine(){
+    sdk=$1
+    count=0
+    cat $configPath | while read line; do
+        count=$(($count+1))
+
+        # echo "$count $line"
+        has_str=$(echo "$line" | grep $sdk)
+
+        # echo "$count $line $has_str"
+        if test -z "$has_str";then
+            continue
+        else
+            return $count
+        fi
+    done
 }
 
 case $1 in 
@@ -37,7 +67,30 @@ case $1 in
     -i | i | install)
         downByQiNiu $2 $3
     ;;
+    -id | id | installDir)
+        assertParamCount $# 4
+        mv $4 $3
+        file=$2-$3.zip
+        zip -r $file $3
+        handleLocalZip $2 $3 $file
+    ;;
+    export)
+        cp $configPath .
+    ;;
+    -a | a)
+        assertParamCount $# 3
+        findSDKStartLine $2
+        startNum=$?
+        if test $startNum = 0;then
+            printf "$error $2 $end not found \n"
+            exit 0
+        fi
+
+        # startNum=$(($startNum+3))
+        # sed -i $startNum' s/$/'$3' /1' $configPath
+    ;;
     -iz | iz | installZip)
+        assertParamCount $# 4
         handleLocalZip $2 $3 $4
     ;;
     -q | q | qiNiu)

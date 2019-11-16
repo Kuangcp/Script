@@ -19,10 +19,10 @@ checkExist(){
                 return 1
             fi 
         done 
-        printf $error"配置文件中没有该版本\n"$end
+        printf $error"配置文件 $configPath 中没有该版本\n"$end
         exit 0
     done
-    printf $error"配置文件中没有该sdk\n"$end
+    printf $error"配置文件 $configPath 中没有该sdk\n"$end
     exit 0
 }
 
