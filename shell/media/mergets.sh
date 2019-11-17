@@ -26,6 +26,16 @@ url_decode(){
     printf $(echo -n $url | sed 's/\\/\\\\/g;s/\(%\)\([0-9a-fA-F][0-9a-fA-F]\)/\\x\2/g')
 }
 
+download(){
+    url=$(url_decode $1)
+    current=$2
+    file="$current.mp4"
+
+    echo "$file $url" >> download.log
+    ffmpeg -i $url -headers $'\r\n' -c copy -bsf:a aac_adtstoasc $file
+    log_info "\n\n\tfinished $file \n\n"
+}
+
 help(){
     printf "Run：$red sh mergets.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-6s $yellow%-8s$end%-20s\n"
@@ -41,12 +51,8 @@ case $1 in
         log_info $url
     ;;
     *)
-        url=$(url_decode $1)
-        file=$(date +%F_%T).mp4
-
-        echo "$file $url" >> download.log
-        ffmpeg -i $url -c copy -bsf:a aac_adtstoasc $file
-        log_info "\n\n\tfinished $file \n\n"
+        current=$(date +%F_%T)
+        (download $1 $current &) > $current.log 2>&1
     ;;
 esac
 
