@@ -38,9 +38,11 @@ download(){
 
 help(){
     printf "Run：$red sh mergets.sh $green<verb> $yellow<args>$end\n"
-    format="  $green%-6s $yellow%-8s$end%-20s\n"
+    printf "\nDescription:\n\t  Download .ts file and merge as .mp4.\n\n"
+    format="  $green%-4s $yellow%-6s$end%-20s\n"
     printf "$format" "-h" "" "help"
-    printf "$format" "" "url" "url of m3u8, start download"
+    printf "$format" "-du" "" "decode url "
+    printf "$format" "" "url" "url of m3u8 file"
 }
 
 case $1 in
@@ -51,6 +53,10 @@ case $1 in
         log_info $url
     ;;
     *)
+        if test $# -lt 1;then
+            log_error 'Input valid URL'
+            exit 0
+        fi
         current=$(date +%F_%T)
         (download $1 $current &) > $current.log 2>&1
     ;;
