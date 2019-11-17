@@ -8,6 +8,24 @@ cyan='\033[0;36m'
 white='\033[0;37m'
 end='\033[0m'
 
+log(){
+    printf " $1\n"
+}
+log_error(){
+    printf "$red $1 $end\n" 
+}
+log_info(){
+    printf "$green $1 $end\n" 
+}
+log_warn(){
+    printf "$yellow $1 $end\n" 
+}
+
+url_decode(){
+    url=$1
+    printf $(echo -n $url | sed 's/\\/\\\\/g;s/\(%\)\([0-9a-fA-F][0-9a-fA-F]\)/\\x\2/g')
+}
+
 help(){
     printf "Run：$red sh mergets.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-6s $yellow%-8s$end%-20s\n"
@@ -18,10 +36,17 @@ help(){
 case $1 in
     -h)
         help ;;
+    -du)
+        url=$(url_decode $2)
+        log_info $url
+    ;;
     *)
+        url=$(url_decode $1)
         file=$(date +%F_%T).mp4
-        ffmpeg -i $1 -c copy -bsf:a aac_adtstoasc $file
-        echo "\n\n\tfinished $file \n\n"
+
+        echo "$file $url" >> download.log
+        ffmpeg -i $url -c copy -bsf:a aac_adtstoasc $file
+        log_info "\n\n\tfinished $file \n\n"
     ;;
 esac
 
