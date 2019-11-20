@@ -98,7 +98,7 @@ move_file(){
 }
 move_by_suffix(){
     name=$1
-    move_all ".*[^\.][\.]{1}$name"
+    move_all ".*[^\.][\.]{1}$name\$"
 }
 
 # * 通配符删除
@@ -149,6 +149,18 @@ rollback(){
     logInfoWithCyan "◀ rollback file     ▌" "$file"
     printf $green"rollback [$file] complete \n"
 }
+log(){
+    printf " $1\n"
+}
+log_error(){
+    printf "$red $1 $end\n" 
+}
+log_info(){
+    printf "$green $1 $end\n" 
+}
+log_warn(){
+    printf "$yellow $1 $end\n" 
+}
 
 logInfoWithWhite(){
     printf "`date +%F_%T` $1 $2\n" >>$logFile
@@ -169,7 +181,7 @@ logWarn(){
 help(){
     printf "Run：$red sh recycle-bin.sh$green <verb> $yellow<args>$end\n"
     format="  $green%-5s $yellow%-15s$end%-20s\n"
-    printf "$format" "any" "" "move file/dir to trash"
+    printf "$format" "" "file/dir" "move file/dir to trash"
     printf "$format" "-h" "" "show help"
     printf "$format" "-a" "\"pattern\"" "delete file (can't use *, prefer to use +, actually command: ls | egrep \"pattern\")"
     printf "$format" "-as" "suffix" "delete *.suffix"
@@ -229,6 +241,15 @@ upgrade(){
 # main entrance: init enviroment for this shell script 
 init
 
+assertParamCount(){
+    actual=$1
+    expect=$2
+    if [ ! $1 = $2 ]; then
+        printf "$red please input correct param count: $2 $end \n"
+        exit 1
+    fi
+}
+
 # read script params 
 case $1 in 
     -h)
@@ -239,6 +260,9 @@ case $1 in
         (delay_delete &)  
     ;;
     -as)
+        assertParamCount $# 2
+        log_info "\nwill delete: "
+        ls | egrep ".*[^\.][\.]{1}$2\$"
         move_by_suffix "$2"
         (delay_delete &)  
     ;;
@@ -249,10 +273,7 @@ case $1 in
         list_trash_files
     ;;
     -s) 
-        if [ $# -lt 2 ]; then 
-            printf "$red Please input what you search $end \n"
-            exit 1
-        fi
+        assertParamCount $# 2
 
         list_trash_files | grep "$2"
     ;;
@@ -266,6 +287,7 @@ case $1 in
     #     fi
     # ;;
     -rb)
+        assertParamCount $# 2
         rollback $2
     ;;
     -b)
