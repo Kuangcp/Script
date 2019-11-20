@@ -79,7 +79,7 @@ move_file(){
     deleteTime=`date +%s`
     readable=`date +%Y-%m-%d_%H-%M-%S`
     if [ ! -f "$currentPath/$fileName" ] && [ ! -d "$currentPath/$fileName" ] && [ ! -L "$currentPath/$fileName" ];then 
-        printf $red"file not exist \n"
+        printf $red"file $fileName not exist \n"
         exit
     fi
     logInfoWithGreen "◆ prepare to delete ▌" "$currentPath/$fileName"

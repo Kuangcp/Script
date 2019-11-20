@@ -97,24 +97,27 @@ add_python_sys_path(){
 }
 
 decompress_file (){
-  if [ -f $1 ] ; then
+    if [ ! -f $1 ] ; then
+        log_error "'$1' is not a valid file"
+        exit 1
+    fi
+
     case $1 in
-      *.tar.bz2)   tar xjf $1   ;;
-      *.tar.gz)    tar xzf $1   ;;
-      *.bz2)       bunzip2 $1   ;;
-      *.rar)       unrar x $1     ;;
-      *.gz)        gunzip $1    ;;
-      *.tar)       tar xf $1    ;;
-      *.tbz2)      tar xjf $1   ;;
-      *.tgz)       tar xzf $1   ;;
-      *.zip)       unzip $1     ;;
-      *.Z)         uncompress $1;;
-      *.7z)        7z x $1      ;;
-      *)           echo "'$1' cannot be extracted via ex()" ;;
+        *.tar)                tar xf $1     ;;
+        *.tar.bz2 | *.tbz2)   tar xjf $1    ;;
+        *.tar.gz  | *.tgz)    tar xzf $1    ;;
+        *.tar.xz  | *.txz)    tar -xJf $1   ;;
+        *.tar.Z)              tar -xZf $1   ;;
+        *.bz2)                bunzip2 $1    ;;
+        *.rar)                unrar x $1    ;;
+        *.gz)                 gunzip $1     ;;
+        *.rar)                unrar e $1    ;;
+        *.zip)                unzip $1      ;;
+        *.Z)                  uncompress $1 ;;
+        *.xz)                 xz -d $1      ;;
+        *.7z)                 7z x $1       ;;
+        *)           echo "'$1' cannot be extracted" ;;
     esac
-  else
-    echo "'$1' is not a valid file"
-  fi
 }
 
 case $1 in 
