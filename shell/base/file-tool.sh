@@ -23,8 +23,8 @@ help(){
     printf "$format" "-e" "file" "decompress file"
     printf "\n"
     printf "$format" "-append" "" "[python] add current dir to sys.path for python /usr/local/lib/ ..."
-    printf "$format" "-go" "*.tar.gz" "[go] install go on /usr/local "
     printf "$format" "-dg" "" "[go] download latest go from https://golang.google.cn/dl/ "
+    printf "$format" "-go" "*.tar.gz" "[go] install go on /usr/local "
 }
 
 assert_param_count(){

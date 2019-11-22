@@ -105,7 +105,7 @@ move_by_suffix(){
 move_all(){
     pattern=$1
     if [ "$pattern"1 = "1" ];then
-        printf "delete [all file]/[exclude hidden file]/[no]?  [a/y/n] : " 
+        printf "delete [all]/[exclude hiddened]/[no]?  [a/y/n] : " 
         read answer
         flag=0
         if [ "$answer" = "a" ];then
