@@ -21,6 +21,7 @@ cnfDir=$mainDir'/conf'
 logFile=$logDir'/RecycleBin.log'
 configFile=$cnfDir'/main.ini'
 
+# /home/kcp/.local/share/Trash 回收站实际目录
 # TODO 文件名最大长度是255, 注意测试边界条件
 
 init(){
@@ -277,15 +278,6 @@ case $1 in
 
         list_trash_files | grep "$2"
     ;;
-    # -cd)
-    #     if [ -d $trashDir/$2 ]; then 
-    #         cd $trashDir/$2
-    #     elif [ -f $trashDir/$2 ]; then
-    #         cd $trashDir
-    #     else
-    #         printf "$red no this dir or file: $2 $end \n"
-    #     fi
-    # ;;
     -rb)
         assertParamCount $# 2
         rollback $2

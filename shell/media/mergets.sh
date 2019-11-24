@@ -57,10 +57,8 @@ case $1 in
             log_error 'Input valid URL'
             exit 0
         fi
-        current=$(date +%F_%T)
+        current=$(date "+%Y%m%d-%H%M%S")
         (download $1 $current &) > $current.log 2>&1
     ;;
 esac
-
-
 
