@@ -10,11 +10,13 @@ white='\033[0;37m'
 end='\033[0m'
 
 userDir=(`cd && pwd`)
-realPath=$(cd `dirname $0`; pwd)
+# 脚本所在目录
+scriptPath=$(cd `dirname $0`; pwd)
 currentPath=`pwd`
 
 mainDir=$userDir'/.config/app-conf/RecycleBin'
 trashDir=$mainDir'/trash'
+infoDir=$mainDir'/info'
 logDir=$mainDir'/log'
 cnfDir=$mainDir'/conf'
 
@@ -22,18 +24,16 @@ logFile=$logDir'/RecycleBin.log'
 configFile=$cnfDir'/main.ini'
 
 # /home/kcp/.local/share/Trash 回收站实际目录
+
 # TODO 文件名最大长度是255, 注意测试边界条件
 
 init(){
-    if [ ! -d $trashDir ];then
-        mkdir -p $trashDir
-    fi
-    if [ ! -d $logDir ];then
-        mkdir -p $logDir
-    fi
-    if [ ! -d $cnfDir ];then
-        mkdir -p $cnfDir
-    fi
+    dirs=$trashDir" "$logDir" "$cnfDir" "$infoDir
+    for dir in $dirs; do
+        if [ ! -d $dir ];then
+            mkdir -p $dir
+        fi
+    done;
 
     if [ ! -f $logFile ];then
         touch $logFile
@@ -235,7 +235,7 @@ list_trash_files(){
 }
 
 upgrade(){
-    curl https://gitee.com/gin9/script/raw/master/shell/base/recycle-bin.sh -o $realPath/recycle-bin.sh
+    curl https://gitee.com/gin9/script/raw/master/shell/base/recycle-bin.sh -o $scriptPath/recycle-bin.sh
     printf $green"upgrade script success\n"$end
 }
 
