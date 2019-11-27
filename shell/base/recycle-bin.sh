@@ -10,11 +10,10 @@ white='\033[0;37m'
 end='\033[0m'
 
 userDir=(`cd && pwd`)
-# 脚本所在目录
-scriptPath=$(cd `dirname $0`; pwd)
+scriptPath=$(cd `dirname $0`; pwd) # 脚本所在目录
 currentPath=`pwd`
 
-mainDir=$userDir'/.config/app-conf/RecycleBin'
+mainDir=$userDir'/.config/app-conf/RecycleBinDev'
 trashDir=$mainDir'/trash'
 infoDir=$mainDir'/info'
 logDir=$mainDir'/log'
@@ -75,37 +74,49 @@ delay_delete(){
 }
 
 # move file to trash 
-move_file(){
+lazy_delete_file(){
     fileName="$1";
-    deleteTime=`date +%s`
-    readable=`date +%Y-%m-%d_%H-%M-%S`
+
     if [ ! -f "$currentPath/$fileName" ] && [ ! -d "$currentPath/$fileName" ] && [ ! -L "$currentPath/$fileName" ];then 
-        printf $red"file $fileName not exist \n"
+        printf $red" $fileName not exist \n"
         exit
     fi
     logInfoWithGreen "◆ prepare to delete ▌" "$currentPath/$fileName"
-    # 多级目录时, 需要先创建好
     hasDir=`expr match "$fileName" ".*/"`
     if [ ! $hasDir = 0 ]; then 
-        #  two way: keep the same dir structure(easy move) or keep deepest dir or file (easy delete)
-        # fileDir=${fileName%/*}
-        # mkdir -p $trashDir/$fileDir
+        # file: a/b/c -> c
         simpleFile=${fileName##*/}
-        mv "$currentPath/$fileName" "$trashDir/$simpleFile.$readable.$deleteTime"
+
+        move_file "$fileName" "$simpleFile"
         return 0
-    fi 
+    fi
+    
     # 全部加上双引号是因为文件名中有可能会有空格
-    mv "$currentPath/$fileName" "$trashDir/$fileName.$readable.$deleteTime"
+    move_file "$fileName" "$fileName"
 }
-move_by_suffix(){
+
+move_file(){
+    origin=$1
+    target=$2
+
+    deleteTime=`date +%s`
+    readable=`date +%Y-%m-%d_%H-%M-%S`
+
+    mv "$currentPath/$origin" "$trashDir/$target"
+    echo "$currentPath/$origin" >> "$infoDir/$target.info"
+    echo "$deleteTime" >> "$infoDir/$target.info"
+    echo "$readable" >> "$infoDir/$target.info"
+}
+
+lazy_delete_by_suffix(){
     name=$1
-    move_all ".*[^\.][\.]{1}$name\$"
+    lazy_delete_with_pattern ".*[^\.][\.]{1}$name\$"
 }
 
 # * 通配符删除
-move_all(){
+lazy_delete_with_pattern(){
     pattern=$1
-    if [ "$pattern"1 = "1" ];then
+    if test -z "$pattern" ;then
         printf "delete [all]/[exclude hiddened]/[no]?  [a/y/n] : " 
         read answer
         flag=0
@@ -131,7 +142,7 @@ move_all(){
     fi
     for file in $list; do
         # echo ">> $file"
-        move_file "$file"
+        lazy_delete_file "$file"
     done
 }
 
@@ -180,21 +191,23 @@ logWarn(){
 }
 
 help(){
-    printf "Run：$red sh recycle-bin.sh$green <verb> $yellow<args>$end\n"
+    printf "Usage：$red bash recycle-bin.sh$green <verb> $yellow<args>$end\n\n"
+    printf "    Trash, delete file at delay time that configed \n\n"
     format="  $green%-5s $yellow%-15s$end%-20s\n"
-    printf "$format" "" "file/dir" "move file/dir to trash"
-    printf "$format" "-h" "" "show help"
-    printf "$format" "-a" "\"pattern\"" "delete file (can't use *, prefer to use +, actually command: ls | egrep \"pattern\")"
-    printf "$format" "-as" "suffix" "delete *.suffix"
-    printf "$format" "-l" "" "list all file in trash(exclude link file)"
-    printf "$format" "-s" "" "search file from trash"
-    printf "$format" "-rb" "file" "roll back file from trash"
-    printf "$format" "-lo" "file" "show log"
-    printf "$format" "-cnf" "" "edit main config file "
-    printf "$format" "-b" "" "show background running script"
-    printf "$format" "-d" "" "shutdown this script"
-    printf "$format" "-upd" "" "upgrade this script when not in git repo"
-    printf "$format" "-cl" "" "start check trash dir"
+
+    printf "$format" ""       "file/dir"     "move file/dir to trash"
+    printf "$format" "-h"     ""             "show help"
+    printf "$format" "-a"     "\"pattern\""  "delete file (can't use *, prefer to use +, actually command: ls | egrep \"pattern\")"
+    printf "$format" "-as"    "suffix"       "delete *.suffix"
+    printf "$format" "-l"     ""             "list all file in trash(exclude link file)"
+    printf "$format" "-s"     ""             "search file from trash"
+    printf "$format" "-rb"    "file"         "roll back file from trash"
+    printf "$format" "-lo"    "file"         "show log"
+    printf "$format" "-cnf"   ""             "edit main config file "
+    printf "$format" "-b"     ""             "show background running script"
+    printf "$format" "-d"     ""             "shutdown this script"
+    printf "$format" "-upd"   ""             "upgrade this script when not in git repo"
+    printf "$format" "-cl"    ""             "start check trash that file or dir"
 }
 
 show_name_colorful(){
@@ -257,14 +270,14 @@ case $1 in
         help
     ;;
     -a)
-        move_all "$2"
+        lazy_delete_with_pattern "$2"
         (delay_delete &)  
     ;;
     -as)
         assertParamCount $# 2
         log_info "\nwill delete: "
         ls | egrep ".*[^\.][\.]{1}$2\$"
-        move_by_suffix "$2"
+        lazy_delete_by_suffix "$2"
         (delay_delete &)  
     ;;
     -lo)
@@ -313,7 +326,7 @@ case $1 in
 
         for file in "$@" ;do
             printf "=> remove file: [ $file ]\n"
-            move_file "$file"
+            lazy_delete_file "$file"
         done
         
         (delay_delete &)
