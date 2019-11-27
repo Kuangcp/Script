@@ -136,20 +136,28 @@ move_all(){
 }
 
 rollback(){
-    if [ "$1"1 = "1" ];then
+    if test -z $1 ;then
         printf $red"please select a specific rollback file\n"
         exit 1
     fi
-    if [ ! -f $trashDir/$1 ] && [ ! -d $trashDir/$1 ];then
-        printf $red"this file not exist \n"
+
+    current_file="$1"
+    has_str=$(echo $current_file | grep "$trashDir")
+    if test -z $has_str; then
+        current_file="$trashDir/$1"
+    fi
+    if [ ! -f $current_file ] && [ ! -d $current_file ] && [ ! -L $current_file ];then
+        printf $red" $current_file not exist \n"
         exit 1
     fi
-    file=${1%\.*}
+    file=${current_file#*"$trashDir/"}
     file=${file%\.*}
-    mv $trashDir/$1 $file
+    file=${file%\.*}
+    mv $current_file $file
     logInfoWithCyan "◀ rollback file     ▌" "$file"
-    printf $green"rollback [$file] complete \n"
+    printf $green"Rollback $cyan[$file]$end complete \n"
 }
+
 log(){
     printf " $1\n"
 }
