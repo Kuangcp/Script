@@ -36,17 +36,9 @@ pull_all_repos(){
 }
 
 push_current_all_remotes(){
-    path=`pwd`
-    result=`git remote -v`
-    count=-1
-
-    remotes=""
-    for temp in $result; do
-        count=$(( $count + 1 ))
-        if [ $(($count % 6)) = 0 ]; then
-            log_info "push to "$temp
-            git push $temp
-        fi
+    for i in $(git remote); do
+        log_info "push to "$i
+        git push $i;
     done
 }
 
