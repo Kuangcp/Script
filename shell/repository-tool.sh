@@ -80,9 +80,8 @@ push_configed_repos(){
             continue
         fi
 
-        result=`cd $repo_path && git status`
-        haveCommit=`expr match "$result" ".*is ahead of"`
-        if [ $haveCommit != 0 ]; then
+        haveCommit=`cd $repo_path && git status | grep -e "is ahead of"`
+        if test -n "$haveCommit"; then
             show_line_colorful "$line" $purple
             cd $repo_path && git push
         fi
