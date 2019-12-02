@@ -36,24 +36,16 @@ pull_all_repos(){
 }
 
 push_current_all_remotes(){
-    path=`pwd`
-    result=`git remote -v`
-    count=-1
-
-    remotes=""
-    for temp in $result; do
-        count=$(( $count + 1 ))
-        if [ $(($count % 6)) = 0 ]; then
-            log_info "push to "$temp
-            git push $temp
-        fi
+    for i in $(git remote); do
+        log_info "push to "$i
+        git push $i;
     done
 }
 
 pull_configed_repos(){
     # 并行 最后有序合并输出
     cat $configPath | while read line; do
-    {
+    # {
         # ignore that comment contain + character
         ignore=`echo "$line" | grep "+"`
         if [ "$ignore"x != "x" ];then 
@@ -69,34 +61,53 @@ pull_configed_repos(){
         result=$result""$(show_line_colorful "$line" $purple)"\n"
         result=$result""$(cd $repo_path && git pull)"\n"
         echo "$result"
-    }&
+    # }&
     done
-    wait
+    # wait
 }
 
 push_configed_repos(){
     cat $configPath | while read line; do
-    {
+    # {
         # ignore that comment contain + character
         ignore=`echo "$line" | grep "+"`
-        if [ "$ignore"x != "x" ];then 
+        if test -n "$ignore"; then
             continue
         fi
 
         repo_path=$(get_repo_path "$line")
-        if [ "$repo_path" = "" ];then
+        if test -z "$repo_path"; then
             continue
         fi
-        show_line_colorful "$line" $purple
-        result=`cd $repo_path && git status`
-        haveCommit=`expr match "$result" ".*is ahead of"`
-        if [ $haveCommit != 0 ]; then 
+
+        haveCommit=`cd $repo_path && git status | grep -e "is ahead of"`
+        if test -n "$haveCommit"; then
+            show_line_colorful "$line" $purple
             cd $repo_path && git push
         fi
-    }&
+    # }&
     done
-    wait
+    # wait
 }
+
+push_configed_repos_to_all_remotes(){
+    cat $configPath | while read line; do
+        # ignore that comment contain + character
+        ignore=`echo "$line" | grep "+"`
+        if test -n "$ignore"; then
+            continue
+        fi
+
+        repo_path=$(get_repo_path "$line")
+        if test -z "$repo_path"; then
+            continue
+        fi
+
+        show_line_colorful "$line" $purple
+        cd $repo_path && push_current_all_remotes
+    done
+}
+
 
 check_repo_change(){
     cat $configPath | while read line; do
@@ -184,6 +195,7 @@ help(){
     printf "$format" "" "" "show all modify local repo"
     printf "$format" "-l|l|list" "" "list all local repo"
     printf "$format" "-p|p|push" "" "push all modify local repo to remote "
+    printf "$format" "-pall|pall" "" "push all modify local repo to all remote "
     printf "$format" "-pa|pa" "" "push current local repo to all remote"
     printf "$format" "-pl|pull" "repo ..." "batch pull repo from remote "
     printf "$format" "-pla|pla" "" "pull all repo from remote"
@@ -263,6 +275,9 @@ case $1 in
     ;;
     -p | push | p)
         push_configed_repos
+    ;;
+    -pall | pall)
+        push_configed_repos_to_all_remotes
     ;;
     -pa | pa)
         push_current_all_remotes
