@@ -35,6 +35,16 @@ show_process_by_name(){
     ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color
 }
 
+show_pattern_processes(){
+    if test -z "$1"; then 
+        return 0
+    fi
+    printf "${cyan}KiB\tMiB\tPID\tCPU\tCommand ${end} \n"
+    ps aux | grep -v RSS | grep -E "$1" | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t"$3 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
+    printf "\n"
+    free -h
+}
+
 show_all_processes(){
     printf "${cyan}KiB\tMiB\tPID\tCPU\tCommand ${end} \n"
     ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t"$3 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
@@ -157,6 +167,9 @@ case $1 in
     ;;
     -ss | ss)
         sort_process $2
+    ;;
+    -l | light)
+        show_pattern_processes "$2"
     ;;
     -b)
         ps aux | egrep -v "grep" | egrep -v "process-tool.sh -b" | grep -i "process-tool.sh" --color
