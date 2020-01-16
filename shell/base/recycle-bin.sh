@@ -247,8 +247,41 @@ upgrade(){
     printf $green"upgrade script success\n"$end
 }
 
-# main entrance: init enviroment for this shell script 
-init
+killScript(){
+    scriptPid=$(findProcessPid "recycle-bin.sh")
+    watchPid=$(findProcessPid "$configFile")
+
+    if test -z "$scriptPid"; then
+        printf $red"not exist background running script\n"$end
+    else
+        # printf $red"pid : $id killed\n"$end
+        logWarn "♢ killed script     ▌" "pid: $scriptPid"
+        kill -9 $scriptPid
+    fi
+    if test -n "$watchPid"; then 
+        kill $watchPid
+    fi 
+}
+
+findProcessPid(){
+    id=`ps -ef | grep "$1" | grep -v "grep" | grep -v "\-d" | awk '{print $2}'`
+    if test -z $id ; then
+        return
+    else
+        echo $id
+    fi
+}
+
+watchConfigFile(){
+    result=$(ps -ef | grep $configFile | grep -v grep | wc -l)
+    if test $result -gt 0; then
+        return
+    fi
+
+    inotifywait -e modify,delete,create,attrib $configFile
+    . $configFile
+    logInfoWithGreen "♢ reload config     ▌" "liveTime: $liveTime checkTime: $checkTime "
+}
 
 assertParamCount(){
     actual=$1
@@ -258,6 +291,9 @@ assertParamCount(){
         exit 1
     fi
 }
+
+# main entrance: init enviroment for this shell script 
+init
 
 # read script params 
 case $1 in 
@@ -294,14 +330,7 @@ case $1 in
         ps aux | grep RSS | grep -v "grep" && ps aux | egrep -v "grep" | grep recycle-bin.sh | grep -v "recycle-bin.sh -b"
     ;;
     -d)
-        id=`ps -ef | grep "recycle-bin.sh" | grep -v "grep" | grep -v "\-d" | awk '{print $2}'`
-        if [ "$id"1 = "1" ];then
-            printf $red"not exist background running script\n"$end
-        else
-            printf $red"pid : $id killed\n"$end
-            logWarn "♢ killed script     ▌" "pid: $id"
-            kill -9 $id
-        fi
+        killScript
     ;;
     -cnf)
         less $configFile
@@ -311,6 +340,7 @@ case $1 in
     ;;
     -cl)
         (delay_delete &)
+        (watchConfigFile &)
     ;;
     *)
         if [ $# = 0 ];then
@@ -325,5 +355,6 @@ case $1 in
         done
         
         (delay_delete &)
+        (watchConfigFile &)
     ;;
 esac
