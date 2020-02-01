@@ -22,7 +22,7 @@ help(){
     printf "$format" "-b" "file" "change file between file.bak with file"
     printf "$format" "-e" "file" "decompress file"
     printf "\n"
-    printf "$format" "-append" "" "[python] add current dir to sys.path for python /usr/local/lib/ ..."
+    printf "$format" "-append" "" "[python] add current dir to sys.path for python /usr/lib/pythonx.x/site-packages ..."
     printf "$format" "-dg" "" "[go] download latest go from https://golang.google.cn/dl/ "
     printf "$format" "-go" "*.tar.gz" "[go] install go on /usr/local "
 }
@@ -189,10 +189,26 @@ case $1 in
             sudo tar -C /usr/local -xzf $2 
         fi
     ;;
-    -dg)
-        latest_url=$(curl -s https://golang.google.cn/dl/ | grep -e "https.*linux-amd" | head -n 1 | awk '{print $4}' | cut -d '"' -f 2)
-        echo $latest_url
-        wget $latest_url
+    -dgo)
+        tmp_file="/tmp/down-go"
+        curl -s https://golang.google.cn/dl/ > $tmp_file
+        cat $tmp_file | grep -e "https.*linux-amd" | head -n 20 | awk '{print $4}' | cut -d '"' -f 2 | awk '{printf("%2d %s\n", NR, $0);}'
+        printf "select which download (1-20):"
+        read no
+        url=$(cat $tmp_file | grep -e "https.*linux-amd" | head -n 20 | sed -n ${no}p | awk '{print $4}' | cut -d '"' -f 2)
+        echo $url
+        wget $url
+    ;;
+    -dgradle)
+        tmp_file="/tmp/down-gradle"
+        curl -s https://services.gradle.org/distributions/ > $tmp_file
+        cat $tmp_file | grep "bin\.zip\"" | head -n 20 | awk '{printf("%2d %s\n", NR, $0);}'
+        printf "select which download (1-20):"
+        read no
+        line=$(cat $tmp_file | grep "bin\.zip\"" | head -n 20 | sed -n ${no}p | cut -d '"' -f 2)
+        url="https://services.gradle.org$line"
+        echo $url
+        wget $url
     ;;
     *)
         path=${1#*\./}
