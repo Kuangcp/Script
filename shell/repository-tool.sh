@@ -210,9 +210,8 @@ get_user_repo(){
     domain=$1
 
     remote=$(git remote -v | grep $domain".*push" | awk '{print $2}')
-    remote=${remote#*//}
-    remote=${remote#*/}
-    remote=${remote%.git*}
+    remote=${remote%\.*}
+    remote=${remote#*:}
     echo $remote
 }
 
@@ -246,6 +245,7 @@ get_remote_file_url(){
     if [ ! $remote'z' = 'z' ];then
         log "Gitee"
         log_info " raw: https://gitee.com/"$remote"/raw/master"$file_path"\n"
+        log_info " url: https://gitee.com/$remote/blob/master$file_path\n"
     fi
 
     remote=$(get_user_repo gitlab)
