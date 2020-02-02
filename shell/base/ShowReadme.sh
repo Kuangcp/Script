@@ -10,30 +10,25 @@ white='\033[0;37m'
 end='\033[0m'
 
 showReadme(){
-	num=`ls -AlFh | egrep "(\.md|txt)+" | grep -i 'readme' | wc -l `
+	num=`ls -AlFh | grep -i 'readme' | wc -l `
 	if [ $num = 0 ];then
 		printf $red"There is no readme file in this directory \n"$end
 		exit 1
 	fi
 	
-	readme=`ls -A | egrep "(\.md|txt)+" | grep -i 'readme'`
 	if [ $num = 1 ];then 
+		readme=`ls -A | grep -i 'readme'`
 		less $readme
 	else
-		tempNum=0
-		for file in $readme; do
-			tempNum=$(( $tempNum + 1 ))
-			echo $tempNum"  "$file
-		done
-		tempNum=0
-		printf $green"Please select the sequence number in front of the file : \n"$end
-		read fileNum
-		for file in $readme ; do
-			tempNum=$(( $tempNum + 1 ))
-			if [ $tempNum = $fileNum ];then
-				less $file
-			fi
-		done
+		ls -A | grep -i 'readme' | awk '{printf("%2d %s\n", NR, $0);}'
+		printf "select (1-$num): "
+        read no
+		if test $no -gt $num; then
+			printf $red"Select no out of round: (1-$num) \n"$end
+			exit 1
+		fi
+		file=$(ls -A | grep -i 'readme' | sed -n ${no}p)
+		less $file
 	fi
 }
 
