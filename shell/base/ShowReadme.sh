@@ -1,4 +1,4 @@
-# readme=`ls -A | grep -i Readme `
+# show readme file
 
 red='\033[0;31m'
 green='\033[0;32m'
