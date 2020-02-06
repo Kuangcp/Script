@@ -22,9 +22,10 @@ help(){
     printf "$format" "-b" "file" "change file between file.bak with file"
     printf "$format" "-e" "file" "decompress file"
     printf "\n"
-    printf "$format" "-append" "" "[python] add current dir to sys.path for python /usr/lib/pythonx.x/site-packages ..."
-    printf "$format" "-dg" "" "[go]     download latest go from https://golang.google.cn/dl/ "
-    printf "$format" "-go" "*.tar.gz" "[go]     install go on /usr/local "
+    printf "$format" "-append" "" "[Python] add current dir to sys.path for python /usr/lib/pythonx.x/site-packages ..."
+    printf "$format" "-dgradle" "" "[Java]   download from https://service.gradle.org/distribution "
+    printf "$format" "-dgo" "" "[Go]     download from https://golang.google.cn/dl/ "
+    printf "$format" "-go" "*.tar.gz" "[Go]     install on /usr/local "
 }
 
 assert_param_count(){
