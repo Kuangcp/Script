@@ -340,7 +340,7 @@ case $1 in
     ;;
     -cl)
         (delay_delete &)
-        (watchConfigFile &)
+        # (watchConfigFile &)
     ;;
     *)
         if [ $# = 0 ];then
@@ -355,6 +355,6 @@ case $1 in
         done
         
         (delay_delete &)
-        (watchConfigFile &)
+        # (watchConfigFile &)
     ;;
 esac

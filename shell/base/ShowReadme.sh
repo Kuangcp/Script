@@ -32,11 +32,18 @@ showReadme(){
 	fi
 }
 
+help(){
+    printf "Run：$red bash ShowReadme.sh $green<verb> $yellow<args>$end\n"
+    format="  $green%-4s $yellow%-4s$end%-20s\n"
+    printf "$format" "-h" "" "help"
+    printf "$format" "-a" "" "touch Readme.md"
+}
+
 case $1 in 
 	-h)
 		help ;;
 	-a)
-		touch Readme.md ;;
+		vim Readme.md ;;
 	*)
 		showReadme ;;
 esac
