@@ -187,7 +187,7 @@ case $1 in
     ;;
     -go)
         if [ -f $2 ]; then
-            sudo tar -C /usr/local -xzf $2 
+            sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $2 
         fi
     ;;
     -dgo)
