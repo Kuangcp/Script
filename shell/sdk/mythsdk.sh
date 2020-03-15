@@ -75,19 +75,15 @@ case $1 in
         handleLocalZip $2 $3 $file
     ;;
     export)
+        printf "export current from %s \n"  $configPath
         cp $configPath .
     ;;
     -a | a)
         assertParamCount $# 3
-        findSDKStartLine $2
-        startNum=$?
-        if test $startNum = 0;then
-            printf "$error $2 $end not found \n"
-            exit 0
-        fi
+        sdk=$2
+        ver=$3
 
-        # startNum=$(($startNum+3))
-        # sed -i $startNum' s/$/'$3' /1' $configPath
+        sed -i "/$sdk/{n;n;n; s/.*/& $ver /;}" $configPath
     ;;
     -iz | iz | installZip)
         assertParamCount $# 4
