@@ -24,6 +24,8 @@ help(){
     printf "Run：$red sh java-tool.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-6s $yellow%-8s$end%-20s\n"
     printf "$format" "-h" "" "帮助"
+    printf "$format" "" "pid" "select java pid to show stack"
+    printf "$format" "-a" "" "select java pid to show stack"
 }
 
 show_stack_of_process(){

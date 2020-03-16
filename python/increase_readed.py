@@ -69,13 +69,13 @@ def show_info(info_url):
         if 'grade-box clearfix' in class_type:
             # print_info('等级', str(line).split(',点击查看等级说明')[0].split('target="_blank" title="')[1])
             print_info('访问', str(line).split('<dd title="')[1].split('">')[0])
-            print_info('积分', str(line).split('<dd title="')[2].split('">')[0])
+            # print_info('积分', str(line).split('<dd title="')[2].split('">')[0])
             print_info('排名', str(line).split('<dl title="')[1].split('">')[0])
     print()
 
 
-def print_info(msg, value):
-    print(msg + pattern % value, end='')
+def print_info(title, value):
+    print(title + pattern % value, end='')
 
 
 def seek_every_blog():
