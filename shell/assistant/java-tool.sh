@@ -7,6 +7,9 @@ cyan='\033[0;36m'
 white='\033[0;37m'
 end='\033[0m'
 
+stack_file='/tmp/java-stack'
+ppid_file='/tmp/java-stack-ppid'
+
 log(){
     printf " $1\n"
 }
@@ -42,13 +45,13 @@ show_stack_of_process(){
         exit
     fi
 
-    jstack $pid > "${pid}.java-stack"
-    ps -mp $pid -o THREAD,tid,time | sort -k2r | awk '{if ($1 != "USER" && $2 != "0.0" && $8 != "-") print $8;}' | xargs printf "%x\n" > "${pid}.tmp"
+    jstack $pid > $stack_file
+    ps -mp $pid -o THREAD,tid,time | sort -k2r | awk '{if ($1 != "USER" && $2 != "0.0" && $8 != "-") print $8;}' | xargs printf "%x\n" > $ppid_file
 
-    tidArray="$(cat $pid.tmp)"
+    tidArray="$(cat $ppid_file)"
     for tid in $tidArray; do
         blockStartFlag=0
-        cat ${pid}.java-stack | while read line; do
+        cat $stack_file | while read line; do
             regexResult=$(echo "$line" | grep -e " #.*tid=.*nid=0x${tid}")
             if test "$regexResult" != ""; then
                 blockStartFlag=1
@@ -64,9 +67,8 @@ show_stack_of_process(){
             fi
         done
     done
-
-    rm -f ${pid}.tmp
-    rm -f ${pid}.java-stack
+    rm -f $stack_file
+    rm -f $ppid_file
 }
 
 show_all_java_process(){
