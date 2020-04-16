@@ -11,8 +11,11 @@ end='\033[0m'
 
 help(){
     printf "Run：$red sh $0 $green<verb> $yellow<args>$end\n"
-    format="  $green%-6s $yellow%-8s$end%-20s\n"
+    format="  $green%-6s $yellow%-18s$end%-20s\n"
     printf "$format" "-h" "" "帮助"
+    printf "$format" "" "namespace pod" "进入pod"
+    printf "$format" "-l" "namespace pod" "查看日志"
+    printf "$format" "-d" "namespace pod" "查看详情"
 }
 
 find_pod(){
@@ -34,12 +37,20 @@ find_pod(){
 case $1 in 
     -h)
         help ;;
-    -i)
+    -l)
         pod=$(find_pod ${*:2})
         num=$(echo "$pod" | wc -l)
         if test $num = 1; then 
-            printf "\n$green     enter pod: $pod $end \n\n"
-            kubectl --namespace docker$2 exec -it $pod -- /bin/bash
+            kubectl logs --namespace docker$2 $pod 
+	    else
+	        echo "$pod"
+	    fi
+    ;;
+    -d)
+        pod=$(find_pod ${*:2})
+        num=$(echo "$pod" | wc -l)
+        if test $num = 1; then 
+            kubectl describe --namespace docker$2 pod $pod 
 	    else
 	        echo "$pod"
 	    fi
@@ -59,9 +70,5 @@ case $1 in
 	    else
 	        echo "$pod"
 	    fi
-
-        # kubectl --namespace docker$1 exec -it $pod -- /bin/bash
-        # kubectl describe --namespace=docker33 pod  btr-im-publish-77d47978ff-b9zqn
-        # kubectl logs --namespace=docker33 btr-im-publish-77d47978ff-b9zqn
     ;;
 esac

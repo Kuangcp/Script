@@ -21,6 +21,7 @@ help(){
     printf "$format" "-lp" "file" "link file to customer bin"
     printf "$format" "-b" "file" "change file between file.bak with file"
     printf "$format" "-e" "file" "decompress file"
+    printf "$format" "-cp" "desktop file" "copy to /usr/share/applications/"
     printf "\n"
     printf "$format" "-append" "" "[Python] add current dir to sys.path for python /usr/lib/pythonx.x/site-packages ..."
     printf "$format" "-dgradle" "" "[Java]   download from https://service.gradle.org/distribution "
@@ -117,6 +118,7 @@ decompress_file (){
         *.Z)                  uncompress $1 ;;
         *.xz)                 xz -d $1      ;;
         *.7z)                 7z x $1       ;;
+        *.zst)                unzstd $1     ;; # https://github.com/facebook/zstd
         *)           echo "'$1' cannot be extracted" ;;
     esac
 }
@@ -165,6 +167,10 @@ case $1 in
         currentPath=`pwd`
         echo $currentPath/$2
         printf $currentPath/$2 | xclip -sel clip
+    ;;
+    -cp)
+        assert_param_count $# 2
+        sudo cp $2 /usr/share/applications/
     ;;
 	-cf | cf)
 		cat $2 | xclip -sel clip
