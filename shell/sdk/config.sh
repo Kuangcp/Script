@@ -119,3 +119,12 @@ listAllSdk(){
         i=$(($i+5))
     done
 }
+addSdkVersion(){
+    sdk=$1
+    ver=$2
+
+    exist=$(grep -zoe "$sdk.* $ver " $configPath)
+    if test -z "$exist"; then 
+        sed -i "/$sdk/{n;n;n; s/.*/& $ver /;}" $configPath
+    fi 
+}

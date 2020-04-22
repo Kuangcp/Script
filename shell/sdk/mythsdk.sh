@@ -11,14 +11,14 @@ help(){
     printf "$format" "-h|h|help" "" "帮助"
     printf "$format" "q" "<domain>" "配置七牛云域名"
     printf "$format" "cnf" "" "进入sdk主目录"
-    printf "$format" "-up|up|update" "" "更新sdk的配置文件(来源:Gitee)"
+    printf "$format" "export " "" "导出配置文件到当前目录"
+    printf "$format" "up|update" "" "更新sdk的配置文件(来源:Gitee)"
     printf "$format" "-l|l|list" "<sdk>" "列出 所有sdk/指定的sdk"
     printf "$format" "-ls|ls|lists " "<sdk>" "列出 所有sdk/指定的sdk 的详细信息"
-    printf "$format" "-i|i|install " "sdk <ver>" "下载安装指定sdk的 指定版本/最新版本"
-    printf "$format" "-iz|iz " "sdk ver file" "从zip包中安装指定sdk的指定版本 包名:sdk-version.zip  内容:version/bin"
-    printf "$format" "-id|id " "sdk ver dir" "从目录中安装指定sdk的指定版本 逻辑和上述压缩包一致"
+    printf "$format" "-i|i|install " "sdk <ver>" "下载安装指定sdk的 最新版本/指定版本"
+    printf "$format" "-iz|iz " "sdk ver file" "从 zip包 安装指定sdk的指定版本 包名:sdk-version.zip  内容:version/bin"
+    printf "$format" "-id|id " "sdk ver dir" "从 目录 安装指定sdk的指定版本 逻辑和上述压缩包一致"
     printf "$format" "-a|a " "sdk ver" "添加 sdk version"
-    printf "$format" "export " "" "导出配置文件到当前目录"
     printf "$format" "-u|u|use " "sdk ver" "使用指定sdk的指定版本"
 }
 
@@ -53,7 +53,7 @@ case $1 in
     -h | h | help)
         help
     ;;
-    -up | up | update)
+    up | update)
         updateConfig
     ;;
     -l | l | list)
@@ -74,16 +74,27 @@ case $1 in
         zip -r $file $3
         handleLocalZip $2 $3 $file
     ;;
+    -ida | ida)
+        assertParamCount $# 4
+        sdk=$2
+        ver=$3
+        dir=$4
+
+        mv $dir $ver
+        file=$sdk-$ver.zip
+        zip -r $file $ver
+        
+        addSdkVersion $sdk $ver
+
+        handleLocalZip $sdk $ver $file
+    ;;
     export)
         printf "export current from %s \n"  $configPath
         cp $configPath .
     ;;
     -a | a)
         assertParamCount $# 3
-        sdk=$2
-        ver=$3
-
-        sed -i "/$sdk/{n;n;n; s/.*/& $ver /;}" $configPath
+        addSdkVersion $2 $3
     ;;
     -iz | iz | installZip)
         assertParamCount $# 4
