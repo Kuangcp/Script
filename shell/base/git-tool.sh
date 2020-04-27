@@ -29,15 +29,18 @@ case $1 in
         if test -n "$3"; then 
             au="--author=$3"
         fi
-        echo $au
-        for i in $(seq 0 $2); do 
+        for i in $(seq 0 $(($2-1))); do 
             startDate=$(date -d "$(($i+1)) day ago" +"%Y-%m-%d")
 
-            data=$(git log --oneline --decorate --stat $au --since="$(($i+1)) day ago" --until="$i day ago" | grep "files changed")
-            add=$(echo "$data" | awk '{print $4}' | awk '{sum += $1};END {print sum}')
-            del=$(echo "$data" | awk '{print $6}' | awk '{sum += $1};END {print sum}')
+            # echo "git log --oneline --decorate --stat $au --since='$(($i+1)) day ago' --until='$i day ago' | grep 'changed, '"
 
-            printf "$cyan$startDate$end add:$green%-6s$end del:$red%-6s$end\n" $add $del 
+            data=$(git log --oneline --decorate --stat $au --since="$(($i+1)) day ago" --until="$i day ago" | grep "changed, ")
+            add=$(echo "$data" | awk '{print $4}' | grep -v " " | awk '{sum += $1};END {print sum}')
+            del=$(echo "$data" | awk '{print $6}' | grep -v " " | awk '{sum += $1};END {print sum}')
+
+            if test $add -gt 0 || test $del -gt 0 ; then 
+                printf "$cyan$startDate$end add:$green%-6s$end del:$red%-6s$end\n" $add $del 
+            fi 
         done 
     ;;
     -h)
