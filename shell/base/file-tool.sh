@@ -115,6 +115,7 @@ decompress_file (){
         *.gz)                 gunzip $1     ;;
         *.rar)                unrar e $1    ;;
         *.zip)                unzip $1      ;;
+        *.war | *.jar)        unzip $1      ;;
         *.Z)                  uncompress $1 ;;
         *.xz)                 xz -d $1      ;;
         *.7z)                 7z x $1       ;;
