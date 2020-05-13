@@ -10,18 +10,19 @@ path=$(cd `dirname $0`; pwd)
 help(){
     printf "Run：$red bash file-tool.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-8s $yellow%-22s$end%-20s\n"
-    printf "$format" "-h" "" "help"
-    printf "$format" "" "" "copy current path"
-    printf "$format" "-f|f" "filename" "search file on current path"
-    printf "$format" "-d|d" "dirname" "search dir on current path"
-    printf "$format" "-p|p" "relative_path" "copy file path and show it"
-    printf "$format" "-cf|cf" "relative_path" "copy file content"
-    printf "$format" "-cs" "absolute_path count" "create swap file by absolute path"
-    printf "$format" "-l" "file dir" "link file under dir"
-    printf "$format" "-lp" "file" "link file to customer bin"
-    printf "$format" "-b" "file" "change file between file.bak with file"
-    printf "$format" "-e" "file" "decompress file"
-    printf "$format" "-cp" "desktop file" "copy to /usr/share/applications/"
+    printf "$format" \
+    "-h"     ""                    "help" \
+    ""       ""                    "copy current path"\
+    "-f|f"   "filename"            "search file on current path"\
+    "-d|d"   "dirname"             "search dir on current path"\
+    "-p|p"   "relative_path"       "copy file path and show it"\
+    "-cf|cf" "relative_path"       "copy file content"\
+    "-cs"    "absolute_path count" "create swap file by absolute path"\
+    "-l"     "file dir"            "link file under dir"\
+    "-lp"    "file"                "link file to customer bin"\
+    "-b"     "file"                "change file between file.bak with file"\
+    "-e"     "file"                "decompress file"\
+    "-cp"    "desktop file"        "copy to /usr/share/applications/"
     printf "\n"
     printf "$format" "-append" "" "[Python] add current dir to sys.path for python /usr/lib/pythonx.x/site-packages ..."
     printf "$format" "-dgradle" "" "[Java]   download from https://service.gradle.org/distribution "
@@ -32,7 +33,7 @@ help(){
 assert_param_count(){
     actual=$1
     expect=$2
-    if [ ! $1 = $2 ]; then
+    if test $1 -lt $2 ; then
         printf "$red please input correct param count: $2 $end \n"
         exit 1
     fi
@@ -114,7 +115,14 @@ decompress_file (){
         *.rar)                unrar x $1    ;;
         *.gz)                 gunzip $1     ;;
         *.rar)                unrar e $1    ;;
-        *.zip)                unzip $1      ;;
+        *.zip)
+            if test $# == 2; then 
+                # install unzip-iconv
+                unzip -O cp936 $1
+            else 
+                unzip $1
+            fi
+         ;;
         *.war | *.jar)        unzip $1      ;;
         *.Z)                  uncompress $1 ;;
         *.xz)                 xz -d $1      ;;
@@ -183,7 +191,7 @@ case $1 in
     ;;
     -e | e)
         assert_param_count $# 2
-        decompress_file $2
+        decompress_file $2 $3
     ;;
     -f | f)
         pattern=$(get_search_pattern $*)
