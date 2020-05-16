@@ -22,11 +22,6 @@ help(){
     printf "$format" "-b" "file" "change file between file.bak with file"
     printf "$format" "-e" "file" "decompress file"
     printf "$format" "-cp" "desktop file" "copy to /usr/share/applications/"
-    printf "\n"
-    printf "$format" "-append" "" "[Python] add current dir to sys.path for python /usr/lib/pythonx.x/site-packages ..."
-    printf "$format" "-dgradle" "" "[Java]   download from https://service.gradle.org/distribution "
-    printf "$format" "-dgo" "" "[Go]     download from https://golang.google.cn/dl/ "
-    printf "$format" "-go" "*.tar.gz" "[Go]     install on /usr/local "
 }
 
 assert_param_count(){
@@ -69,33 +64,6 @@ get_search_pattern(){
     pattern=$pattern".*"
     pattern=${pattern#*$verb}
     echo $pattern
-}
-
-add_python_sys_path(){
-    lib_path='/usr/local/lib'
-    project=$(pwd)
-    
-    log_info "Please select a python version"
-    versions=$(ls $lib_path | grep "python")
-    for version in $versions; do
-        echo "  " $version 
-    done
-    read version
-    if [ ! -d $lib_path/$version ];then 
-        log_error "target dir not exist: $lib_path/$version"
-    fi
-    
-    log_info "Please input filename, result: $lib_path/$version/dist-packages/filename.pth"
-    while true; do
-        read filename
-        if [ -f "$lib_path/$version/dist-packages/$filename.pth" ];then
-            log_warn "$filename already exist"
-        else 
-            break
-        fi
-    done
-    sudo sh -c "echo $project"/" >> $lib_path/$version/dist-packages/$filename.pth"
-    log_info "add success: $lib_path/$version/dist-packages/$filename.pth"
 }
 
 decompress_file (){
@@ -187,35 +155,6 @@ case $1 in
     -f | f)
         pattern=$(get_search_pattern $*)
         find . -type f -iregex $pattern 
-    ;;
-    -append)
-        add_python_sys_path
-    ;;
-    -go)
-        if [ -f $2 ]; then
-            sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $2 
-        fi
-    ;;
-    -dgo)
-        tmp_file="/tmp/down-go"
-        curl -s https://golang.google.cn/dl/ > $tmp_file
-        cat $tmp_file | grep -e "https.*linux-amd.*td" | head -n 20 | cut -d '"' -f 6 | awk '{printf("%2d %s\n", NR, $0);}'
-        printf "select which download (1-20):"
-        read no
-        url=$(grep -e "https.*linux-amd.*td" $tmp_file | sed -n ${no}p | cut -d '"' -f 6)
-        echo $url
-        wget $url
-    ;;
-    -dgradle)
-        tmp_file="/tmp/down-gradle"
-        curl -s https://services.gradle.org/distributions/ > $tmp_file
-        cat $tmp_file | grep "bin\.zip\"" | head -n 20 | cut -d '"' -f 2 | awk '{printf("%2d %s\n", NR, $0);}'
-        printf "select which download (1-20):"
-        read no
-        line=$(grep "bin\.zip\"" $tmp_file | sed -n ${no}p | cut -d '"' -f 2)
-        url="https://services.gradle.org$line"
-        echo $url
-        wget $url
     ;;
     *)
         path=${1#*\./}
