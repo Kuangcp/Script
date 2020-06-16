@@ -117,7 +117,7 @@ decompress_file (){
         *.rar)                unrar e $1    ;;
         *.zip)
             if test $# == 2; then 
-                # install unzip-iconv
+                # must install unzip-iconv
                 unzip -O cp936 $1
             else 
                 unzip $1
