@@ -25,8 +25,7 @@ find_pod(){
     list=$(kubectl --namespace docker$1 get pods |grep $regex | grep -v Ter)
     match_num=$(kubectl --namespace docker$1 get pods |grep $regex | grep -v Ter| wc -l)
     if test $match_num != 1; then
-        printf "$red    server not sepcified! $end\n"
-
+        printf "$yellow┏━━━━━━━━━━━━━━━━━━━━━━━┓$end\n$yellow┃$red   pod not sepcified!  $end$yellow┃\n┗━━━━━━━━━━━━━━━━━━━━━━━┛$end\n"
         echo "$list"
         exit 0
     fi

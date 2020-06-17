@@ -63,7 +63,7 @@ show_all_processes_sort_cpu(){
 }
 
 statistic_memory(){
-    ps aux | egrep -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;printf "%8sK %sM\n",sum,sum/1024}'
+    ps aux | egrep -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;printf "%8sK   %sM\n",sum,sum/1024}'
 }
 
 watch_process(){
@@ -184,7 +184,7 @@ case $1 in
             if [ ${#result} = 0 ];then
                 continue
             fi
-            printf "%-10s: " $param
+            printf "$cyan%-21s$end: " $param
             statistic_memory $param
         done
 
