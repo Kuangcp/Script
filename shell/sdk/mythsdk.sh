@@ -151,22 +151,27 @@ case $1 in
     ;;
     -dgo)
         tmp_file="/tmp/down-go"
+        rootURL='https://golang.google.cn'
         curl -s https://golang.google.cn/dl/ > $tmp_file
-        cat $tmp_file | grep -e "https.*linux-amd.*td" | head -n 20 | cut -d '"' -f 6 | awk '{printf("%2d %s\n", NR, $0);}'
+        cat $tmp_file | grep -e ".*linux-amd.*td" | head -n 20 | cut -d '"' -f 6 | awk '{printf("%2d %s\n", NR, $0);}'
         printf "select which download (1-20):"
         read no
-        url=$(grep -e "https.*linux-amd.*td" $tmp_file | sed -n ${no}p | cut -d '"' -f 6)
+        url=$(grep -e ".*linux-amd.*td" $tmp_file | sed -n ${no}p | cut -d '"' -f 6)
+        
+        url=$rootURL$url
         echo $url
         wget $url
     ;;
     -dgradle)
         tmp_file="/tmp/down-gradle"
-        curl -s https://services.gradle.org/distributions/ > $tmp_file
+        rootURL='https://services.gradle.org'
+        curl -s $rootURL/distributions/ > $tmp_file
         cat $tmp_file | grep "bin\.zip\"" | head -n 20 | cut -d '"' -f 2 | awk '{printf("%2d %s\n", NR, $0);}'
         printf "select which download (1-20):"
         read no
         line=$(grep "bin\.zip\"" $tmp_file | sed -n ${no}p | cut -d '"' -f 2)
-        url="https://services.gradle.org$line"
+        
+        url="$rootURL$line"
         echo $url
         wget $url
     ;;
