@@ -25,15 +25,11 @@ configFile=$cnfDir'/main.ini'
 # TODO 文件名最大长度是255, 注意测试边界条件
 
 init(){
-    if [ ! -d $trashDir ];then
-        mkdir -p $trashDir
-    fi
-    if [ ! -d $logDir ];then
-        mkdir -p $logDir
-    fi
-    if [ ! -d $cnfDir ];then
-        mkdir -p $cnfDir
-    fi
+    for dir in $trashDir $logDir $cnfDir ; do 
+        if [ ! -d $dir ];then
+            mkdir -p $dir
+        fi
+    done
 
     if [ ! -f $logFile ];then
         touch $logFile
@@ -97,6 +93,7 @@ move_file(){
     # 全部加上双引号是因为文件名中有可能会有空格
     mv "$currentPath/$fileName" "$trashDir/$fileName.$readable.$deleteTime"
 }
+
 move_by_suffix(){
     name=$1
     move_all ".*[^\.][\.]{1}$name\$"
