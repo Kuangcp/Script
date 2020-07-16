@@ -240,6 +240,11 @@ show_name_colorful(){
 # 按删除的日期排序 列出
 list_trash_files(){
     # grep r 是为了将一行结果变成多行, 目前不展示link文件
+    fileCounts=$(ls -l $trashDir | wc -l)
+    if test $fileCounts -le 1 ; then
+        exit
+    fi
+
     file_list=`ls --sort=t --time=status -lrAFh $trashDir | egrep -v '^lr' | grep 'r'`
     count=0
     # mode num user group size month day time 
