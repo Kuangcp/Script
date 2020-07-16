@@ -70,7 +70,7 @@ delay_delete(){
             # echo "$line | $result"
             if [ $result -ge $liveTime ];then
                 logWarn "▶ real delete       ▌" "rm -rf $trashDir/$line"
-                # rm -rf "$trashDir/$line"
+                rm -rf "$trashDir/$line"
             fi
         done
         fileNum=`ls -A $trashDir | wc -l`
@@ -273,7 +273,7 @@ killScript(){
         printf $red"not exist background running script\n"$end
     else
         printf $red"pid : $scriptPid killed\n"$end
-        cat $pidFile
+        # cat $pidFile
         logWarn "♢ killed script     ▌" "pid: $scriptPid"
         kill $scriptPid
     fi
