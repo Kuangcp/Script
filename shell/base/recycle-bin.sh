@@ -9,25 +9,27 @@ blue='\033[0;36m'
 white='\033[0;37m'
 end='\033[0m'
 
+pid=$$
+
 userDir=(`cd && pwd`)
 scriptPath=$(cd `dirname $0`; pwd) # 脚本所在目录
 currentPath=`pwd`
 
 mainDir=$userDir'/.config/app-conf/RecycleBinDev'
 trashDir=$mainDir'/trash'
-infoDir=$mainDir'/info'
 logDir=$mainDir'/log'
 cnfDir=$mainDir'/conf'
 
 logFile=$logDir'/RecycleBin.log'
 configFile=$cnfDir'/main.ini'
+pidFile=$cnfDir'/pid'
 
 # /home/kcp/.local/share/Trash 回收站实际目录
 
 # TODO 文件名最大长度是255, 注意测试边界条件
 
 init(){
-    for dir in $trashDir $logDir cnfDir $infoDir ; do 
+    for dir in $trashDir $logDir $cnfDir; do 
         if [ ! -d $dir ];then
             mkdir -p $dir
         fi
@@ -39,37 +41,41 @@ init(){
     if [ ! -f $configFile ];then
         echo -e "liveTime=86400\ncheckTime='10m'" > $configFile
     fi
+    
+    if test -z $trashDir; then 
+        printf $red"config error! trashDir is invalid \n"$end
+        exit 1
+    fi 
 
-    printf "TrashPath : \033[0;32m"$mainDir"\n\033[0m"
+    printf "TrashPath : "$green$mainDir$end"\n"
     . $configFile
 }
 
 # Delay delete file and shielded signal, Not blocking the current terminal 
 delay_delete(){
-    result=`ps -ef | grep recycle-bin.sh | grep -v grep | wc -l`
-    # Restrict running only one process. But the first run will be 2. 
-    # because this function is run by a fork process ?
-    if [ "$result" != "2" ];then
+    if [ -f $pidFile ]; then 
         exit
     else
-        fileNum=`ls -A $trashDir | wc -l`
-        while [ ! $fileNum = 0 ]; do
-            sleep $checkTime
-            logInfoWithWhite "→ timing detection  ▌" "check trash ..."
-            ls -A $trashDir | cat | while read line; do
-                currentTime=`date +%s`
-                removeTime=${line##*\.}
-                ((result=$currentTime-$removeTime))
-                # echo "$line | $result"
-                if [ $result -ge $liveTime ];then
-                    logWarn "▶ real delete       ▌" "rm -rf $trashDir/$line"
-                    rm -rf "$trashDir/$line"
-                fi
-            done
-            fileNum=`ls -A $trashDir | wc -l`
-        done
-        logError "▶ trash is empty    ▌" "script will exit ..."
+        printf $pid > $pidFile
     fi
+
+    fileNum=`ls -A $trashDir | wc -l`
+    while [ ! $fileNum = 0 ]; do
+        sleep $checkTime
+        logInfoWithWhite "→ timing detection  ▌" "check trash ..."
+        ls -A $trashDir | cat | while read line; do
+            currentTime=`date +%s`
+            removeTime=${line##*\.}
+            ((result=$currentTime-$removeTime))
+            # echo "$line | $result"
+            if [ $result -ge $liveTime ];then
+                logWarn "▶ real delete       ▌" "rm -rf $trashDir/$line"
+                # rm -rf "$trashDir/$line"
+            fi
+        done
+        fileNum=`ls -A $trashDir | wc -l`
+    done
+    logError "▶ trash is empty    ▌" "script will exit ..."
 }
 
 # move file to trash 
@@ -101,10 +107,10 @@ move_file(){
     deleteTime=`date +%s`
     readable=`date +%Y-%m-%d_%H-%M-%S`
 
-    mv "$currentPath/$origin" "$trashDir/$target"
-    echo "$currentPath/$origin" >> "$infoDir/$target.info"
-    echo "$deleteTime" >> "$infoDir/$target.info"
-    echo "$readable" >> "$infoDir/$target.info"
+    mv "$currentPath/$origin" "$trashDir/$target.$deleteTime"
+    # echo "$currentPath/$origin" >> "$infoDir/$target.info"
+    # echo "$deleteTime" >> "$infoDir/$target.info"
+    # echo "$readable" >> "$infoDir/$target.info"
 }
 
 lazy_delete_by_suffix(){
@@ -219,15 +225,15 @@ help(){
 
 show_name_colorful(){
     fileName=$1
-    timeStamp=${fileName##*\.}
-    fileName=${fileName%\.*}
-    time=${fileName##*\.}
-    name=${fileName%\.*}
-    
-    datetime=`echo $time | sed 's/_/ /' | sed 's/-/:/3' | sed 's/-/:/3'`
 
-    # format: datetime filename
-    printf "$green $datetime$end $yellow$name$end.$time.$red$timeStamp$end\n"
+    timeStamp=${fileName##*\.}
+    timeStamp=${timeStamp%/*}
+
+    fileName=${fileName%\.*}
+    
+    time=$(date --date=@$timeStamp "+%Y-%m-%d %H:%M:%S")
+
+    printf "$green $time$end $yellow $fileName$end\n"
     # printf " %-30s$green%s$end\n" $name "$time" 
 }
 
@@ -237,7 +243,7 @@ list_trash_files(){
     file_list=`ls --sort=t --time=status -lrAFh $trashDir | egrep -v '^lr' | grep 'r'`
     count=0
     # mode num user group size month day time 
-    printf "$blue%-9s %-3s %-5s %-5s %-5s %-19s %-5s$end\n" "   mode  " "num" "user" "group" "size" "      datetime" "        filename "
+    printf "$blue%-9s %-3s %-5s %-5s %-5s %-19s %-5s$end\n" "   mode  " "num" "user" "group" "size" " datetime" "  filename "
     printf "${blue}---------------------------------------------------------------------------------------- $end\n"
     for line in $file_list;do
         count=$(($count + 1))
@@ -261,18 +267,19 @@ upgrade(){
 
 killScript(){
     scriptPid=$(findProcessPid "recycle-bin.sh")
-    watchPid=$(findProcessPid "$configFile")
+    # watchPid=$(findProcessPid "$configFile")
 
     if test -z "$scriptPid"; then
         printf $red"not exist background running script\n"$end
     else
-        # printf $red"pid : $id killed\n"$end
+        printf $red"pid : $scriptPid killed\n"$end
+        cat $pidFile
         logWarn "♢ killed script     ▌" "pid: $scriptPid"
-        kill -9 $scriptPid
+        kill $scriptPid
     fi
-    if test -n "$watchPid"; then 
-        kill $watchPid
-    fi 
+    # if test -n "$watchPid"; then 
+    #     kill $watchPid
+    # fi 
 }
 
 findProcessPid(){
@@ -343,6 +350,7 @@ case $1 in
     ;;
     -d)
         killScript
+        rm -f $pidFile
     ;;
     -cnf)
         less $configFile
