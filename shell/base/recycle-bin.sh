@@ -27,12 +27,11 @@ configFile=$cnfDir'/main.ini'
 # TODO 文件名最大长度是255, 注意测试边界条件
 
 init(){
-    dirs=$trashDir" "$logDir" "$cnfDir" "$infoDir
-    for dir in $dirs; do
+    for dir in $trashDir $logDir cnfDir $infoDir ; do 
         if [ ! -d $dir ];then
             mkdir -p $dir
         fi
-    done;
+    done
 
     if [ ! -f $logFile ];then
         touch $logFile
@@ -147,20 +146,28 @@ lazy_delete_with_pattern(){
 }
 
 rollback(){
-    if [ "$1"1 = "1" ];then
+    if test -z $1 ;then
         printf $red"please select a specific rollback file\n"
         exit 1
     fi
-    if [ ! -f $trashDir/$1 ] && [ ! -d $trashDir/$1 ];then
-        printf $red"this file not exist \n"
+
+    current_file="$1"
+    has_str=$(echo $current_file | grep "$trashDir")
+    if test -z $has_str; then
+        current_file="$trashDir/$1"
+    fi
+    if [ ! -f $current_file ] && [ ! -d $current_file ] && [ ! -L $current_file ];then
+        printf $red" $current_file not exist \n"
         exit 1
     fi
-    file=${1%\.*}
+    file=${current_file#*"$trashDir/"}
     file=${file%\.*}
-    mv $trashDir/$1 $file
+    file=${file%\.*}
+    mv $current_file $file
     logInfoWithCyan "◀ rollback file     ▌" "$file"
-    printf $green"rollback [$file] complete \n"
+    printf $green"Rollback $cyan[$file]$end complete \n"
 }
+
 log(){
     printf " $1\n"
 }
@@ -252,8 +259,41 @@ upgrade(){
     printf $green"upgrade script success\n"$end
 }
 
-# main entrance: init enviroment for this shell script 
-init
+killScript(){
+    scriptPid=$(findProcessPid "recycle-bin.sh")
+    watchPid=$(findProcessPid "$configFile")
+
+    if test -z "$scriptPid"; then
+        printf $red"not exist background running script\n"$end
+    else
+        # printf $red"pid : $id killed\n"$end
+        logWarn "♢ killed script     ▌" "pid: $scriptPid"
+        kill -9 $scriptPid
+    fi
+    if test -n "$watchPid"; then 
+        kill $watchPid
+    fi 
+}
+
+findProcessPid(){
+    id=`ps -ef | grep "$1" | grep -v "grep" | grep -v "\-d" | awk '{print $2}'`
+    if test -z $id ; then
+        return
+    else
+        echo $id
+    fi
+}
+
+watchConfigFile(){
+    result=$(ps -ef | grep $configFile | grep -v grep | wc -l)
+    if test $result -gt 0; then
+        return
+    fi
+
+    inotifywait -e modify,delete,create,attrib $configFile
+    . $configFile
+    logInfoWithGreen "♢ reload config     ▌" "liveTime: $liveTime checkTime: $checkTime "
+}
 
 assertParamCount(){
     actual=$1
@@ -263,6 +303,9 @@ assertParamCount(){
         exit 1
     fi
 }
+
+# main entrance: init enviroment for this shell script 
+init
 
 # read script params 
 case $1 in 
@@ -299,14 +342,7 @@ case $1 in
         ps aux | grep RSS | grep -v "grep" && ps aux | egrep -v "grep" | grep recycle-bin.sh | grep -v "recycle-bin.sh -b"
     ;;
     -d)
-        id=`ps -ef | grep "recycle-bin.sh" | grep -v "grep" | grep -v "\-d" | awk '{print $2}'`
-        if [ "$id"1 = "1" ];then
-            printf $red"not exist background running script\n"$end
-        else
-            printf $red"pid : $id killed\n"$end
-            logWarn "♢ killed script     ▌" "pid: $id"
-            kill -9 $id
-        fi
+        killScript
     ;;
     -cnf)
         less $configFile
@@ -316,6 +352,7 @@ case $1 in
     ;;
     -cl)
         (delay_delete &)
+        # (watchConfigFile &)
     ;;
     *)
         if [ $# = 0 ];then
@@ -330,5 +367,6 @@ case $1 in
         done
         
         (delay_delete &)
+        # (watchConfigFile &)
     ;;
 esac

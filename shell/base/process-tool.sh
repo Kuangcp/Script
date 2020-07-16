@@ -35,6 +35,16 @@ show_process_by_name(){
     ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color
 }
 
+show_pattern_processes(){
+    if test -z "$1"; then 
+        return 0
+    fi
+    printf "${cyan}KiB\tMiB\tPID\tCPU\tCommand ${end} \n"
+    ps aux | grep -v RSS | grep -E "$1" | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t"$3 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
+    printf "\n"
+    free -h
+}
+
 show_all_processes(){
     printf "${cyan}KiB\tMiB\tPID\tCPU\tCommand ${end} \n"
     ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t"$3 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
@@ -53,7 +63,7 @@ show_all_processes_sort_cpu(){
 }
 
 statistic_memory(){
-    ps aux | egrep -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;printf "%8sK %sM\n",sum,sum/1024}'
+    ps aux | egrep -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;printf "%8sK   %sM\n",sum,sum/1024}'
 }
 
 watch_process(){
@@ -158,6 +168,9 @@ case $1 in
     -ss | ss)
         sort_process $2
     ;;
+    -l | light)
+        show_pattern_processes "$2"
+    ;;
     -b)
         ps aux | egrep -v "grep" | egrep -v "process-tool.sh -b" | grep -i "process-tool.sh" --color
     ;;
@@ -171,7 +184,7 @@ case $1 in
             if [ ${#result} = 0 ];then
                 continue
             fi
-            printf "%-10s: " $param
+            printf "$cyan%-21s$end: " $param
             statistic_memory $param
         done
 

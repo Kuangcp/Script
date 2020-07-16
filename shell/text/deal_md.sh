@@ -1,10 +1,10 @@
 path=$(cd `dirname $0`; pwd)
 . $path/../base/base.sh
 
-# 忽略文件目录
-config_ignore_file=$path'/ignore.ini'
-# 仓库目录
-config_file="$path"/local.conf
+
+config_ignore_file=$path'/ignore.ini' # 忽略文件目录
+config_file="$path"/local.conf # 仓库目录
+
 
 # 载入配置
 load_config(){
@@ -23,7 +23,10 @@ check_config(){
 
 generate_catalog(){
     # bash $path'/append_catalog.sh' "$1"
-    python3 "$path/refresh_catalog.py" 'at' $1
+    # python3 "$path/refresh_catalog.py" 'at' $1
+    printf "%s %s %s" $green $1 $end
+    md-formatter $1
+    printf " complete.\n"
 }
 
 handle_file(){
@@ -132,6 +135,11 @@ case $1 in
         check_config
         printf "refresh all catalog: path=%s\n" "$config_target_repo"
         read_dir $config_target_repo
+    ;;
+    km)
+        assertParamCount $# 2
+        check_config
+
     ;;
     *)
         if [ $# = 0 ];then 
