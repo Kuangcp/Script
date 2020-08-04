@@ -168,10 +168,9 @@ rollback(){
     fi
     file=${current_file#*"$trashDir/"}
     file=${file%\.*}
-    file=${file%\.*}
     mv $current_file $file
     logInfoWithCyan "◀ rollback file     ▌" "$file"
-    printf $green"Rollback $cyan[$file]$end complete \n"
+    printf $green"Rollback: $cyan$file$end\n"
 }
 
 log(){
