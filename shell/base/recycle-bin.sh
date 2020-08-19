@@ -75,7 +75,8 @@ delay_delete(){
         done
         fileNum=`ls -A $trashDir | wc -l`
     done
-    logError "▶ trash is empty    ▌" "script will exit ..."
+    logError "▶ trash is empty    ▌" "script will exit. pid: "`cat $pidFile`
+    removePid
 }
 
 # move file to trash 
@@ -306,6 +307,10 @@ watchConfigFile(){
     logInfoWithGreen "♢ reload config     ▌" "liveTime: $liveTime checkTime: $checkTime "
 }
 
+removePid(){
+    rm -f $pidFile
+}
+
 assertParamCount(){
     actual=$1
     expect=$2
@@ -354,7 +359,7 @@ case $1 in
     ;;
     -d)
         killScript
-        rm -f $pidFile
+        removePid
     ;;
     -cnf)
         less $configFile
