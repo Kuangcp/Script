@@ -39,15 +39,15 @@ show_pattern_processes(){
     if test -z "$1"; then 
         return 0
     fi
-    printf "${cyan}KiB\tMiB\tPID\tCPU\tCommand ${end} \n"
-    ps aux | grep -v RSS | grep -E "$1" | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t"$3 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
+    printf "${cyan}KiB\tMiB\tPID\tCPU\tCommand${end}\n"
+    ps aux | grep -v RSS | grep -E "$1" | egrep -v "grep" | egrep -v "process-tool\.sh.*$1"  | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t"$3 "\t'$green'" $11 "'$end'"}' | sort -n -r
     printf "\n"
     free -h
 }
 
 show_all_processes(){
     printf "${cyan}KiB\tMiB\tPID\tCPU\tCommand ${end} \n"
-    ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t"$3 "\t'$green'" $11 "'$end'"}' | sort --human-numeric-sort -r
+    ps aux | grep -v RSS | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t"$3 "\t'$green'" $11 "'$end'"}' | sort -n -r
     # printf "\nmemory sum info\n\n"
     free -h
 }
@@ -154,6 +154,24 @@ help(){
     printf "$format" "watch" "process" "10s统计进程总内存 输出到 $logDir/ {process}.process.log"
 }
 
+statistic_memory_by_name(){
+    for param in $*; do
+        if test "-ms" = $param;then
+            continue
+        fi
+        if test "-mss" = $param;then
+            continue
+        fi
+        # echo $param
+            result=$(check_process $param)
+        if [ ${#result} = 0 ];then
+            continue
+        fi
+        printf "$cyan%-21s$end: " $param
+        statistic_memory $param
+    done
+}
+
 init 
 case $1 in 
     -h | h)
@@ -175,19 +193,14 @@ case $1 in
         ps aux | egrep -v "grep" | egrep -v "process-tool.sh -b" | grep -i "process-tool.sh" --color
     ;;
     -ms)
-        for param in $*; do
-            if test "-ms" = $param;then
-                continue
-            fi
-            # echo $param
-             result=$(check_process $param)
-            if [ ${#result} = 0 ];then
-                continue
-            fi
-            printf "$cyan%-21s$end: " $param
-            statistic_memory $param
+        statistic_memory_by_name $@
+    ;;
+    -mss)
+        while true ; do 
+            statistic_memory_by_name $@
+            sleep 5
+            echo ''
         done
-
     ;;
     -stop)
         kill_self

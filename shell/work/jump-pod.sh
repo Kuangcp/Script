@@ -22,7 +22,7 @@ find_pod(){
     params=${*}
     regex=${params// /.*}
 
-    list=$(kubectl --namespace docker$1 get pods |grep $regex | grep -v Ter)
+    list=$(kubectl --namespace docker$1 get pods -owide |grep $regex | grep -v Ter)
     match_num=$(kubectl --namespace docker$1 get pods |grep $regex | grep -v Ter| wc -l)
     if test $match_num != 1; then
         printf "$yellow┏━━━━━━━━━━━━━━━━━━━━━━━┓$end\n$yellow┃$red   pod not sepcified!  $end$yellow┃\n┗━━━━━━━━━━━━━━━━━━━━━━━┛$end\n"

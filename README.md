@@ -72,7 +72,7 @@
 
 > [Python](/python/increase_readed.py)
 
-## 通过 m3u8 URL 下载并转换成mp4
+## 通过 m3u8 URL 下载ts文件 并转换成mp4
 > [Shell](/shell/media/mergets.sh)
 
 *********
