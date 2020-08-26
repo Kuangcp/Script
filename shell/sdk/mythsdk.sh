@@ -18,6 +18,7 @@ help(){
     printf "$format" "-i|i|install " "sdk <ver>" "下载安装指定sdk的 最新版本/指定版本"
     printf "$format" "-iz|iz " "sdk ver file" "从 zip包 安装指定sdk的指定版本 包名:sdk-version.zip  内容:version/bin"
     printf "$format" "-id|id " "sdk ver dir" "从 目录 安装指定sdk的指定版本 逻辑和上述压缩包一致"
+    printf "$format" "-ida|ida " "sdk ver dir" "从 目录 安装指定sdk的指定版本 并加入sdk配置"
     printf "$format" "-a|a " "sdk ver" "添加 sdk version"
     printf "$format" "-u|u|use " "sdk ver" "使用指定sdk的指定版本"
     printf "\n"
