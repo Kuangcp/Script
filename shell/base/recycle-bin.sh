@@ -206,21 +206,26 @@ logWarn(){
 help(){
     printf "Usage：$red bash recycle-bin.sh$green <verb> $yellow<args>$end\n\n"
     printf "    Trash, delete file at delay time that configed \n\n"
-    format="  $green%-5s $yellow%-15s$end%-20s\n"
+    format="  $green%-5s $yellow%-11s $end%-20s\n"
 
-    printf "$format" ""       "file/dir"     "move file/dir to trash"
     printf "$format" "-h"     ""             "show help"
+    printf "\n"
+    printf "$format" ""       "file/dir"     "move file/dir to trash"
     printf "$format" "-a"     "\"pattern\""  "delete file (can't use *, prefer to use +, actually command: ls | egrep \"pattern\")"
     printf "$format" "-as"    "suffix"       "delete *.suffix"
+    printf "\n"
     printf "$format" "-l"     ""             "list all file in trash(exclude link file)"
     printf "$format" "-s"     ""             "search file from trash"
+    printf "\n"
     printf "$format" "-rb"    "file"         "roll back file from trash"
+    printf "\n"
     printf "$format" "-lo"    "file"         "show log"
-    printf "$format" "-cnf"   ""             "edit main config file "
+    printf "$format" "-cnf"   ""             "edit main config file"
+    printf "$format" "-cl"    ""             "start check trash that file or dir"
+    printf "\n"
     printf "$format" "-b"     ""             "show background running script"
     printf "$format" "-d"     ""             "shutdown this script"
     printf "$format" "-upd"   ""             "upgrade this script when not in git repo"
-    printf "$format" "-cl"    ""             "start check trash that file or dir"
 }
 
 show_name_colorful(){

@@ -30,6 +30,7 @@ def read_blog(list_url) -> bool:
 
     title_list = soup.find_all('h4')
 
+    hasArticle = False
     for line in title_list:
         tag = ReadURL.get_element(str(line), 'target')
         if tag == '_blank':
@@ -39,9 +40,10 @@ def read_blog(list_url) -> bool:
             if "kcp606" not in url:
                 continue
             read_url.url = url
+            hasArticle = True
             read_url.analysis_html()
 
-    return len(title_list) != 0
+    return hasArticle
 
 
 def show_info(info_url):
