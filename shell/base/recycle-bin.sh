@@ -229,8 +229,9 @@ help(){
 }
 
 show_name_colorful(){
-    fileName=$1
+    fileName="$1"
 
+    fileName=${fileName%\**}
     timeStamp=${fileName##*\.}
     timeStamp=${timeStamp%/*}
 
