@@ -111,7 +111,7 @@ push_configed_repos_to_all_remotes(){
 
 check_repo_change(){
     cat $configPath | while read line; do
-    {
+    # {
         repoOutput=''
         # ignore that comment contain + character
         ignore=`echo "$line" | grep "+"`
@@ -142,9 +142,9 @@ check_repo_change(){
         if [ ! "$repoOutput" = "" ]; then
             echo "$repoOutput"
         fi
-    }&
+    # }&
     done
-    wait
+    # wait
 }
 
 show_line_colorful(){
