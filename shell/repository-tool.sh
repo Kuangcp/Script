@@ -43,9 +43,7 @@ push_current_all_remotes(){
 }
 
 pull_configed_repos(){
-    # 并行 最后有序合并输出
     cat $configPath | while read line; do
-    # {
         # ignore that comment contain + character
         ignore=`echo "$line" | grep "+"`
         if [ "$ignore"x != "x" ];then 
@@ -57,13 +55,10 @@ pull_configed_repos(){
             continue
         fi
         
-        result=""
-        result=$result""$(show_line_colorful "$line" $purple)"\n"
-        result=$result""$(cd $repo_path && git pull)"\n"
-        echo "$result"
-    # }&
+        echo ""$(show_line_colorful "$line" $purple)""
+        echo ""$(cd $repo_path && git pull)""
+        echo "........................................\n"
     done
-    # wait
 }
 
 push_configed_repos(){
