@@ -10,19 +10,26 @@ path=$(cd `dirname $0`; pwd)
 help(){
     printf "Run：$red bash file-tool.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-8s $yellow%-22s$end%-20s\n"
-    printf "$format" \
-    "-h"     ""                    "help" \
-    ""       ""                    "copy current path"\
-    "-f|f"   "filename"            "search file on current path"\
-    "-d|d"   "dirname"             "search dir on current path"\
-    "-p|p"   "relative_path"       "copy file path and show it"\
-    "-cf|cf" "relative_path"       "copy file content"\
-    "-cs"    "absolute_path count" "create swap file by absolute path"\
-    "-l"     "file dir"            "link file under dir"\
-    "-lp"    "file"                "link file to customer bin"\
-    "-b"     "file"                "change file between file.bak with file"\
-    "-e"     "file"                "decompress file"\
-    "-cp"    "desktop file"        "copy to /usr/share/applications/"
+    
+    printf "$format" "-h"     ""                    "Help" 
+    printf "$format" ""       ""                    "Copy current path"
+    printf "$format" "-f|f"   "filename"            "Search file on current path"
+    printf "$format" "-d|d"   "dirname"             "Search dir on current path"
+
+    echo ""
+    printf "$format" "-p|p"   "relative_path"       "Copy file path and show it"
+    printf "$format" "-cf|cf" "relative_path"       "Copy file content"
+    printf "$format" "-cp"    "desktop file"        "Copy file to /usr/share/applications/"
+
+    echo ""
+    printf "$format" "-l"     "file dir"            "Link file under dir"
+    printf "$format" "-lp"    "file"                "Link file to custom application bin path"
+
+    echo ""
+    printf "$format" "-b"     "file"                "Rename file to file.bak or reverse it"
+    printf "$format" "-e"     "file"                "Decompress file"
+    printf "$format" "-cs"    "absolute_path count" "Create swap file by absolute path"
+    
     # printf "\n"
     # printf "$format" "-append" "" "[Python] add current dir to sys.path for python /usr/lib/pythonx.x/site-packages ..."
     # printf "$format" "-dgradle" "" "[Java]   download from https://service.gradle.org/distribution "
