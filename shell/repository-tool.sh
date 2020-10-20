@@ -55,8 +55,8 @@ pull_configed_repos(){
             continue
         fi
         
-        echo ""$(show_line_colorful "$line" $purple)""
-        echo ""$(cd $repo_path && git pull)""
+        show_line_colorful "$line" $purple
+        cd $repo_path && git pull
         echo "........................................\n"
     done
 }
