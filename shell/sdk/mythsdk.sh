@@ -1,12 +1,15 @@
 #!/bin/dash
 
 # 当前脚本的运行目录
-runPath=$(cd `dirname $0`; pwd)
+runPath=$(
+    cd $(dirname $0)
+    pwd
+)
 # 拆分文件
 . $runPath/config.sh
 . $runPath/download.sh
 
-help(){
+help() {
     format="  $exist%-14s $yellow%-15s$end%-20s\n"
     printf "$format" "-h|h|help" "" "帮助"
     printf "$format" "q" "<domain>" "配置七牛云域名"
@@ -22,13 +25,13 @@ help(){
     printf "$format" "-a|a " "sdk ver" "添加 sdk version"
     printf "$format" "-u|u|use " "sdk ver" "使用指定sdk的指定版本"
     printf "\n"
-    printf "$format" "-append" ""     "[Python] add current dir to sys.path for python /usr/lib/pythonx.x/site-packages ..."
-    printf "$format" "-dgradle" ""    "[Java]   download from https://service.gradle.org/distribution "
-    printf "$format" "-dgo" ""        "[Go]     download from https://golang.google.cn/dl/ "
+    printf "$format" "-append" "" "[Python] add current dir to sys.path for python /usr/lib/pythonx.x/site-packages ..."
+    printf "$format" "-dgradle" "" "[Java]   download from https://service.gradle.org/distribution "
+    printf "$format" "-dgo" "" "[Go]     download from https://golang.google.cn/dl/ "
     printf "$format" "-go" "*.tar.gz" "[Go]     install on /usr/local "
 }
 
-assertParamCount(){
+assertParamCount() {
     actual=$1
     expect=$2
     if [ ! $1 = $2 ]; then
@@ -37,17 +40,17 @@ assertParamCount(){
     fi
 }
 
-findSDKStartLine(){
+findSDKStartLine() {
     sdk=$1
     count=0
     cat $configPath | while read line; do
-        count=$(($count+1))
+        count=$(($count + 1))
 
         # echo "$count $line"
         has_str=$(echo "$line" | grep $sdk)
 
         # echo "$count $line $has_str"
-        if test -z "$has_str";then
+        if test -z "$has_str"; then
             continue
         else
             return $count
@@ -55,26 +58,26 @@ findSDKStartLine(){
     done
 }
 
-add_python_sys_path(){
+add_python_sys_path() {
     lib_path='/usr/local/lib'
     project=$(pwd)
-    
+
     log_info "Please select a python version"
     versions=$(ls $lib_path | grep "python")
     for version in $versions; do
-        echo "  " $version 
+        echo "  " $version
     done
     read version
-    if [ ! -d $lib_path/$version ];then 
+    if [ ! -d $lib_path/$version ]; then
         log_error "target dir not exist: $lib_path/$version"
     fi
-    
+
     log_info "Please input filename, result: $lib_path/$version/dist-packages/filename.pth"
     while true; do
         read filename
-        if [ -f "$lib_path/$version/dist-packages/$filename.pth" ];then
+        if [ -f "$lib_path/$version/dist-packages/$filename.pth" ]; then
             log_warn "$filename already exist"
-        else 
+        else
             break
         fi
     done
@@ -82,106 +85,106 @@ add_python_sys_path(){
     log_info "add success: $lib_path/$version/dist-packages/$filename.pth"
 }
 
-case $1 in 
-    -h | h | help)
-        help
+case $1 in
+-h | h | help)
+    help
     ;;
-    up | update)
-        updateConfig
+up | update)
+    updateConfig
     ;;
-    -l | l | list)
-        loadConfig
-        listAllSdk 1 $2 | less
+-l | l | list)
+    loadConfig
+    listAllSdk 1 $2 | less
     ;;
-    -ls | ls | lists)
-        loadConfig
-        listAllSdk 0 $2 | less
+-ls | ls | lists)
+    loadConfig
+    listAllSdk 0 $2 | less
     ;;
-    -i | i | install)
-        downByQiNiu $2 $3
+-i | i | install)
+    downByQiNiu $2 $3
     ;;
-    -id | id | installDir)
-        assertParamCount $# 4
-        mv $4 $3
-        file=$2-$3.zip
-        zip -r $file $3
-        handleLocalZip $2 $3 $file
+-id | id | installDir)
+    assertParamCount $# 4
+    mv $4 $3
+    file=$2-$3.zip
+    zip -r $file $3
+    handleLocalZip $2 $3 $file
     ;;
-    -ida | ida)
-        assertParamCount $# 4
-        sdk=$2
-        ver=$3
-        dir=$4
+-ida | ida)
+    assertParamCount $# 4
+    sdk=$2
+    ver=$3
+    dir=$4
 
-        mv $dir $ver
-        file=$sdk-$ver.zip
-        zip -r $file $ver
-        
-        addSdkVersion $sdk $ver
+    mv $dir $ver
+    file=$sdk-$ver.zip
+    zip -r $file $ver
 
-        handleLocalZip $sdk $ver $file
+    addSdkVersion $sdk $ver
+
+    handleLocalZip $sdk $ver $file
     ;;
-    export)
-        printf "export current from %s \n"  $configPath
-        cp $configPath .
+export)
+    printf "export current from %s \n" $configPath
+    cp $configPath .
     ;;
-    -a | a)
-        assertParamCount $# 3
-        addSdkVersion $2 $3
+-a | a)
+    assertParamCount $# 3
+    addSdkVersion $2 $3
     ;;
-    -iz | iz | installZip)
-        assertParamCount $# 4
-        handleLocalZip $2 $3 $4
+-iz | iz | installZip)
+    assertParamCount $# 4
+    handleLocalZip $2 $3 $4
     ;;
-    -q | q | qiNiu)
-        echo "domain="$2"/">$secretPath
+-q | q | qiNiu)
+    echo "domain="$2"/" >$secretPath
     ;;
-    -u | u | use)
-        changeVersion $2 $3 
+-u | u | use)
+    changeVersion $2 $3
     ;;
-    cnf)
-        echo $basePath
+cnf)
+    echo $basePath
     ;;
-        -append)
-        add_python_sys_path
+-append)
+    add_python_sys_path
     ;;
-    -go)
-        if [ -f $2 ]; then
-            sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $2 
-        fi
+-go)
+    if [ -f $2 ]; then
+        sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $2
+    fi
     ;;
-    -dgo)
-        tmp_file="/tmp/down-go"
-        rootURL='https://golang.google.cn'
-        curl -s https://golang.google.cn/dl/ > $tmp_file
-        cat $tmp_file | grep -e ".*linux-amd.*td" | head -n 20 | cut -d '"' -f 6 | awk '{printf("%2d %s\n", NR, $0);}'
-        printf "select which download (1-20):"
-        read no
-        url=$(grep -e ".*linux-amd.*td" $tmp_file | sed -n ${no}p | cut -d '"' -f 6)
-        
-        url=$rootURL$url
-        echo $url
-        wget $url
+-dgo)
+    tmp_file="/tmp/down-go"
+    rootURL='https://golang.google.cn'
+    curl -s https://golang.google.cn/dl/ >$tmp_file
+    cat $tmp_file | grep -e ".*linux-amd.*td" | head -n 20 | cut -d '"' -f 6 | awk '{printf("%2d %s\n", NR, $0);}'
+    printf "select which download (1-20):"
+    read no
+    url=$(grep -e ".*linux-amd.*td" $tmp_file | sed -n ${no}p | cut -d '"' -f 6)
+
+    url=$rootURL$url
+    echo $url
+    wget $url
     ;;
-    -dgradle)
-        tmp_file="/tmp/down-gradle"
-        rootURL='https://services.gradle.org'
-        curl -s $rootURL/distributions/ > $tmp_file
-        cat $tmp_file | grep "bin\.zip\"" | head -n 20 | cut -d '"' -f 2 | awk '{printf("%2d %s\n", NR, $0);}'
-        printf "select which download (1-20):"
-        read no
-        line=$(grep "bin\.zip\"" $tmp_file | sed -n ${no}p | cut -d '"' -f 2)
-        
-        url="$rootURL$line"
-        echo $url
-        wget $url
+-dgradle)
+    tmp_file="/tmp/down-gradle"
+    rootURL='https://services.gradle.org'
+    curl -s $rootURL/distributions/ >$tmp_file
+    cat $tmp_file | grep "bin\.zip\"" | head -n 20 | cut -d '"' -f 2 | awk '{printf("%2d %s\n", NR, $0);}'
+    printf "select which download (1-20):"
+    read no
+    line=$(grep "bin\.zip\"" $tmp_file | sed -n ${no}p | cut -d '"' -f 2)
+
+    url="$rootURL$line"
+    echo $url
+    wget $url
     ;;
-    *)
-        printf $yellow"请输入参数:\n"
-        help
+*)
+    printf $yellow"请输入参数:\n"
+    help
     ;;
 esac
 
 # TODO 进入主目录
-# TODO 简化 新添加一个sdk的zip时的流程 现在是直接 li, 然后解压正确, 但是要修改配置文件才可以 u  
+# TODO 简化 新添加一个sdk的zip时的流程 现在是直接 li, 然后解压正确, 但是要修改配置文件才可以 u
 # 设想是 sed 自动修改配置文件
