@@ -27,5 +27,6 @@ case $1 in
         path=`pwd`
         echo '#!/usr/bin/env xdg-open\n[Desktop Entry]\nCategories=Development;'>>$1'.desktop'
         echo 'Exec='$path'\nIcon='$path'\nName='$1'\nTerminal=false\nType=Application\n'>>$1'.desktop'
+        vim $1.desktop
     ;;
 esac
