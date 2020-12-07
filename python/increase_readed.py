@@ -35,7 +35,7 @@ def read_blog(list_url) -> bool:
         tag = ReadURL.get_element(str(line), 'target')
         if tag == '_blank':
             line = str(line)
-            temp = line.split('a href="')[1]
+            temp = line.split(' href="')[1]
             url = temp.split('" target=')[0]
             if "kcp606" not in url:
                 continue
