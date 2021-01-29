@@ -1,21 +1,21 @@
 **目录 start**
- 
+
 1. [实用性脚本](#实用性脚本)
     1. [sdk管理](#sdk管理)
     1. [助手脚本](#助手脚本)
         1. [Python](#python)
         1. [C](#c)
     1. [Git仓库有关](#git仓库有关)
-    1. [Github和Gitbook](#github和gitbook)
+        1. [Github和Gitbook](#github和gitbook)
     1. [文件处理](#文件处理)
     1. [按组切换 host](#按组切换-host)
     1. [创建Github任意提交时间](#创建github任意提交时间)
-    1. [记录并统计敲击键盘的数据](#记录并统计敲击键盘的数据)
+    1. [记录并统计键盘按键数据](#记录并统计键盘按键数据)
     1. [刷CSDN浏览量](#刷csdn浏览量)
-    1. [通过 m3u8 URL 下载并转换成mp4](#通过-m3u8-url-下载并转换成mp4)
+    1. [通过 m3u8 URL 下载ts文件 并转换成mp4](#通过-m3u8-url-下载ts文件-并转换成mp4)
 1. [相关的脚本库](#相关的脚本库)
 
-**目录 end**|_2019-07-20 14:17_|
+**目录 end**|_2021-01-29 17:37_|
 ****************************************
 # 实用性脚本
 > 给自己Linux使用的脚本
@@ -27,7 +27,7 @@
 ## sdk管理
 > `比sdkman 更简洁的sdk管理工具 因为采用的七牛云是免费版。请自行使用自己的七牛云进行使用`
 
-- [Shell版](/shell/sdk) | [Python版](/python/mythsdk/)`Python是最初版,现已放弃,但是基本功能能用` 
+- [Shell 实现](/shell/sdk) | [Python版](/python/mythsdk/)`Python是最初版,现已放弃,但是基本功能能用` 
 
 *********************************
 
@@ -42,38 +42,38 @@
 
 ## Git仓库有关
 - [快速查看改动的git仓库](/python/nouse/check_repos.py) 
-  - [Shell实现版](/shell/check_by_aliases.sh)
+  - [Shell 实现](/shell/check_by_aliases.sh)
 
 ### Github和Gitbook
-> [Python](/python/create_tree.py) 实现了将一个md的仓库, 生成一个GitBook所特有的目录文件 SUMMARY.md
+> [Python 实现](/python/create_tree.py) 实现了将一个md的仓库, 生成一个GitBook所特有的目录文件 SUMMARY.md
 
 然后就能方便的在线阅读了, 而且几乎没有修改自己笔记的仓库
 
 > [示例](https://github.com/Kuangcp/Memo)
 
 ## 文件处理
-- [Python](/python/rename_image.py)`批量重命名文件`
+- [Python 实现](/python/rename_image.py)`批量重命名文件`
 
 ## 按组切换 host
-> [Python](/python/tool/switch-host-group/app.py)
+> [Python 实现](/python/tool/switch-host-group/app.py)
 
 功能参考自 [SwitchHosts](https://github.com/oldj/SwitchHosts) 出于个人原因, 不太喜欢该软件, 重且bug多 但是操作方便  
 写Python脚本就简单直接 但是操作复杂了点, 如果host组内容不是频繁改动 还是很适合的  
 
 ## 创建Github任意提交时间
-> [Python](/python/nouse/create_commit.py) `参考自github上的greenhat`  
-> [Shell](/shell/create_commit.sh)
+> [Python 实现](/python/nouse/create_commit.py) `参考自github上的greenhat`  
+> [Shell 实现](/shell/create_commit.sh)
 
 ## 记录并统计键盘按键数据
-> [Python](/python/tool/key)
-
+> [Python 实现](/python/tool/key)
+> [Go 实现](https://github.com/Kuangcp/GoBase/tree/master/toolbox/keylogger)
 ## 刷CSDN浏览量
 > CSDN浏览量应该和IP有关系, 所以一天也就刷一次, 权当玩玩   
 
-> [Python](/python/increase_readed.py)
+> [Python 实现](/python/increase_readed.py)
 
 ## 通过 m3u8 URL 下载ts文件 并转换成mp4
-> [Shell](/shell/media/mergets.sh)
+> [Shell 实现](/shell/media/mergets.sh)
 
 *********
 
