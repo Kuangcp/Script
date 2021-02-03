@@ -12,15 +12,14 @@ assertParamCount(){
 
 help(){
     printf "Run：$red sh DockerTool.sh $green<verb> $yellow<args>$end\n"
-    format="  $green%-3s $yellow%-4s$end%-20s\n"
+    format="  $green%-3s $yellow%-6s$end%-20s\n"
     printf "$format" "-h" "" "help"
-    printf "$format" "-l" "image" "list image all tags"
+    printf "$format" "-l" "image" "list docker image all tags"
 }
 
 list_image_tags(){
     image=$1
-    tags=$(wget -q https://registry.hub.docker.com/v1/repositories/${image}/tags -O - | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n' | awk -F: '{print $3}')
-    echo "$tags"
+    curl -s "https://registry.hub.docker.com/v1/repositories/${image}/tags" | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n' | awk -F: '{print $3}' | column
 }
 
 case $1 in 
