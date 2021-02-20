@@ -65,8 +65,11 @@
 > [Shell 实现](/shell/create_commit.sh)
 
 ## 记录并统计键盘按键数据
-> [Python 实现](/python/tool/key)
-> [Go 实现](https://github.com/Kuangcp/GoBase/tree/master/toolbox/keylogger)
+> 仅支持Linux
+
+> [Python 实现](/python/tool/key)  
+> [Go 实现](https://github.com/Kuangcp/GoBase/tree/master/toolbox/keylogger)`实现报表，kpm实时计算`  
+
 ## 刷CSDN浏览量
 > CSDN浏览量应该和IP有关系, 所以一天也就刷一次, 权当玩玩   
 

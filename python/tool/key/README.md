@@ -1,4 +1,5 @@
 # 记录并分析键盘敲击数据
+> 原理 通过evdev包 监听 Linux 上 InputEvent 接口对应的键盘设备，记录按键
 
 ## 1.配置redis
 ```sh
