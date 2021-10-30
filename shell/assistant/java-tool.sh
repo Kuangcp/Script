@@ -95,9 +95,45 @@ show_all_java_process(){
     done
 }
 
+watch_pid_stack(){
+    shift
+    interval=$1
+    loop=$2
+    # 默认值
+    if ! test $loop ; then 
+        loop=100
+    fi
+    if ! test $interval; then 
+        interval=1
+    fi 
+
+    # 选择Java进程
+    select appname in $(jps | sed 's/ /　/'); do
+        log_info "you choose is $appname"
+        break
+    done
+    javaPid=${appname%%　*}
+
+    for i in $(seq 1 $loop); do 
+        sleep $interval
+        if [ -d /proc/$javaPid ]; then 
+            name=$(date +%T　%N)
+            echo "jstack cmd $i $name"
+            jstack $javaPid > "${appname}　$name.log"
+        else
+            log_warn "pid $javaPid not exist"
+            exit
+        fi
+    done 
+}
+
 case $1 in 
     -h)
-        help ;;
+        help 
+    ;;
+    -w)
+        watch_pid_stack $*
+    ;;
     -a)
         show_all_java_process
     ;;
