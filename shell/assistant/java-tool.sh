@@ -25,14 +25,25 @@ log_warn(){
 
 help(){
     printf "Run：$red sh java-tool.sh $green<verb> $yellow<args>$end\n"
-    format="  $green%-6s $yellow%-8s$end%-20s\n"
-    printf "$format" "-h" "" "帮助"
+    format="  $green%-3s $yellow%-20s$end%-20s\n"
+    printf "$format" "-h" "" "help"
     printf "$format" "" "pid" "select java pid to show stack"
     printf "$format" "-a" "" "select java pid to show stack"
+    printf "$format" "-w" "interval loopCount" "jstack to log"
+}
+
+javaPid=''
+select_java_pid(){
+    select appname in $(jps | sed 's/ /　/'); do
+        log_info "you choose is $appname"
+        break
+    done
+    javaPid=${appname%%　*}
 }
 
 show_stack_of_process(){
-    pid=$1
+    select_java_pid
+    pid=$javaPid
     if test -z $pid; then
         log_error "pid can not be null"
         exit
@@ -107,12 +118,7 @@ watch_pid_stack(){
         interval=1
     fi 
 
-    # 选择Java进程
-    select appname in $(jps | sed 's/ /　/'); do
-        log_info "you choose is $appname"
-        break
-    done
-    javaPid=${appname%%　*}
+    select_java_pid
 
     for i in $(seq 1 $loop); do 
         sleep $interval
@@ -138,6 +144,6 @@ case $1 in
         show_all_java_process
     ;;
     *)
-        show_stack_of_process $1
+        show_stack_of_process
     ;;
 esac
