@@ -95,14 +95,7 @@ decompress_file (){
         *.rar)                unrar x $1    ;;
         *.gz)                 gunzip $1     ;;
         *.rar)                unrar e $1    ;;
-        *.zip)
-            if test $# == 2; then 
-                # must install unzip-iconv
-                unzip -O cp936 $1
-            else 
-                unzip $1
-            fi
-         ;;
+        *.zip)                unzip $1      ;;
         *.war | *.jar)        unzip $1      ;;
         *.Z)                  uncompress $1 ;;
         *.xz)                 xz -d $1      ;;
@@ -171,7 +164,15 @@ case $1 in
     ;;
     -e | e)
         assert_param_count $# 2
-        decompress_file $2 $3
+        shift
+        for i in $*; do 
+            decompress_file $i
+        done 
+    ;;
+    -ez | ez)
+        assert_param_count $# 2
+        # must install unzip-iconv
+        unzip -O cp936 $2
     ;;
     -f | f)
         pattern=$(get_search_pattern $*)
