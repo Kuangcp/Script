@@ -42,6 +42,7 @@ push_current_all_remotes() {
     for i in $(git remote); do
         log_info "push to "$i
         git push $i
+        git push $i --tags
     done
 }
 

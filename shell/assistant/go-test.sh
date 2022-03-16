@@ -12,7 +12,9 @@ help(){
     printf "Run：$red sh $0 $green<verb> $yellow<args>$end\n"
     format="  $green%-6s $yellow%-8s$end%-20s\n"
     printf "$format" "-h" "" "帮助"
+    printf "$format" "-b" "" "benchmark"
 }
+
 run_bench(){
     methods=$(ls *.go | xargs cat | grep "func Benchmark" |  sed 's/func //g;s/(.*//g')
     select method in $methods; do
@@ -36,9 +38,9 @@ run_test(){
         echo "select error"
     else
         go test -v -run $method *.go 
+        echo "go test -v -run $method *.go"
     fi 
 }
-
 
 case $1 in 
     -h)
