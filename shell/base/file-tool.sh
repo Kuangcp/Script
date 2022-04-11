@@ -131,6 +131,19 @@ case $1 in
             mv "$2" "$origin"
         fi
     ;;
+    -bt|bt)
+        assert_param_count $# 2
+        is_match=$(echo $2 | grep -e ".*\.bak\..*$")
+        # echo $is_match
+
+        if test -z $is_match; then
+            mv "$2" "${2}.bak."$(date +%Y%m%d_%H%M%S)
+        else 
+            origin=${2%%.bak*}
+            # echo $origin
+            mv "$2" "$origin"
+        fi
+    ;;
     -tar|tar)
         file=$2
         if [ ! -f $file ];then 
