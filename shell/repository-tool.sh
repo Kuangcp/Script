@@ -65,6 +65,18 @@ pull_configed_repos() {
     done
 }
 
+pull_dir_repo(){
+    dirs=$(ls -d */)
+    for d in $dirs; do 
+        log_info '<'$d'>'
+        cd $d 
+        git pull
+        printf '\n\n\n'
+        cd ..
+    done 
+
+}
+
 push_configed_repos() {
     cat $configPath | while read line; do
         # {
@@ -282,6 +294,9 @@ case $1 in
     ;;
 -pla | pla)
     pull_configed_repos
+    ;;
+-pld | pld)
+    pull_dir_repo
     ;;
 -ds | ds)
     # url=${2/tree\/master/trunk} bash
