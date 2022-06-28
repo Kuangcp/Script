@@ -13,6 +13,7 @@ help(){
     format="  $green%-6s $yellow%-8s$end%-20s\n"
     printf "$format" "-h" "" "帮助"
     printf "$format" "-b" "" "benchmark"
+    printf "$format" "" "" "选择方法执行"
 }
 
 run_bench(){
