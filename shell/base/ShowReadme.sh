@@ -44,6 +44,12 @@ case $1 in
 		help ;;
 	-a)
 		vim Readme.md ;;
+	i | -i)
+		cat .gitignore
+	;;
+	vi )
+		vim .gitignore
+	;;
 	*)
 		showReadme ;;
 esac
