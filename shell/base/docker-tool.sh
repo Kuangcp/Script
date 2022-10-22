@@ -19,7 +19,10 @@ help(){
 
 list_image_tags(){
     image=$1
-    curl -s "https://registry.hub.docker.com/v1/repositories/${image}/tags" | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n' | awk -F: '{print $3}' | column
+    # community project
+    curl -s "https://registry.hub.docker.com/v2/repositories/${image}/tags?page_size=30" | pretty-json | grep '"name"' | awk '{print $2}' |sed 's/,.*//g;s/"//g' | column
+    # offical lib project
+    curl -s "https://registry.hub.docker.com/v2/repositories/library/${image}/tags?page_size=30" | pretty-json | grep '"name"' | awk '{print $2}' |sed 's/,.*//g;s/"//g' | column
 }
 
 case $1 in 
@@ -29,5 +32,5 @@ case $1 in
         assertParamCount $# 2
         list_image_tags $2 ;;
     *)
-        help ;;
+        list_image_tags $1 ;;
 esac
