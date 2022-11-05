@@ -14,11 +14,11 @@ init(){
 }
 
 check_process(){
-    ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color
+    ps aux | grep -E -v "grep" | grep -E -v "process-tool\.sh.*$1" | grep -i $1 --color
 }
 
 check_process_with_notify(){
-    result=$(ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color)
+    result=$(ps aux | grep -E -v "grep" | grep -E -v "process-tool\.sh.*$1" | grep -i $1 --color)
     if [ ${#result} = 0 ];then
         printf "no process info about $red $1 $end \n"
         exit 0
@@ -32,7 +32,7 @@ show_process_by_name(){
     fi
     check_process_with_notify $1
     echo "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
-    ps aux | egrep -v "grep" | egrep -v "process-tool\.sh.*$1" | grep -i $1 --color
+    ps aux | grep -E -v "grep" | grep -E -v "process-tool\.sh.*$1" | grep -i $1 --color
 }
 
 show_pattern_processes(){
@@ -40,7 +40,7 @@ show_pattern_processes(){
         return 0
     fi
     printf "${cyan}KiB\tMiB\tPID\tCPU\tCommand${end}\n"
-    ps aux | grep -v RSS | grep -E "$1" | egrep -v "grep" | egrep -v "process-tool\.sh.*$1"  | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t"$3 "\t'$green'" $11 "'$end'"}' | sort -n -r
+    ps aux | grep -v RSS | grep -E "$1" | grep -E -v "grep" | grep -E -v "process-tool\.sh.*$1"  | awk '{print $6 "\t'$yellow'" $6/1024 "'$end'\t" $2 "\t"$3 "\t'$green'" $11 "'$end'"}' | sort -n -r
     printf "\n"
     free -h
 }
@@ -63,7 +63,7 @@ show_all_processes_sort_cpu(){
 }
 
 statistic_memory(){
-    ps aux | egrep -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;printf "%8sK   %sM\n",sum,sum/1024}'
+    ps aux | grep -E -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;printf "%8sK   %sM\n",sum,sum/1024}'
 }
 
 watch_process(){
@@ -83,7 +83,7 @@ sum_proces(){
     echo "$result"
 
     printf "\n${green}sum: $end"
-    printf "$result" | egrep "^[0-9]" | awk '{sum += $1};END {print sum/1024 " MiB | " sum/1024/1024 " GiB"}'
+    printf "$result" | grep -E "^[0-9]" | awk '{sum += $1};END {print sum/1024 " MiB | " sum/1024/1024 " GiB"}'
 }
 
 sort_process(){
@@ -109,7 +109,7 @@ sort_process(){
 
 # kill self process
 kill_self(){
-    ids=`ps aux | grep "process-tool.sh" | egrep -v "grep" | egrep -v "process-tool\.sh -d"| awk '{print $2}'`
+    ids=`ps aux | grep "process-tool.sh" | grep -E -v "grep" | grep -E -v "process-tool\.sh -d"| awk '{print $2}'`
     if [ "$ids"1 = "1" ];then
         printf $red"not exist background running script $end \n"
     else
@@ -190,7 +190,7 @@ case $1 in
         show_pattern_processes "$2"
     ;;
     -b)
-        ps aux | egrep -v "grep" | egrep -v "process-tool.sh -b" | grep -i "process-tool.sh" --color
+        ps aux | grep -E -v "grep" | grep -E -v "process-tool.sh -b" | grep -i "process-tool.sh" --color
     ;;
     -ms)
         statistic_memory_by_name $@
