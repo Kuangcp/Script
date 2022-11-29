@@ -63,7 +63,7 @@ show_all_processes_sort_cpu(){
 }
 
 statistic_memory(){
-    ps aux | grep -E -v "grep" | grep -i $1 | awk '{sum+=$6};END {sum-=2800;printf "%8sK   %sM\n",sum,sum/1024}'
+    ps aux | grep -E -v "grep" | grep -v 'process-tool.sh' | grep -i $1 | awk '{sum+=$6};END {sum-=2800;printf "%8sK   %sM\n",sum,sum/1024}'
 }
 
 watch_process(){
@@ -163,7 +163,7 @@ statistic_memory_by_name(){
             continue
         fi
         # echo $param
-            result=$(check_process $param)
+        result=$(check_process $param)
         if [ ${#result} = 0 ];then
             continue
         fi
