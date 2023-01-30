@@ -24,6 +24,7 @@ help(){
     echo ""
     printf "$format" "-l"     "file dir"            "Link file under dir"
     printf "$format" "-lp"    "file"                "Link file to custom application bin path"
+    printf "$format" "-lx"    ""                    "Find broke link file"
 
     echo ""
     printf "$format" "-b"     "file"                "Rename file to file.bak or reverse it"
@@ -115,6 +116,9 @@ case $1 in
     -lp | lp)
         assert_param_count $# 2
         ln -s "$(pwd)/$2" "$app_bin/$2"
+    ;;
+    -lx | lx)
+        find . -xtype l
     ;;
     -x|x)
         chmod +x $2
