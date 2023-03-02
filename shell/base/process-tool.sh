@@ -140,6 +140,21 @@ background_watch(){
     done
 }
 
+watch_memory_notify(){
+    while true; do
+        swapFree=$(cat /proc/meminfo | grep SwapFree | awk '{print $2}')
+        avaliable=$(cat /proc/meminfo | grep MemAvailable | awk '{print $2}')
+        # echo $swapFree $avaliable 
+        if test $swapFree -lt 1000000; then
+            notify-send -i /home/zk/Pictures/icon/OIP-C.jpg Warnning 交换内存不足1G -t 3500
+        fi
+        if test $avaliable -lt 2000000; then
+            notify-send -i /home/zk/Pictures/icon/OIP-C.jpg Warnning 内存不足2G -t 3500
+        fi
+        sleep 30
+    done
+}
+
 help(){
     printf "Run：$red bash process-tool.sh $green<verb> $yellow<args>$end\n"
     format="  $green%-10s $yellow%-22s$end%-20s\n"
@@ -209,7 +224,10 @@ case $1 in
         sum_proces $2 
     ;;
     -watch | watch)
-      (background_watch $2 &)  
+       (background_watch $2 &)  
+    ;;
+    -memo)
+       (watch_memory_notify &)
     ;;
     *)
         if [ $# = 0 ];then
