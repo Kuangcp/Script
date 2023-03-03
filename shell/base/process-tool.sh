@@ -145,11 +145,13 @@ watch_memory_notify(){
         swapFree=$(cat /proc/meminfo | grep SwapFree | awk '{print $2}')
         avaliable=$(cat /proc/meminfo | grep MemAvailable | awk '{print $2}')
         # echo $swapFree $avaliable 
-        if test $swapFree -lt 1000000; then
-            notify-send -i /home/zk/Pictures/icon/OIP-C.jpg Warnning 交换内存不足1G -t 3500
+        if test $swapFree -lt 3000000; then
+            m=$(expr $swapFree / 1024)
+            notify-send -i /home/zk/Pictures/icon/OIP-C.jpg Warnning "交换内存不足3G $m Mib" -t 3500
         fi
         if test $avaliable -lt 2000000; then
-            notify-send -i /home/zk/Pictures/icon/OIP-C.jpg Warnning 内存不足2G -t 3500
+            m=$(expr $avaliable / 1024)
+            notify-send -i /home/zk/Pictures/icon/OIP-C.jpg Warnning " 内存不足2G  $m Mib" -t 3500
         fi
         sleep 30
     done
