@@ -27,11 +27,13 @@ run_bench(){
 }
 
 run_test(){
-    methods=$(ls *.go | xargs cat | grep "func Test" |  sed 's/func //g;s/(.*//g')
+    # methods=$(ls *.go | xargs cat | grep "func Test" |  sed 's/func //g;s/(.*//g')
+    # select method in $methods; do
+    #     break;
+    # done
 
-    select method in $methods; do
-        break;
-    done
+    # yay install skim
+    method=$(ls *.go | xargs cat | grep "func Test" | sed 's/func //g;s/(.*//g' | sk)
 
     printf " Run $method\n"
 
