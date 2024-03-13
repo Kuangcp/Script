@@ -28,6 +28,7 @@ help(){
 
     echo ""
     printf "$format" "-b"     "file"                "Rename file to file.bak or reverse it"
+    printf "$format" "-t"     "file"                "Rename file.txt to file.20010101.txt"
     printf "$format" "-e"     "file"                "Decompress file"
     printf "$format" "-cs"    "absolute_path count" "Create swap file by absolute path"
     
@@ -186,6 +187,15 @@ case $1 in
             decompress_file $i
         done 
     ;;
+    -t )
+        assert_param_count $# 2
+        # echo $2
+        name=${2%.*}
+        suffix=${2##*.}
+        # echo $name $suffix
+        t=$(date "+%Y%m%d%H%M")
+        mv $2 "$name.$t.$suffix"
+    ;; 
     -ez | ez)
         assert_param_count $# 2
         # must install unzip-iconv
