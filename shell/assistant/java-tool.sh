@@ -142,6 +142,11 @@ active_cpu_thread(){
         pid=$(jps | sk | awk '{print $1}')
     fi
 
+    if [ x$pid = "x" ] ; then 
+        log_warn "please select java pid"
+        exit
+    fi 
+
     tids=""
     while read -r line; do
         echo $line 
