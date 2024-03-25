@@ -164,6 +164,7 @@ help(){
     printf "$format" "" "[process][m|s]" "status of process sort by memory. m flag count memory; s flag show line with no wrap;"
     printf "$format" "-cpu|cpu" "" "sort by cpu desc"
     printf "$format" "-p|p" "process interval" "按名称查看相关进程 并按时间间隔一直查看进程信息"
+    printf "$format" "-pp" "process" "查看进程内活跃线程及hexId"
     printf "$format" "-b" "" "查看该脚本后台进程"
     printf "$format" "-stop" "" "kill 该脚本所有后台进程"
     printf "$format" "-ss|ss" "[count]" "查看内存占用最多的几个进程 count默认40个 3s刷新一次"
@@ -189,6 +190,19 @@ statistic_memory_by_name(){
     done
 }
 
+ppthread_status(){
+    pid=$1
+    while read -r proc; do
+        tid=$(echo $proc | awk '{print $2}')
+        if [ $tid = "TID" ]; then 
+            echo $proc "hex-TID" 
+        else 
+            txid=$(printf %x $tid) 
+            echo $proc "0x$txid"
+        fi 
+    done <<< "$(ps -mp $pid -o %cpu,tid,time | sort -k1r | grep -v -E '0\.0.*')"
+}
+
 init 
 case $1 in 
     -h | h)
@@ -196,6 +210,9 @@ case $1 in
     ;;
     -p | p)
         list_process_by_name $@
+    ;;
+    -pp)
+        ppthread_status "$2"
     ;;
     -cpu | cpu)
         show_all_processes_sort_cpu $2 | less

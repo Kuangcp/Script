@@ -29,6 +29,7 @@ help(){
     printf "$format" "-h" "" "help"
     printf "$format" "" "pid" "select java pid to show stack"
     printf "$format" "-a" "" "select java pid to show stack"
+    printf "$format" "-t" "pid" "show cpu active thread stack"
     printf "$format" "-w" "interval loopCount" "jstack to log"
 }
 
@@ -133,6 +134,49 @@ watch_pid_stack(){
     done 
 }
 
+# jps sk 
+# ps cat awk 
+active_cpu_thread(){
+    pid=$1
+    if [ x$pid = "x" ] ; then 
+        pid=$(jps | sk | awk '{print $1}')
+    fi
+
+    tids=""
+    while read -r line; do
+        echo $line 
+        tids="$tids "$(echo $line | awk '{print $2}')
+    done <<< "$(ps -mp $pid -o %cpu,tid,time | sort -k1r | grep -v TID | grep -v -E '0\.0.*')"
+    
+    echo ""
+    regx=""
+    for tid in $tids; do 
+        txid=$(printf %x $tid)
+        # echo $tid $txid 
+        regx="$regx|($txid)"
+    done 
+    regx=${regx:1}
+    # echo $regx
+    jstack $pid > /tmp/$pid-active-jstack.log
+    active=0
+    cat /tmp/$pid-active-jstack.log | while read line; do
+        # echo "line: "$line;
+        if [[ $line = \"* ]]; then 
+            c=$(echo $line | grep -E "$regx")
+            if [ "x$c" = "x" ]; then 
+                active=0
+            else
+                active=1
+                echo "$line"
+            fi
+        else 
+            if [ $active = 1 ]; then 
+                echo "    $line"
+            fi 
+        fi 
+    done
+}
+
 case $1 in 
     -h)
         help 
@@ -140,6 +184,9 @@ case $1 in
     -w)
         watch_pid_stack $*
     ;;
+    -t)
+        active_cpu_thread $2
+    ;; 
     -a)
         show_all_java_process
     ;;
