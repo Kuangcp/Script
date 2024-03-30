@@ -182,6 +182,20 @@ active_cpu_thread(){
     done
 }
 
+force_full_gc(){
+    pid=$1
+    if [ "x$pid" = 'x' ];then 
+        pid=$(jps | sk | awk '{print $1}')
+    fi 
+    if [ "x$pid" = 'x' ];then 
+        echo 'Must select java pid'
+        return
+    fi 
+    echo $pid > /tmp/force_full_gc.pid
+    echo "jcmd $pid GC.run"
+    jcmd $pid GC.run
+}
+
 case $1 in 
     -h)
         help 
@@ -191,7 +205,17 @@ case $1 in
     ;;
     -t)
         active_cpu_thread $2
-    ;; 
+    ;;
+    -gc)
+        force_full_gc
+    ;;
+    -gcl)
+        if [ -f /tmp/force_full_gc.pid ]; then 
+            force_full_gc $(cat /tmp/force_full_gc.pid)
+        else
+            echo 'no last history'
+        fi 
+    ;;
     -a)
         show_all_java_process
     ;;
