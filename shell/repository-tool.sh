@@ -309,6 +309,7 @@ case $1 in
 -l | l | list)
     list_configed_repos | sort
     ;;
+# replace by stash function
 -traash | trash)
     current_branch=$(git branch --show-current)
     git add -A
