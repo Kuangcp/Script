@@ -310,7 +310,6 @@ case $1 in
     list_configed_repos | sort
     ;;
 -lod | lod)
-    echo "list log dir"
     dirs=$(ls -d */)
     ml=0
     for d in $dirs; do
@@ -321,7 +320,7 @@ case $1 in
     done 
     for d in $dirs; do
         cnt=$(git log --oneline --decorate --all $d | wc -l) ;
-        printf "%${ml}s %3d\n" $d $cnt ;
+        printf "%-${ml}s %4d\n" $d $cnt ;
     done 
     ;;
 # replace by stash function
