@@ -317,9 +317,20 @@ case $1 in
         if  test $tmp -gt $ml ; then 
             ml=$tmp
         fi 
-    done 
+    done
+    after_p=''
+    before_p=''
+    pn=$(echo $#)
+    if test $pn -gt 1; then
+        after_p="--after='$2'"
+    fi
+    if test $pn -gt 2; then
+        before_p="--before='$3'"
+    fi
+
     for d in $dirs; do
-        cnt=$(git log --oneline --decorate --all $d | wc -l) ;
+        # echo "git log --oneline --decorate --all $after_p $d"
+        cnt=$(git log --oneline --decorate --all $after_p $before_p $d | wc -l) ;
         printf "%-${ml}s %4d\n" $d $cnt ;
     done 
     ;;
