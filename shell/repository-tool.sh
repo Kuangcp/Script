@@ -309,6 +309,21 @@ case $1 in
 -l | l | list)
     list_configed_repos | sort
     ;;
+-lod | lod)
+    echo "list log dir"
+    dirs=$(ls -d */)
+    ml=0
+    for d in $dirs; do
+        tmp=${#d}
+        if  test $tmp -gt $ml ; then 
+            ml=$tmp
+        fi 
+    done 
+    for d in $dirs; do
+        cnt=$(git log --oneline --decorate --all $d | wc -l) ;
+        printf "%${ml}s %3d\n" $d $cnt ;
+    done 
+    ;;
 # replace by stash function
 -traash | trash)
     current_branch=$(git branch --show-current)
