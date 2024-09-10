@@ -13,12 +13,12 @@ help(){
     
     printf "$format" "-h"     ""                    "Help" 
     printf "$format" ""       ""                    "Copy current path"
-    printf "$format" "-f|f"   "filename"            "Search file on current path"
-    printf "$format" "-d|d"   "dirname"             "Search dir on current path"
+    printf "$format" "-f,f"   "filename"            "Search file on current path"
+    printf "$format" "-d,d"   "dirname"             "Search dir on current path"
 
     echo ""
-    printf "$format" "-p|p"   "relative_path"       "Copy file path and show it"
-    printf "$format" "-cf|cf" "relative_path"       "Copy file content"
+    printf "$format" "-p,p"   "relative_path"       "Copy file path and show it"
+    printf "$format" "-cf,cf" "relative_path"       "Copy file content"
     printf "$format" "-cp"    "desktop file"        "Copy file to /usr/share/applications/"
 
     echo ""
@@ -31,6 +31,7 @@ help(){
     printf "$format" "-t"     "file"                "Rename file.txt to file.20010101.txt"
     printf "$format" "-e"     "file"                "Decompress file"
     printf "$format" "-cs"    "absolute_path count" "Create swap file by absolute path"
+    printf "$format" "-ic,ic"     "fmt"        "image convert: pwd all image to target fmt(jpg,png,webp...)"
     
     # printf "\n"
     # printf "$format" "-append" "" "[Python] add current dir to sys.path for python /usr/lib/pythonx.x/site-packages ..."
@@ -204,6 +205,28 @@ case $1 in
     -f | f)
         pattern=$(get_search_pattern $*)
         find . -type f -iregex $pattern 
+    ;;
+    -ic | ic)
+        assert_param_count $# 3
+        from=$2
+        to=$3
+        for file in ./*
+        do
+            if test -f "$file" ;  then
+                newFile=$(echo $file | grep "\.$2" | sed "s/\(.*\)\.$2/\1.$3/g;")
+                # newFile=$(echo $file | sed "s/\(.*\)\.png/\1.$2/g;s/\(.*\)\.webp/\1.$2/g;s/\(.*\)\.jpg/\1.$2/g")
+                # echo "$file" 是文件 $newFile
+                if test -n "$newFile" ; then 
+                    if test "$file" = "$newFile" ; then 
+                        echo 'same'
+                    else
+                        echo "convert $file $newFile"
+                        convert "$file" "$newFile"
+                    fi 
+                fi
+       
+            fi
+        done
     ;;
     *)
         path=${1#*\./}
