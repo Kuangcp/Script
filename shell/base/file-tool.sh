@@ -31,7 +31,7 @@ help(){
     printf "$format" "-t"     "file"                "Rename file.txt to file.20010101.txt"
     printf "$format" "-e"     "file"                "Decompress file"
     printf "$format" "-cs"    "absolute_path count" "Create swap file by absolute path"
-    printf "$format" "-ic,ic"     "fmt"        "image convert: pwd all image to target fmt(jpg,png,webp...)"
+    printf "$format" "-ic,ic" "fmt fmt"             "image convert: current dir fmt to target fmt(jpg,png,webp) ag: kf ic png webp"
     
     # printf "\n"
     # printf "$format" "-append" "" "[Python] add current dir to sys.path for python /usr/lib/pythonx.x/site-packages ..."
