@@ -82,6 +82,7 @@ get_search_pattern(){
     echo $pattern
 }
 
+# zsh universalarchive 插件
 decompress_file (){
     if [ ! -f $1 ] ; then
         log_error "'$1' is not a valid file"
