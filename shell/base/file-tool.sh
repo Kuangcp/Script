@@ -208,13 +208,33 @@ case $1 in
         find . -type f -iregex $pattern 
     ;;
     -ic | ic)
+        if test $# -lt 3; then
+            assert_param_count $# 2
+            to=$2
+            for file in ./*; do
+                if test -f "$file" ;  then
+                    newFile=$(echo $file | grep -E "\.(png|jpg|jpeg)" | sed "s/\(.*\)\..*/\1.$to/g;")
+                    if test -n "$newFile" ; then 
+                        if test "$file" = "$newFile" ; then 
+                            echo 'same'
+                        else
+                            echo "convert $file $newFile"
+                            convert "$file" "$newFile"
+                        fi 
+                    fi
+        
+                fi
+            done
+            exit
+        fi
+
         assert_param_count $# 3
         from=$2
         to=$3
         for file in ./*
         do
             if test -f "$file" ;  then
-                newFile=$(echo $file | grep "\.$2" | sed "s/\(.*\)\.$2/\1.$3/g;")
+                newFile=$(echo $file | grep "\.$from" | sed "s/\(.*\)\.$from/\1.$to/g;")
                 # newFile=$(echo $file | sed "s/\(.*\)\.png/\1.$2/g;s/\(.*\)\.webp/\1.$2/g;s/\(.*\)\.jpg/\1.$2/g")
                 # echo "$file" 是文件 $newFile
                 if test -n "$newFile" ; then 
