@@ -208,6 +208,7 @@ case $1 in
         find . -type f -iregex $pattern 
     ;;
     -ic | ic)
+        # 将 png/jpg/jpeg 转为目标格式
         if test $# -lt 3; then
             assert_param_count $# 2
             to=$2
@@ -219,15 +220,16 @@ case $1 in
                             echo 'same'
                         else
                             echo "convert $file $newFile"
+                            echo "rm $file"
                             convert "$file" "$newFile"
                         fi 
                     fi
-        
                 fi
             done
             exit
         fi
 
+        # 将 源格式 转为目标格式
         assert_param_count $# 3
         from=$2
         to=$3
@@ -242,10 +244,10 @@ case $1 in
                         echo 'same'
                     else
                         echo "convert $file $newFile"
+                        echo "rm $file"
                         convert "$file" "$newFile"
                     fi 
                 fi
-       
             fi
         done
     ;;
