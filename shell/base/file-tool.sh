@@ -172,7 +172,8 @@ case $1 in
     ;;
     -cp)
         assert_param_count $# 2
-        sudo cp $2 /usr/share/applications/
+        # sudo cp $2 /usr/share/applications/
+        cp $2 ~/.local/share/applications
     ;;
 	-cf | cf)
 		cat $2 | xclip -sel clip
