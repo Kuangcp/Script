@@ -12,6 +12,15 @@ diff_branch(){
     git log --pretty=oneline  $1...$2 | awk '{print $1}' | xargs git show
 }
 
+summary_commit_msg(){
+    # ollama + deepseek 7b 模型
+    prepare_commit=$(git diff --cached)
+    prompt='现在需要对一个Git仓库做提交，以下是这次提交的diff格式修改内容，请用英文做一句话总结，无需列出修改文件，总结出修改的范围和目的，用于commit message。'
+    ollama run deepseek-r1  "${prompt} 修改内容：${prepare_commit}" > /tmp/dp.git.msg
+    # cat /tmp/dp.git.msg | sd '\n' '' | sd '.*</think>' ''
+    cat /tmp/dp.git.msg | sd '\n' '@@@' | sd '.*</think>' '' | sd '@@@@@@' '' | sd '@@@' '\n'
+}
+
 case $1 in 
     -dc)
     # TODO validate branch is correct
@@ -42,6 +51,9 @@ case $1 in
                 printf "$cyan$startDate$end add:$green%-6s$end del:$red%-6s$end\n" $add $del 
             fi 
         done 
+    ;;
+    -msg)
+        summary_commit_msg
     ;;
     -h)
         help ;;
